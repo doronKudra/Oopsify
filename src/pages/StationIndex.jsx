@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
-import { loadStations, addStation, updateStation, removeStation, addStationMsg } from '../store/actions/station.actions'
+import { loadStations, addStation, updateStation, removeStation, addStationMsg } from '../store/actions/station.actions.js'
 
-import { showSuccessMsg, showErrorMsg } from '../services/event-bus.service'
-import { stationService } from '../services/station'
-import { userService } from '../services/user'
+import { showSuccessMsg, showErrorMsg } from '../services/event-bus.service.js'
+import { stationService } from '../services/station/index.js'
+import { userService } from '../services/user/index.js'
 
-import { StationList } from '../cmps/StationList'
-import { StationFilter } from '../cmps/StationFilter'
+import { StationList } from '../cmps/StationList.jsx'
+import { StationFilter } from '../cmps/StationFilter.jsx'
 import { SideBar } from '../cmps/SideBar/SideBar.jsx'
 
 export function StationIndex() {
@@ -60,11 +60,16 @@ export function StationIndex() {
                 {userService.getLoggedinUser() && <button onClick={onAddStation}>Add a Station</button>}
             </header>
             <StationFilter filterBy={filterBy} setFilterBy={setFilterBy} />
+            <SideBar stations={stations} // TO DO: different stations taken from user array of liked stations 
+                isMain={false}
+                onRemoveStation={onRemoveStation} // remove station from favorites
+                onUpdateStation={onUpdateStation} // change name or pin station
+                />
             <StationList 
                 stations={stations}
-                onRemoveStation={onRemoveStation} 
-                onUpdateStation={onUpdateStation}/>
-            <SideBar />
+                isMain={true}
+                onRemoveStation={() => {}}
+                onUpdateStation={() => {}} />
         </main>
     )
 }
