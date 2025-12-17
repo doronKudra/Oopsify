@@ -2,11 +2,11 @@ import { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-
+import tracks from '../services/track/track.service.js'
 import { showSuccessMsg, showErrorMsg } from '../services/event-bus.service'
 import { loadStation, addStationMsg } from '../store/actions/station.actions'
 
-
+console.log('tracks:', tracks)
 export function StationDetails() {
 
   const {stationId} = useParams()
