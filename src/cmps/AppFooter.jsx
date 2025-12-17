@@ -1,16 +1,15 @@
-import { useSelector } from 'react-redux'
+import { TrackInfo } from './TrackInfo'
+import { PlayerControls } from './PlayerControls'
+import { VolumeControl } from './VolumeControl'
 
 export function AppFooter() {
-	const count = useSelector(storeState => storeState.userModule.count)
-
+	const currentTrack = 'Billy Jean'
+	const isPlaying = false
 	return (
-		<footer className="app-footer full">
-			<p>Coffeerights &copy; 2024</p>
-			<p>Count: {count}</p>
-            
-            {import.meta.env.VITE_LOCAL ? 
-                <span className="local-services">Local Services</span> : 
-                <span className="remote-services">Remote Services</span>}
+		<footer className="player full">
+			<TrackInfo track={currentTrack} />
+			<PlayerControls isPlaying={isPlaying} />
+			<VolumeControl />
 		</footer>
 	)
 }
