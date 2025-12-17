@@ -9,6 +9,7 @@ import { userService } from '../services/user'
 
 import { StationList } from '../cmps/StationList'
 import { StationFilter } from '../cmps/StationFilter'
+import { SideBar } from '../cmps/SideBar/SideBar.jsx'
 
 export function StationIndex() {
 
@@ -63,6 +64,7 @@ export function StationIndex() {
                 stations={stations}
                 onRemoveStation={onRemoveStation} 
                 onUpdateStation={onUpdateStation}/>
+            <SideBar />
         </main>
     )
 }
