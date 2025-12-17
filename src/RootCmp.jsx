@@ -1,7 +1,6 @@
 import React from 'react'
 import { Routes, Route } from 'react-router'
 
-import { HomePage } from '../archive/HomePage.jsx'
 import { AboutUs, AboutTeam, AboutVision } from './pages/AboutUs.jsx'
 import { StationIndex } from './pages/StationIndex.jsx'
 
@@ -22,7 +21,6 @@ export function RootCmp() {
             <UserMsg />
             <main>
                 <Routes>
-                    <Route path="" element={<HomePage />} />
                     <Route path="about" element={<AboutUs />}>
                         <Route path="team" element={<AboutTeam />} />
                         <Route path="vision" element={<AboutVision />} />
