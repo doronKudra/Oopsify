@@ -2,7 +2,7 @@ import React from 'react'
 import { Routes, Route } from 'react-router'
 
 import { AboutUs, AboutTeam, AboutVision } from './pages/AboutUs.jsx'
-import { StationIndex } from './pages/StationIndex.jsx'
+import { Index } from './pages/Index.jsx'
 
 import { StationDetails } from './cmps/StationDetails.jsx'
 import { UserDetails } from './pages/UserDetails'
@@ -25,7 +25,7 @@ export function RootCmp() {
                         <Route path="team" element={<AboutTeam />} />
                         <Route path="vision" element={<AboutVision />} />
                     </Route>
-                    <Route index path="/" element={<StationIndex />} />
+                    <Route path="/" element={<Index />} />
                     <Route path="station/:stationId" element={<StationDetails />} />
                     <Route path="user/:id" element={<UserDetails />} />
                     <Route path="login" element={<LoginSignup />}>

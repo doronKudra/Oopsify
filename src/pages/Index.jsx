@@ -11,7 +11,7 @@ import { StationList } from '../cmps/StationList.jsx'
 import { StationFilter } from '../cmps/StationFilter.jsx'
 import { SideBar } from '../cmps/SideBar/SideBar.jsx'
 
-export function StationIndex() {
+export function Index() {
 
     const [ filterBy, setFilterBy ] = useState(stationService.getDefaultFilter())
     const stations = useSelector(storeState => storeState.stationModule.stations)

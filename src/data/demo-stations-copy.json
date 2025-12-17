@@ -1,0 +1,667 @@
+[
+    {
+        "collaborative": false,
+        "description": "mom's spaghetti CC: Eminem",
+        "external_urls": {
+            "spotify": "https://open.spotify.com/playlist/3xqcAMgjHGrv3ElA51zZRj"
+        },
+        "href": "https://api.spotify.com/v1/playlists/3xqcAMgjHGrv3ElA51zZRj",
+        "id": "3xqcAMgjHGrv3ElA51zZRj",
+        "images": [
+            {
+                "height": null,
+                "url": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da84214b8f0f28bc349771de902f",
+                "width": null
+            }
+        ],
+        "name": "Eminem: Best Of The Best",
+        "owner": {
+            "display_name": "Best Of The Best",
+            "external_urls": {
+                "spotify": "https://open.spotify.com/user/best-of-the-best"
+            },
+            "href": "https://api.spotify.com/v1/users/best-of-the-best",
+            "id": "best-of-the-best",
+            "type": "user",
+            "uri": "spotify:user:best-of-the-best"
+        },
+        "primary_color": null,
+        "public": true,
+        "snapshot_id": "AAABIxQIVmkMTW5XZfqMqTpJ74lRKwSu",
+        "tracks": {
+            "href": "https://api.spotify.com/v1/playlists/3xqcAMgjHGrv3ElA51zZRj/tracks",
+            "total": 46
+        },
+        "type": "playlist",
+        "uri": "spotify:playlist:3xqcAMgjHGrv3ElA51zZRj"
+    },
+    null,
+    null,
+    null,
+    {
+        "collaborative": false,
+        "description": "💚This is EMINEM radio mixtape/the latest release 2025 setlist tour playlist all songs  old discography lo mejor de exitos as melhores musicas last new single album todas las canciones viejitas  7️⃣",
+        "external_urls": {
+            "spotify": "https://open.spotify.com/playlist/4Oz4tiFkjIUePO9Wz8IRHV"
+        },
+        "href": "https://api.spotify.com/v1/playlists/4Oz4tiFkjIUePO9Wz8IRHV",
+        "id": "4Oz4tiFkjIUePO9Wz8IRHV",
+        "images": [
+            {
+                "height": null,
+                "url": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da84213f4b1e7aa06d7ccdcd7da3",
+                "width": null
+            }
+        ],
+        "name": "EMINEM HITS 🟡 BEST OF EMINEM",
+        "owner": {
+            "display_name": "RAP Anywhere",
+            "external_urls": {
+                "spotify": "https://open.spotify.com/user/vymzwusqn9y07yqv43itfowlp"
+            },
+            "href": "https://api.spotify.com/v1/users/vymzwusqn9y07yqv43itfowlp",
+            "id": "vymzwusqn9y07yqv43itfowlp",
+            "type": "user",
+            "uri": "spotify:user:vymzwusqn9y07yqv43itfowlp"
+        },
+        "primary_color": null,
+        "public": true,
+        "snapshot_id": "AAAAcN8EJP1AxYK7tT7sySTYUoW5Rnyr",
+        "tracks": {
+            "href": "https://api.spotify.com/v1/playlists/4Oz4tiFkjIUePO9Wz8IRHV/tracks",
+            "total": 28
+        },
+        "type": "playlist",
+        "uri": "spotify:playlist:4Oz4tiFkjIUePO9Wz8IRHV"
+    },
+    {
+        "collaborative": false,
+        "description": "",
+        "external_urls": {
+            "spotify": "https://open.spotify.com/playlist/3luHsMv6RvhUOZeOSd7m9r"
+        },
+        "href": "https://api.spotify.com/v1/playlists/3luHsMv6RvhUOZeOSd7m9r",
+        "id": "3luHsMv6RvhUOZeOSd7m9r",
+        "images": [
+            {
+                "height": null,
+                "url": "https://i.scdn.co/image/ab67616d00001e02151ed6e2da9fe2eeeb08d089",
+                "width": null
+            }
+        ],
+        "name": "Eminem 1950s ",
+        "owner": {
+            "display_name": "Eli Neil",
+            "external_urls": {
+                "spotify": "https://open.spotify.com/user/31qz2sapchs5mvz6ek56dldxurx4"
+            },
+            "href": "https://api.spotify.com/v1/users/31qz2sapchs5mvz6ek56dldxurx4",
+            "id": "31qz2sapchs5mvz6ek56dldxurx4",
+            "type": "user",
+            "uri": "spotify:user:31qz2sapchs5mvz6ek56dldxurx4"
+        },
+        "primary_color": null,
+        "public": true,
+        "snapshot_id": "AAAACkY/u0WIERlyAdChsTd3B73F8CXS",
+        "tracks": {
+            "href": "https://api.spotify.com/v1/playlists/3luHsMv6RvhUOZeOSd7m9r/tracks",
+            "total": 4
+        },
+        "type": "playlist",
+        "uri": "spotify:playlist:3luHsMv6RvhUOZeOSd7m9r"
+    },
+    {
+        "collaborative": false,
+        "description": "Rap from the Golden Era meets Top Hits from the New Generation - Snoop Dogg, Eminem, Ice Cube, 50 Cent, Lil Jon, 2Pac, Dr Dre, DMX, Americain Rap , Gym Rap for Gym Motivation - Workout Rap",
+        "external_urls": {
+            "spotify": "https://open.spotify.com/playlist/7gb4GZz7iIHGilXxD7638E"
+        },
+        "href": "https://api.spotify.com/v1/playlists/7gb4GZz7iIHGilXxD7638E",
+        "id": "7gb4GZz7iIHGilXxD7638E",
+        "images": [
+            {
+                "height": null,
+                "url": "https://image-cdn-fa.spotifycdn.com/image/ab67706c0000da84a77b3e77d41da2dfadd667f5",
+                "width": null
+            }
+        ],
+        "name": "HIP HOP MIX 2025 🔥 OLD SCHOOL 90S HIPHOP VS TODAYS TOP RAP HITS | BEST OF AMERICAN RAP",
+        "owner": {
+            "display_name": "Magic Records",
+            "external_urls": {
+                "spotify": "https://open.spotify.com/user/magicmusicsquad"
+            },
+            "href": "https://api.spotify.com/v1/users/magicmusicsquad",
+            "id": "magicmusicsquad",
+            "type": "user",
+            "uri": "spotify:user:magicmusicsquad"
+        },
+        "primary_color": null,
+        "public": true,
+        "snapshot_id": "AAABwAhiN3U9kDD2zaN3OLE1BsStRVpa",
+        "tracks": {
+            "href": "https://api.spotify.com/v1/playlists/7gb4GZz7iIHGilXxD7638E/tracks",
+            "total": 233
+        },
+        "type": "playlist",
+        "uri": "spotify:playlist:7gb4GZz7iIHGilXxD7638E"
+    },
+    {
+        "collaborative": false,
+        "description": "PRESS SHUFFLE AND ENJOY",
+        "external_urls": {
+            "spotify": "https://open.spotify.com/playlist/7t4FkxnRhUOMDCxfRFyynH"
+        },
+        "href": "https://api.spotify.com/v1/playlists/7t4FkxnRhUOMDCxfRFyynH",
+        "id": "7t4FkxnRhUOMDCxfRFyynH",
+        "images": [
+            {
+                "height": null,
+                "url": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da84497096675d807094aa08f444",
+                "width": null
+            }
+        ],
+        "name": "EMINEM GYM MOTIVATION 😤 ",
+        "owner": {
+            "display_name": "CALLUM BARROW",
+            "external_urls": {
+                "spotify": "https://open.spotify.com/user/1137921717"
+            },
+            "href": "https://api.spotify.com/v1/users/1137921717",
+            "id": "1137921717",
+            "type": "user",
+            "uri": "spotify:user:1137921717"
+        },
+        "primary_color": null,
+        "public": true,
+        "snapshot_id": "AAAAYE/F+9Q9mrlk2Autn+yVGVosOGio",
+        "tracks": {
+            "href": "https://api.spotify.com/v1/playlists/7t4FkxnRhUOMDCxfRFyynH/tracks",
+            "total": 75
+        },
+        "type": "playlist",
+        "uri": "spotify:playlist:7t4FkxnRhUOMDCxfRFyynH"
+    },
+    {
+        "collaborative": false,
+        "description": "The best playlist to listen to the greatest rappers of all time. Here you find Eminem, Snoop Dogg, 50 Cent, Dr. Dre, Lil Wayne, Tupac, Ja Rule, Fat Joe, Usher, Nelly and much more!",
+        "external_urls": {
+            "spotify": "https://open.spotify.com/playlist/4DJztJkufdlND0Hvg4nGkK"
+        },
+        "href": "https://api.spotify.com/v1/playlists/4DJztJkufdlND0Hvg4nGkK",
+        "id": "4DJztJkufdlND0Hvg4nGkK",
+        "images": [
+            {
+                "height": 640,
+                "url": "https://mosaic.scdn.co/640/ab67616d00001e02616e1083a3de098f82352019ab67616d00001e02b229dcbe02f1c9119148dadbab67616d00001e02ccdb1982626f299b3b1d3efdab67616d00001e02d843fabb75fef14010e30cae",
+                "width": 640
+            },
+            {
+                "height": 300,
+                "url": "https://mosaic.scdn.co/300/ab67616d00001e02616e1083a3de098f82352019ab67616d00001e02b229dcbe02f1c9119148dadbab67616d00001e02ccdb1982626f299b3b1d3efdab67616d00001e02d843fabb75fef14010e30cae",
+                "width": 300
+            },
+            {
+                "height": 60,
+                "url": "https://mosaic.scdn.co/60/ab67616d00001e02616e1083a3de098f82352019ab67616d00001e02b229dcbe02f1c9119148dadbab67616d00001e02ccdb1982626f299b3b1d3efdab67616d00001e02d843fabb75fef14010e30cae",
+                "width": 60
+            }
+        ],
+        "name": "Hip Hop 90's & 2000's - Classics",
+        "owner": {
+            "display_name": "Bruno",
+            "external_urls": {
+                "spotify": "https://open.spotify.com/user/315ipnhn45lyveedbtmcdaicline"
+            },
+            "href": "https://api.spotify.com/v1/users/315ipnhn45lyveedbtmcdaicline",
+            "id": "315ipnhn45lyveedbtmcdaicline",
+            "type": "user",
+            "uri": "spotify:user:315ipnhn45lyveedbtmcdaicline"
+        },
+        "primary_color": null,
+        "public": true,
+        "snapshot_id": "AAACHv5v6gyQ4EqlzNgrPNFBI1I3ITxf",
+        "tracks": {
+            "href": "https://api.spotify.com/v1/playlists/4DJztJkufdlND0Hvg4nGkK/tracks",
+            "total": 248
+        },
+        "type": "playlist",
+        "uri": "spotify:playlist:4DJztJkufdlND0Hvg4nGkK"
+    },
+    {
+        "collaborative": false,
+        "description": "",
+        "external_urls": {
+            "spotify": "https://open.spotify.com/playlist/2rL7J8CJrdksF944XqcYjr"
+        },
+        "href": "https://api.spotify.com/v1/playlists/2rL7J8CJrdksF944XqcYjr",
+        "id": "2rL7J8CJrdksF944XqcYjr",
+        "images": [
+            {
+                "height": null,
+                "url": "https://image-cdn-fa.spotifycdn.com/image/ab67706c0000d72c54b133282efaec2a07cc05fc",
+                "width": null
+            }
+        ],
+        "name": "BEST OF EMINEM",
+        "owner": {
+            "display_name": "Eminem",
+            "external_urls": {
+                "spotify": "https://open.spotify.com/user/eminem"
+            },
+            "href": "https://api.spotify.com/v1/users/eminem",
+            "id": "eminem",
+            "type": "user",
+            "uri": "spotify:user:eminem"
+        },
+        "primary_color": null,
+        "public": true,
+        "snapshot_id": "AAAA31+OwMSqxT6MOYGZ+weTIqsWHbdf",
+        "tracks": {
+            "href": "https://api.spotify.com/v1/playlists/2rL7J8CJrdksF944XqcYjr/tracks",
+            "total": 199
+        },
+        "type": "playlist",
+        "uri": "spotify:playlist:2rL7J8CJrdksF944XqcYjr"
+    },
+    {
+        "collaborative": false,
+        "description": "",
+        "external_urls": {
+            "spotify": "https://open.spotify.com/playlist/6E8sLG3bm1meTRj8n5l0ll"
+        },
+        "href": "https://api.spotify.com/v1/playlists/6E8sLG3bm1meTRj8n5l0ll",
+        "id": "6E8sLG3bm1meTRj8n5l0ll",
+        "images": [
+            {
+                "height": null,
+                "url": "https://image-cdn-fa.spotifycdn.com/image/ab67706c0000da844343967b3ec617871c303473",
+                "width": null
+            }
+        ],
+        "name": "EMINEM COMPLETE",
+        "owner": {
+            "display_name": "Eminem",
+            "external_urls": {
+                "spotify": "https://open.spotify.com/user/eminem"
+            },
+            "href": "https://api.spotify.com/v1/users/eminem",
+            "id": "eminem",
+            "type": "user",
+            "uri": "spotify:user:eminem"
+        },
+        "primary_color": null,
+        "public": true,
+        "snapshot_id": "AAAAnCSGRJfFwr4T0CRoH/2ln2UVNTl3",
+        "tracks": {
+            "href": "https://api.spotify.com/v1/playlists/6E8sLG3bm1meTRj8n5l0ll/tracks",
+            "total": 362
+        },
+        "type": "playlist",
+        "uri": "spotify:playlist:6E8sLG3bm1meTRj8n5l0ll"
+    },
+    {
+        "collaborative": false,
+        "description": "with Mockinbirth,Whitout me,The Real Slim Shady,Lose Yourself, Superman",
+        "external_urls": {
+            "spotify": "https://open.spotify.com/playlist/3E0RgJpQug1ibE2jTGI0Hk"
+        },
+        "href": "https://api.spotify.com/v1/playlists/3E0RgJpQug1ibE2jTGI0Hk",
+        "id": "3E0RgJpQug1ibE2jTGI0Hk",
+        "images": [
+            {
+                "height": 640,
+                "url": "https://mosaic.scdn.co/640/ab67616d00001e021bec21e57fff76db49e15a70ab67616d00001e026ca5c90113b30c3c43ffb8f4ab67616d00001e02b6ef2ebd34efb08cb76f6eecab67616d00001e02dbb3dd82da45b7d7f31b1b42",
+                "width": 640
+            },
+            {
+                "height": 300,
+                "url": "https://mosaic.scdn.co/300/ab67616d00001e021bec21e57fff76db49e15a70ab67616d00001e026ca5c90113b30c3c43ffb8f4ab67616d00001e02b6ef2ebd34efb08cb76f6eecab67616d00001e02dbb3dd82da45b7d7f31b1b42",
+                "width": 300
+            },
+            {
+                "height": 60,
+                "url": "https://mosaic.scdn.co/60/ab67616d00001e021bec21e57fff76db49e15a70ab67616d00001e026ca5c90113b30c3c43ffb8f4ab67616d00001e02b6ef2ebd34efb08cb76f6eecab67616d00001e02dbb3dd82da45b7d7f31b1b42",
+                "width": 60
+            }
+        ],
+        "name": "Eminem best song 10 hours",
+        "owner": {
+            "display_name": "RyexFrex",
+            "external_urls": {
+                "spotify": "https://open.spotify.com/user/31mqwtxnxte5rztyagll4bg72vv4"
+            },
+            "href": "https://api.spotify.com/v1/users/31mqwtxnxte5rztyagll4bg72vv4",
+            "id": "31mqwtxnxte5rztyagll4bg72vv4",
+            "type": "user",
+            "uri": "spotify:user:31mqwtxnxte5rztyagll4bg72vv4"
+        },
+        "primary_color": null,
+        "public": true,
+        "snapshot_id": "AAAAoRVNz5Ipbooow1pRoNTMpK5tu9rs",
+        "tracks": {
+            "href": "https://api.spotify.com/v1/playlists/3E0RgJpQug1ibE2jTGI0Hk/tracks",
+            "total": 123
+        },
+        "type": "playlist",
+        "uri": "spotify:playlist:3E0RgJpQug1ibE2jTGI0Hk"
+    },
+    {
+        "collaborative": false,
+        "description": "",
+        "external_urls": {
+            "spotify": "https://open.spotify.com/playlist/6DGhgf1V0p99R30uuktBRG"
+        },
+        "href": "https://api.spotify.com/v1/playlists/6DGhgf1V0p99R30uuktBRG",
+        "id": "6DGhgf1V0p99R30uuktBRG",
+        "images": [
+            {
+                "height": 640,
+                "url": "https://mosaic.scdn.co/640/ab67616d00001e027438996f6fe67c59d75d4e43ab67616d00001e029b19c107109de740bad72df5ab67616d00001e02d27f8a33b8a8c0417cdca53fab67616d00001e02d843fabb75fef14010e30cae",
+                "width": 640
+            },
+            {
+                "height": 300,
+                "url": "https://mosaic.scdn.co/300/ab67616d00001e027438996f6fe67c59d75d4e43ab67616d00001e029b19c107109de740bad72df5ab67616d00001e02d27f8a33b8a8c0417cdca53fab67616d00001e02d843fabb75fef14010e30cae",
+                "width": 300
+            },
+            {
+                "height": 60,
+                "url": "https://mosaic.scdn.co/60/ab67616d00001e027438996f6fe67c59d75d4e43ab67616d00001e029b19c107109de740bad72df5ab67616d00001e02d27f8a33b8a8c0417cdca53fab67616d00001e02d843fabb75fef14010e30cae",
+                "width": 60
+            }
+        ],
+        "name": "Eminem, 50 Cent, Snoop Dogg, Dr. Dre, Coolio",
+        "owner": {
+            "display_name": "Lotte",
+            "external_urls": {
+                "spotify": "https://open.spotify.com/user/ycmoecngw05p3blcdyrlobdoj"
+            },
+            "href": "https://api.spotify.com/v1/users/ycmoecngw05p3blcdyrlobdoj",
+            "id": "ycmoecngw05p3blcdyrlobdoj",
+            "type": "user",
+            "uri": "spotify:user:ycmoecngw05p3blcdyrlobdoj"
+        },
+        "primary_color": null,
+        "public": true,
+        "snapshot_id": "AAAAJwz5KoBK4waSoUPHjBEb/xeHmJmN",
+        "tracks": {
+            "href": "https://api.spotify.com/v1/playlists/6DGhgf1V0p99R30uuktBRG/tracks",
+            "total": 34
+        },
+        "type": "playlist",
+        "uri": "spotify:playlist:6DGhgf1V0p99R30uuktBRG"
+    },
+    {
+        "collaborative": false,
+        "description": "",
+        "external_urls": {
+            "spotify": "https://open.spotify.com/playlist/1s4xT0Ho17a75Dm4ycY2Jy"
+        },
+        "href": "https://api.spotify.com/v1/playlists/1s4xT0Ho17a75Dm4ycY2Jy",
+        "id": "1s4xT0Ho17a75Dm4ycY2Jy",
+        "images": [
+            {
+                "height": null,
+                "url": "https://image-cdn-fa.spotifycdn.com/image/ab67706c0000da843528ef8b18257eee43486309",
+                "width": null
+            }
+        ],
+        "name": "Eminem’s Top 10 Hits",
+        "owner": {
+            "display_name": "connor jansen",
+            "external_urls": {
+                "spotify": "https://open.spotify.com/user/3174claewycrdyqr4vwdcizn5dyi"
+            },
+            "href": "https://api.spotify.com/v1/users/3174claewycrdyqr4vwdcizn5dyi",
+            "id": "3174claewycrdyqr4vwdcizn5dyi",
+            "type": "user",
+            "uri": "spotify:user:3174claewycrdyqr4vwdcizn5dyi"
+        },
+        "primary_color": null,
+        "public": true,
+        "snapshot_id": "AAAALXd/mYnO8Y0aYmXndGlIB3/nsvWw",
+        "tracks": {
+            "href": "https://api.spotify.com/v1/playlists/1s4xT0Ho17a75Dm4ycY2Jy/tracks",
+            "total": 10
+        },
+        "type": "playlist",
+        "uri": "spotify:playlist:1s4xT0Ho17a75Dm4ycY2Jy"
+    },
+    {
+        "collaborative": false,
+        "description": "",
+        "external_urls": {
+            "spotify": "https://open.spotify.com/playlist/685d3sfEevc4tuHtOGJIlP"
+        },
+        "href": "https://api.spotify.com/v1/playlists/685d3sfEevc4tuHtOGJIlP",
+        "id": "685d3sfEevc4tuHtOGJIlP",
+        "images": [
+            {
+                "height": 640,
+                "url": "https://mosaic.scdn.co/640/ab67616d00001e022d9b80b5eac7a6133c932e40ab67616d00001e02660b251d25d51665990552ecab67616d00001e0299673668644eeb2a9d903f0aab67616d00001e02ccdb1982626f299b3b1d3efd",
+                "width": 640
+            },
+            {
+                "height": 300,
+                "url": "https://mosaic.scdn.co/300/ab67616d00001e022d9b80b5eac7a6133c932e40ab67616d00001e02660b251d25d51665990552ecab67616d00001e0299673668644eeb2a9d903f0aab67616d00001e02ccdb1982626f299b3b1d3efd",
+                "width": 300
+            },
+            {
+                "height": 60,
+                "url": "https://mosaic.scdn.co/60/ab67616d00001e022d9b80b5eac7a6133c932e40ab67616d00001e02660b251d25d51665990552ecab67616d00001e0299673668644eeb2a9d903f0aab67616d00001e02ccdb1982626f299b3b1d3efd",
+                "width": 60
+            }
+        ],
+        "name": "Old school Eminem 1999-2002",
+        "owner": {
+            "display_name": "Babbeleguuskes",
+            "external_urls": {
+                "spotify": "https://open.spotify.com/user/gusmanreyes"
+            },
+            "href": "https://api.spotify.com/v1/users/gusmanreyes",
+            "id": "gusmanreyes",
+            "type": "user",
+            "uri": "spotify:user:gusmanreyes"
+        },
+        "primary_color": null,
+        "public": true,
+        "snapshot_id": "AAAAHbqmznAJdxbwfpEPIf8hJNHMX5QJ",
+        "tracks": {
+            "href": "https://api.spotify.com/v1/playlists/685d3sfEevc4tuHtOGJIlP/tracks",
+            "total": 21
+        },
+        "type": "playlist",
+        "uri": "spotify:playlist:685d3sfEevc4tuHtOGJIlP"
+    },
+    {
+        "collaborative": false,
+        "description": "",
+        "external_urls": {
+            "spotify": "https://open.spotify.com/playlist/38YFmJLEETyYb0G3gvsSyM"
+        },
+        "href": "https://api.spotify.com/v1/playlists/38YFmJLEETyYb0G3gvsSyM",
+        "id": "38YFmJLEETyYb0G3gvsSyM",
+        "images": [
+            {
+                "height": null,
+                "url": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da84e7ac0331b4b1c445869abaf6",
+                "width": null
+            }
+        ],
+        "name": "Eminem",
+        "owner": {
+            "display_name": "™guy™",
+            "external_urls": {
+                "spotify": "https://open.spotify.com/user/8uixgnrb28snzc6lilpteonq0"
+            },
+            "href": "https://api.spotify.com/v1/users/8uixgnrb28snzc6lilpteonq0",
+            "id": "8uixgnrb28snzc6lilpteonq0",
+            "type": "user",
+            "uri": "spotify:user:8uixgnrb28snzc6lilpteonq0"
+        },
+        "primary_color": null,
+        "public": true,
+        "snapshot_id": "AAAALjeP7ntWxJJd3r7byG/Nxftif/fq",
+        "tracks": {
+            "href": "https://api.spotify.com/v1/playlists/38YFmJLEETyYb0G3gvsSyM/tracks",
+            "total": 37
+        },
+        "type": "playlist",
+        "uri": "spotify:playlist:38YFmJLEETyYb0G3gvsSyM"
+    },
+    {
+        "collaborative": false,
+        "description": "",
+        "external_urls": {
+            "spotify": "https://open.spotify.com/playlist/4Ss0HJmgjxD5zT9u9NJ8lm"
+        },
+        "href": "https://api.spotify.com/v1/playlists/4Ss0HJmgjxD5zT9u9NJ8lm",
+        "id": "4Ss0HJmgjxD5zT9u9NJ8lm",
+        "images": [
+            {
+                "height": null,
+                "url": "https://image-cdn-ak.spotifycdn.com/image/ab67706c0000da8472b98be6b55d84742b079646",
+                "width": null
+            }
+        ],
+        "name": "Eminem playlist🐇",
+        "owner": {
+            "display_name": "Izabiza",
+            "external_urls": {
+                "spotify": "https://open.spotify.com/user/31fr34fusic5roeppsq3ng6xlo7y"
+            },
+            "href": "https://api.spotify.com/v1/users/31fr34fusic5roeppsq3ng6xlo7y",
+            "id": "31fr34fusic5roeppsq3ng6xlo7y",
+            "type": "user",
+            "uri": "spotify:user:31fr34fusic5roeppsq3ng6xlo7y"
+        },
+        "primary_color": null,
+        "public": true,
+        "snapshot_id": "AAAAcvGkQiKQLwCHJoayxcZJVPJdgY+I",
+        "tracks": {
+            "href": "https://api.spotify.com/v1/playlists/4Ss0HJmgjxD5zT9u9NJ8lm/tracks",
+            "total": 96
+        },
+        "type": "playlist",
+        "uri": "spotify:playlist:4Ss0HJmgjxD5zT9u9NJ8lm"
+    },
+    {
+        "collaborative": false,
+        "description": "",
+        "external_urls": {
+            "spotify": "https://open.spotify.com/playlist/1dK4nLwc89eaFR0OWSm6yZ"
+        },
+        "href": "https://api.spotify.com/v1/playlists/1dK4nLwc89eaFR0OWSm6yZ",
+        "id": "1dK4nLwc89eaFR0OWSm6yZ",
+        "images": [
+            {
+                "height": 640,
+                "url": "https://mosaic.scdn.co/640/ab67616d00001e02506c4cc93e5a6234164125e1ab67616d00001e026ca5c90113b30c3c43ffb8f4ab67616d00001e02d12909c6ebc83cb4c6bef6f4ab67616d00001e02dbb3dd82da45b7d7f31b1b42",
+                "width": 640
+            },
+            {
+                "height": 300,
+                "url": "https://mosaic.scdn.co/300/ab67616d00001e02506c4cc93e5a6234164125e1ab67616d00001e026ca5c90113b30c3c43ffb8f4ab67616d00001e02d12909c6ebc83cb4c6bef6f4ab67616d00001e02dbb3dd82da45b7d7f31b1b42",
+                "width": 300
+            },
+            {
+                "height": 60,
+                "url": "https://mosaic.scdn.co/60/ab67616d00001e02506c4cc93e5a6234164125e1ab67616d00001e026ca5c90113b30c3c43ffb8f4ab67616d00001e02d12909c6ebc83cb4c6bef6f4ab67616d00001e02dbb3dd82da45b7d7f31b1b42",
+                "width": 60
+            }
+        ],
+        "name": "ALL of Eminems Songs",
+        "owner": {
+            "display_name": "Zac",
+            "external_urls": {
+                "spotify": "https://open.spotify.com/user/igrt3lxknwyty0plyp7qdtgsm"
+            },
+            "href": "https://api.spotify.com/v1/users/igrt3lxknwyty0plyp7qdtgsm",
+            "id": "igrt3lxknwyty0plyp7qdtgsm",
+            "type": "user",
+            "uri": "spotify:user:igrt3lxknwyty0plyp7qdtgsm"
+        },
+        "primary_color": null,
+        "public": true,
+        "snapshot_id": "AAAAA9THrmntJNFECG4554vnUIw3dVK5",
+        "tracks": {
+            "href": "https://api.spotify.com/v1/playlists/1dK4nLwc89eaFR0OWSm6yZ/tracks",
+            "total": 271
+        },
+        "type": "playlist",
+        "uri": "spotify:playlist:1dK4nLwc89eaFR0OWSm6yZ"
+    },
+    {
+        "collaborative": false,
+        "description": "Without Me 1950 Motown Eminem",
+        "external_urls": {
+            "spotify": "https://open.spotify.com/playlist/6mPVrKsJJe0wZmrqU63vQj"
+        },
+        "href": "https://api.spotify.com/v1/playlists/6mPVrKsJJe0wZmrqU63vQj",
+        "id": "6mPVrKsJJe0wZmrqU63vQj",
+        "images": [
+            {
+                "height": null,
+                "url": "https://image-cdn-fa.spotifycdn.com/image/ab67706c0000da84cf26f1fa5d4705e84b2d7a8d",
+                "width": null
+            }
+        ],
+        "name": "Without Me 1950 Motown Eminem",
+        "owner": {
+            "display_name": "Rode410",
+            "external_urls": {
+                "spotify": "https://open.spotify.com/user/3137zxmakfhdll7ppfawuywevoqi"
+            },
+            "href": "https://api.spotify.com/v1/users/3137zxmakfhdll7ppfawuywevoqi",
+            "id": "3137zxmakfhdll7ppfawuywevoqi",
+            "type": "user",
+            "uri": "spotify:user:3137zxmakfhdll7ppfawuywevoqi"
+        },
+        "primary_color": null,
+        "public": true,
+        "snapshot_id": "AAAARUax8FR3D/3XOj4x4ofgG0dCo9sD",
+        "tracks": {
+            "href": "https://api.spotify.com/v1/playlists/6mPVrKsJJe0wZmrqU63vQj/tracks",
+            "total": 288
+        },
+        "type": "playlist",
+        "uri": "spotify:playlist:6mPVrKsJJe0wZmrqU63vQj"
+    },
+    {
+        "collaborative": false,
+        "description": "",
+        "external_urls": {
+            "spotify": "https://open.spotify.com/playlist/416twjpHNtQxAgj2unpWA7"
+        },
+        "href": "https://api.spotify.com/v1/playlists/416twjpHNtQxAgj2unpWA7",
+        "id": "416twjpHNtQxAgj2unpWA7",
+        "images": [
+            {
+                "height": null,
+                "url": "https://image-cdn-fa.spotifycdn.com/image/ab67706c0000da8448b3c1d95c3366ec9fb61575",
+                "width": null
+            }
+        ],
+        "name": "Emenm",
+        "owner": {
+            "display_name": "Lily",
+            "external_urls": {
+                "spotify": "https://open.spotify.com/user/31akz5vqbirggge66rtwa6k2k3dq"
+            },
+            "href": "https://api.spotify.com/v1/users/31akz5vqbirggge66rtwa6k2k3dq",
+            "id": "31akz5vqbirggge66rtwa6k2k3dq",
+            "type": "user",
+            "uri": "spotify:user:31akz5vqbirggge66rtwa6k2k3dq"
+        },
+        "primary_color": null,
+        "public": true,
+        "snapshot_id": "AAAAUtirjXmCBD8fH5NMniRS+Xw6SRb0",
+        "tracks": {
+            "href": "https://api.spotify.com/v1/playlists/416twjpHNtQxAgj2unpWA7/tracks",
+            "total": 80
+        },
+        "type": "playlist",
+        "uri": "spotify:playlist:416twjpHNtQxAgj2unpWA7"
+    }
+]
