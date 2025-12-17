@@ -1,4 +1,3 @@
-
 import { storageService } from '../async-storage.service'
 import { makeId } from '../util.service'
 import { userService } from '../user'
@@ -10,32 +9,22 @@ export const stationService = {
     getById,
     save,
     remove,
-    addStationMsg
+    addStationMsg,
 }
 window.cs = stationService
 
-
-async function query(filterBy = { txt: '', minSpeed: 0 }) {
+async function query(filterBy = '') {
     var stations = await storageService.query(STORAGE_KEY)
-    const { txt, minSpeed, sortField, sortDir } = filterBy
+    const { txt } = filterBy
 
     if (txt) {
         const regex = new RegExp(filterBy.txt, 'i')
-        stations = stations.filter(station => regex.test(station.vendor) || regex.test(station.description))
+        stations = stations.filter(
+            (station) =>
+                regex.test(station.vendor) || regex.test(station.description)
+        )
     }
-    if (minSpeed) {
-        stations = stations.filter(station => station.speed >= minSpeed)
-    }
-    if(sortField === 'vendor'){
-        stations.sort((station1, station2) => 
-            station1[sortField].localeCompare(station2[sortField]) * +sortDir)
-    }
-    if(sortField === 'speed'){
-        stations.sort((station1, station2) => 
-            (station1[sortField] - station2[sortField]) * +sortDir)
-    }
-    
-    stations = stations.map(({ _id, vendor, speed, owner }) => ({ _id, vendor, speed, owner }))
+    stations = stations.map(({ _id }) => ({ _id, vendor, speed, owner }))
     return stations
 }
 
@@ -53,7 +42,7 @@ async function save(station) {
     if (station._id) {
         const stationToSave = {
             _id: station._id,
-            speed: station.speed
+            speed: station.speed,
         }
         savedStation = await storageService.put(STORAGE_KEY, stationToSave)
     } else {
@@ -62,7 +51,7 @@ async function save(station) {
             speed: station.speed,
             // Later, owner is set by the backend
             owner: userService.getLoggedinUser(),
-            msgs: []
+            msgs: [],
         }
         savedStation = await storageService.post(STORAGE_KEY, stationToSave)
     }
@@ -76,7 +65,7 @@ async function addStationMsg(stationId, txt) {
     const msg = {
         id: makeId(),
         by: userService.getLoggedinUser(),
-        txt
+        txt,
     }
     station.msgs.push(msg)
     await storageService.put(STORAGE_KEY, station)
