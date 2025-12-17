@@ -9,7 +9,6 @@ import homeSvg from '../assets/images/icons/house-regular.svg'
 export function AppHeader() {
 	const navigate = useNavigate()
 
-
 	return (
 		<header className="app-header">
 			<button to="/" className="logo"><img src={logoSvg} alt="" />

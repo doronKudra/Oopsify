@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
-import { loadStations, addStation, updateStation, removeStation, addStationMsg } from '../store/actions/station.actions'
+import { loadStations, addStation, updateStation, removeStation, addStationMsg } from '../store/actions/station.actions.js'
 
-import { showSuccessMsg, showErrorMsg } from '../services/event-bus.service'
-import { stationService } from '../services/station'
-import { userService } from '../services/user'
+import { showSuccessMsg, showErrorMsg } from '../services/event-bus.service.js'
+import { stationService } from '../services/station/index.js'
+import { userService } from '../services/user/index.js'
 
-import { StationList } from '../cmps/StationList'
-import { StationFilter } from '../cmps/StationFilter'
+import { StationList } from '../cmps/StationList.jsx'
+import { StationFilter } from '../cmps/StationFilter.jsx'
 import { SideBar } from '../cmps/SideBar/SideBar.jsx'
 
-export function StationIndex() {
+export function Index() {
 
     const [ filterBy, setFilterBy ] = useState(stationService.getDefaultFilter())
     const stations = useSelector(storeState => storeState.stationModule.stations)
