@@ -1,5 +1,28 @@
 .app-header {
     display: flex;
+    background-color: transparent;
+    height: 64px;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px;
+
+    >* {
+        height: 100%;
+    }
+
+    button {
+        aspect-ratio: 1;
+        background-color: var(--clr3);
+    }
+
+    .logo {
+        background-color: transparent;
+    }
+
+}
+
+/*
+    display: flex;
     min-height: 3.5rem;
 
     background-color: var(--clr4);
@@ -54,4 +77,4 @@
             border-radius: 50%;
         }
     }
-}
+} */
