@@ -1,0 +1,6 @@
+.sidebar-container{
+    background-color: #121212;
+    grid-column: 1;
+    margin-left: 0.5rem;
+    border-radius: 0.5rem;
+}

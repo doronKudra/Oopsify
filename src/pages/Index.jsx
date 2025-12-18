@@ -8,7 +8,7 @@ import { stationService } from '../services/station/index.js'
 import { userService } from '../services/user/index.js'
 
 import { StationList } from '../cmps/StationList.jsx'
-import { StationFilter } from '../cmps/StationFilter.jsx'
+// import { StationFilter } from '../cmps/StationFilter.jsx'
 
 
 export function Index() {
@@ -20,19 +20,18 @@ export function Index() {
         loadStations(filterBy)
     }, [filterBy])
 
-
-
     return (
         <main className="station-index">
             <header>
                 <h2>Stations</h2>
             </header>
-            <StationFilter filterBy={filterBy} setFilterBy={setFilterBy} />
+            {/* <StationFilter filterBy={filterBy} setFilterBy={setFilterBy} /> */}
             <StationList 
                 stations={stations}
-                isMain={true}
-                onRemoveStation={() => {}}
-                onUpdateStation={() => {}} />
+                listType={'recent'}/>
+            <StationList 
+                stations={stations}
+                listType={'explore'}/>
         </main>
     )
 }

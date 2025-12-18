@@ -18,36 +18,12 @@ export function SideBar() {
         loadStations(filterBy)
     }, [filterBy])
 
-    async function onRemoveStation(stationId) {
-        try {
-            await removeStation(stationId)
-            showSuccessMsg('Station removed')
-        } catch (err) {
-            showErrorMsg('Cannot remove station')
-        }
-    }
-
-    async function onUpdateStation(station) {
-        const name = +prompt('New name?', station.name) || 0
-        if (name === '' || name === station.name) return
-
-        const stationToSave = { ...station, name }
-        try {
-            const savedStation = await updateStation(stationToSave)
-            showSuccessMsg(`Station updated, new name: ${savedStation.name}`)
-        } catch (err) {
-            showErrorMsg('Cannot update station')
-        }
-    }
-
     return (
-        <aside>
+        <aside className='sidebar-container'>
             <SideBarHeader />
             <SideBarFilter />
             <StationList stations={stations}
-                isMain={false}
-                onRemoveStation={onRemoveStation}
-                onUpdateStation={onUpdateStation}
+                listType={'favorites'}
             />
         </aside>
     )

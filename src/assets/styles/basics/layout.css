@@ -1,8 +1,9 @@
 
 .main-container {
     display: grid;
-    grid-template-columns: 1rem 1fr 1rem;
-
+    grid-template-columns: 26.25rem 1fr 2rem;
+    column-gap: 0.5rem;
+    grid-template-rows: 4rem 1fr 4rem;
     >* {
         grid-column: 2;
 
