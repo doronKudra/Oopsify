@@ -65,27 +65,15 @@ export function StationDetails() {
                     </div>
                 </div>
             </section>
-            <button
+            {/* <button
                 onClick={() => {
                     onFavoriteStationMsg(station._id)
                 }}
             >
                 ♡
-            </button>
+            </button> */}
             <StationControls station={demoStation}></StationControls>
             <TrackList station={demoStation} />{' '}
         </section>
     )
 }
-
-// async function onAddStationMsg(stationId) {
-//     try {
-//         await addStationMsg(
-//             stationId,
-//             'bla bla ' + parseInt(Math.random() * 10)
-//         )
-//         showSuccessMsg(`Station msg added`)
-//     } catch (err) {
-//         showErrorMsg('Cannot add station msg')
-//     }
-// }

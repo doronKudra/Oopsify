@@ -1,6 +1,7 @@
 
 .station-details {
     border-radius: 20px;
+    padding: 1em;
 }
 .station-header {
     display: flex;
@@ -18,4 +19,12 @@
 .station-header-title {
     align-self: end;
     margin: 0 1em;
+}
+.btn-container button {
+    background-color: transparent;
+    color: #B3B3B3;
+}
+
+.btn-container img {
+    width: 1em;
 }
