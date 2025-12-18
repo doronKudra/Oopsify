@@ -9,52 +9,56 @@
     gap: 12px;
 
     >* {
-        height: 50px;
+        height: 48px;
     }
 
-    div {
+    .search-container {
         display: flex;
         justify-content: center;
         gap: 10px;
         min-width: 160px;
 
-        .search-container {
+        .search-bar {
             position: relative;
 
-            .fa-magnifying-glass,
-            .fa-xmark {
-                color: rgb(233, 233, 233);
+            .magnifying-glass,
+            .xmark {
+                fill: rgb(233, 233, 233);
                 position: absolute;
+                height: 24px;
+                width: 24px;
                 top: 50%;
                 translate: -50% -50%;
                 font-size: 22px;
                 cursor: pointer;
             }
         }
-        .fa-magnifying-glass{
+        .magnifying-glass{
             left: 25px;
         }
 
-        .fa-xmark {
+        .xmark {
             right: 2px;
         }
     }
 
     .home-btn {
         margin: 0;
-        padding: 0 10px;
-        height: 50px;
-        width: 50px;
+        padding: 12px;
+        height: 48px;
+        width: 48px;
         border-radius: 50%;
         background-color: var(--clr3);
-
+        align-items: center;
         >* {
             translate: -0.5px 0;
-            font-size: x-large;
+            height: 24px;
+            width: 24px;
+            fill: white;
         }
     }
 
-    input {
+    #header-search {
         height: 100%;
         /* width: 100%; */
         /* max-width: 475px; */
@@ -63,13 +67,14 @@
         border-radius: 30px;
         background-color: var(--clr3);
         outline: 0 solid;
-        font-size: 16px;
+        font-size: 15px;
+        font-weight: 500;
         transition: outline 0.05s 0.05s, filter 0.3s;
         color: white;
         border: 0;
-        &:hover{
-            filter: brightness(1.2);
+        &:hover{ 
             outline: 0.5px solid rgb(102, 102, 102);
+            
         }
         &:focus {
             outline: 2px solid white;
