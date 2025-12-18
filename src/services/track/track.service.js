@@ -3,8 +3,7 @@ import rawTracks from '../../data/demo-tracks.json'
 export const tracks = normalizeTracks(rawTracks)
 console.log('tracks:', tracks)
 
-
-function normalizeTracks(tracks) {
+export function normalizeTracks(tracks) {
     return tracks.map((track) => ({
         id: track.id,
         name: track.name,
@@ -15,4 +14,33 @@ function normalizeTracks(tracks) {
         cover_art: track.album?.images?.[0]?.url || null,
         uri: track.uri,
     }))
+}
+
+export function getDemoStation() {
+    const tracks = normalizeTracks(rawTracks)
+    console.log('tracks:', tracks)
+    return {
+        id: 'demo_station_001',
+        name: 'Demo Album',
+        artist: 'Eminem',
+        description: 'A sample station built from normalized tracks',
+        created_at: new Date().toISOString(),
+        cover_art: tracks[0]?.cover_art || null,
+        stats: {
+            total_tracks: tracks.length,
+            avg_popularity:
+                tracks.reduce(
+                    (sum, track) => sum + (track.popularity || 0),
+                    0
+                ) / tracks.length,
+            total_duration_ms: tracks.reduce(
+                (sum, track) => sum + (track.duration_ms || 0),
+                0
+            ),
+        },
+        tracks: tracks.map((track, index) => ({
+            order: index + 1,
+            ...track,
+        })),
+    }
 }

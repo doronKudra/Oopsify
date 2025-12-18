@@ -1,16 +1,32 @@
 import { userService } from '../services/user'
 import { StationPreview } from './StationPreview'
 
-export function StationList({ stations, isMain, onRemoveStation, onUpdateStation }) {
-    
-    function isCustomizable(station) {
-        const user = userService.getLoggedinUser()
-        
-        if (isMain) return false
-        return station.owner?._id === user._id // can only edit your own stations
-    }
-    return <section>
-        <ul className="list">
+// {
+//     stations,
+//     isMain,
+//     onRemoveStation,
+//     onUpdateStation,
+// }
+export function StationList({station}) {
+    // function isCustomizable(station) {
+    //     const user = userService.getLoggedinUser()
+
+    //     if (isMain) return false
+    //     return station.owner?._id === user._id // can only edit your own stations
+    // }
+    return (
+        <section>
+            <div>
+                {station.tracks.map((track) => (
+                    <div key={track.id}>
+                        <h3>{track.album}</h3>
+                        <h4>
+                            {track.order}. {track.name} — {track.artist}
+                        </h4>
+                    </div>
+                ))}
+            </div>
+            {/* <ul className="list">
             {stations && stations.map(station =>
                 <li key={station._id}>
                     <StationPreview station={station}/>
@@ -24,6 +40,7 @@ export function StationList({ stations, isMain, onRemoveStation, onUpdateStation
                         </div>
                 </li>)
             }
-        </ul>
-    </section>
+        </ul> */}
+        </section>
+    )
 }
