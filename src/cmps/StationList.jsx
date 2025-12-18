@@ -7,7 +7,7 @@ export function StationList({ stations, isMain, onRemoveStation, onUpdateStation
         const user = userService.getLoggedinUser()
         
         if (isMain) return false
-        return station.owner?._id === user._id // can only edit your own stations
+        return true // station.owner?._id === user._id // can only edit your own stations
     }
     return <section>
         <ul className="list">
