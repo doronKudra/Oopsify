@@ -19,12 +19,8 @@ async function query(filterBy = '') {
 
     if (txt) {
         const regex = new RegExp(filterBy.txt, 'i')
-        stations = stations.filter(
-            (station) =>
-                regex.test(station.vendor) || regex.test(station.description)
-        )
+        stations = stations.filter((station) => regex.test(station.name))
     }
-    stations = stations.map(({ _id }) => ({ _id, vendor, speed, owner }))
     return stations
 }
 
@@ -42,16 +38,17 @@ async function save(station) {
     if (station._id) {
         const stationToSave = {
             _id: station._id,
-            speed: station.speed,
+            songs: station.songs,
         }
         savedStation = await storageService.put(STORAGE_KEY, stationToSave)
     } else {
         const stationToSave = {
-            vendor: station.vendor,
-            speed: station.speed,
+            name: station.name,
+            songs: station.songs,
             // Later, owner is set by the backend
-            owner: userService.getLoggedinUser(),
-            msgs: [],
+            createdBy: userService.getLoggedinUser(),
+            likedByUsers: station.likedByUsers,
+            tags: station.tags
         }
         savedStation = await storageService.post(STORAGE_KEY, stationToSave)
     }
