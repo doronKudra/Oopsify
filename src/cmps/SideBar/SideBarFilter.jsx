@@ -4,11 +4,10 @@ import { useNavigate } from 'react-router'
 export function SideBarFilter() {
     return (
         <div>
-            <section className="cat-filter">
-                <button className="filter">Playlists</button>
-                <button className="filter">Artists</button>
-                <button className="filter">Albums</button>
-                <button className="filter">Podcasts&Shows</button>
+            <section className="sidebar-filter-container">
+                <button className="sidebar-filter">Playlists</button>
+                <button className="sidebar-filter">Artists</button>
+                <button className="sidebar-filter">Albums</button>
             </section>
         </div>
     )

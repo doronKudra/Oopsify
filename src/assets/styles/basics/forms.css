@@ -1,10 +1,10 @@
 
 button {
-	padding: .5em .8em;
+	/* padding: .5em .8em; */
+	/* background-color: var(--clr1); */
+	/* margin: .5em; ruins my buttons sorry :( */ 
 	border: 0;
-	margin: .5em;
 	cursor: pointer;
-	background-color: var(--clr1);
 	color: whitesmoke;
 }
 
