@@ -13,11 +13,11 @@
 @import "cmps/HomePage.css";
 @import "cmps/UserDetails.css";
 @import "cmps/LoginSignup.css";
-@import "cmps/Chat.css";
 
 @import "cmps/AppHeader.css";
-@import "cmps/AppFooter.css";
+@import "cmps/footer/AppFooter.css";
 @import "cmps/UserMsg.css";
+
 
 @import "cmps/station/Index.css";
 @import "cmps/station/StationList.css";

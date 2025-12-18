@@ -1,0 +1,62 @@
+.app-footer {
+    position: fixed;
+    bottom: 0;
+    height: 88px;
+    width: 100%;
+
+    display: grid;
+    align-items: center;
+    grid-template-columns: max-content 1fr max-content;
+    background-color: black;
+    padding: 8px;
+}
+
+.control-container{
+    display: flex;
+    align-items: center;
+    background-color: rgb(78, 46, 46);
+}
+
+.footer-track-preview{
+    display: flex;
+    gap: 14px;
+    padding-left:8px ;
+
+    >div{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        >h5{
+            font-weight: 500;
+            margin-bottom: 02px;
+            font-size: small;
+            cursor: pointer;
+            &:hover{
+                text-decoration: underline;
+            }
+        }
+        
+        >h6{
+            margin-bottom: 0;
+            font-weight: 600;
+            color: rgb(165, 165, 165);
+            cursor: pointer;
+            &:hover{
+                color: white;
+                text-decoration: underline;
+            }
+        }
+
+        .footer-plus{
+            width: 16px;
+            height: 16px;
+            fill: rgb(179, 179, 179);
+            cursor: pointer;
+            transition:  0.2s ;
+            &:hover{
+                fill: white;
+                transform: scale(1.05);
+            }
+        }
+    }
+}
