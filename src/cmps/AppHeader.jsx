@@ -51,7 +51,6 @@ export function AppHeader({on}) {
 				</div>
 
 			</div>
-
 			<NavLink to="login" className="login-link">Login</NavLink>
 		</header>
 	)

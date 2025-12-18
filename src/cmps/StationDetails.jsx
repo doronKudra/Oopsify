@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
@@ -11,18 +11,31 @@ import { StationControls } from './StationControls.jsx'
 import { FastAverageColor } from 'fast-average-color'
 
 export function StationDetails() {
+    const demoStation = getDemoStation()
     const { stationId } = useParams()
     const station = useSelector(
         (storeState) => storeState.stationModule.station
     )
 
-    console.log('station:', station)
-    useEffect(() => {
-        loadStation(stationId)
-    }, [stationId])
+    const [bgColor, setBgColor] = useState({ hex: '#121212' })
 
-    const demoStation = getDemoStation()
-    console.log('demoStation:', demoStation)
+    useEffect(() => {
+        async function fetchColor() {
+            if (!demoStation.cover_art) return
+            try {
+                const fac = new FastAverageColor()
+                const color = await fac.getColorAsync(demoStation.cover_art)
+                setBgColor(color)
+            } catch (err) {
+                console.error('Error getting average color:', err)
+            }
+        }
+        fetchColor()
+    }, [demoStation?.cover_art])
+
+    // useEffect(() => {
+    //     loadStation(stationId)
+    // }, [stationId])
 
     const stationDuration = Math.floor(
         demoStation.tracks.reduce(
@@ -31,39 +44,22 @@ export function StationDetails() {
         ) / 60000
     )
 
-    // const avgColor = new FastAverageColor()
-
-    // async function fetchColor() {
-    //   if (!station?.cover_art) return
-    //   try {
-    //     const color = await fac.getColorAsync(station.cover_art)
-    //     setAvgColor(color.hex)
-    //   } catch (err) {
-    //     console.error('Error getting average color:', err)
-    //   }
-
-    // const fac = new FastAverageColor()
-    // fac.getColorAsync(container.querySelector('img'))
-    //     .then((color) => {
-    //         container.style.backgroundColor = color.rgba
-    //         container.style.color = color.isDark ? '#fff' : '#000'
-    //     })
-    //     .catch((e) => {
-    //         console.log(e)
-    //     })
-
     return (
-        <section className="station-details">
-            <Link to="/">Go Back</Link>
+        <section
+            className="station-details"
+            style={{
+                background: `linear-gradient(to bottom, ${bgColor.hex}, #121212)`,
+            }}
+        >
             <section className="station-header">
                 <img src={demoStation.cover_art} alt="Cover" />{' '}
                 <div className="station-header-title">
                     <p>Album</p>
                     <h1>{demoStation.name}</h1>
                     <div className="station-header-info">
-                        <h4>{`${demoStation.artist} * ${
+                        <h4>{`${demoStation.artist} • ${
                             demoStation.year || 2002
-                        } * ${
+                        } • ${
                             demoStation.tracks.length
                         } Songs, ${stationDuration} min`}</h4>
                     </div>

@@ -1,46 +1,36 @@
 import { userService } from '../services/user'
 import { StationPreview } from './StationPreview'
 
-// {
-//     stations,
-//     isMain,
-//     onRemoveStation,
-//     onUpdateStation,
-// }
-export function TrackList({station}) {
-    // function isCustomizable(station) {
-    //     const user = userService.getLoggedinUser()
+export function TrackList({ station }) {
+    console.log('station:', station)
 
-    //     if (isMain) return false
-    //     return station.owner?._id === user._id // can only edit your own stations
-    // }
+    function msToTimeString(ms) {
+        const minutes = Math.floor(ms / 60000)
+        const seconds = Math.floor((ms % 60000) / 1000)
+        return `${minutes}:${seconds.toString().padStart(2, '0')}`
+    }
+
     return (
         <section>
             <div>
+                <div className='track-list-title'>
+                    <div>#</div>
+                    <div className='center'>Title</div>
+                    <div>xx:xx</div>
+                </div>
                 {station.tracks.map((track) => (
-                    <div key={track.id}>
-                        <h3>{track.album}</h3>
-                        <h4>
-                            {track.order}. {track.name} — {track.artist}
-                        </h4>
+                    <div key={track.id} className="track">
+                        <div className="track-num">{track.order}</div>
+                        <div className="track-details center">
+                            <div className='track-name'>{track.name}</div>
+                            <div>{track.artist}</div>
+                        </div>
+                        <div className="track-duration">
+                            {msToTimeString(track.duration_ms)}
+                        </div>
                     </div>
                 ))}
             </div>
-            {/* <ul className="list">
-            {stations && stations.map(station =>
-                <li key={station._id}>
-                    <StationPreview station={station}/>
-                    <div className="actions">
-                        {!isMain && 
-                            <button onClick={() => onUpdateStation(station)}>Edit</button>
-                        }
-                        {isCustomizable(station) && 
-                            <button onClick={() => onRemoveStation(station)}>x</button>
-                        }
-                        </div>
-                </li>)
-            }
-        </ul> */}
         </section>
     )
 }
