@@ -1,29 +1,117 @@
-[{
-	"_id": "5cksxjas89xjsa8xjsa8jxs09",
-	"name": "Funky Monks",
-	"tags": ["Funk", "Happy"],
-	"createdBy": {
-		"_id": "u101",
-		"fullname": "Puki Ben David",
-		"imgUrl": "http://some-photo/"
-	},
-	"likedByUsers": ["{minimal-user}", "{minimal-user}"],
-	"songs": [
-		{
-			"id": "b101",
-			"title": "The Meters - Cissy Strut",
-			"url": "youtube/song.mp4",
-			"imgUrl": "https://i.ytimg.com/vi/4_iC0MyIykM/mqdefault.jpg",
-			"addedBy": "{minimal-user}",
-			"likedBy": ["{minimal-user}"],
-			"addedAt": 162521765262
-		},
-		{
-			"id": "b102",
-			"title": "The JB's - Pass The Peas",
-			"url": "youtube/song.mp4",
-			"imgUrl": "https://i.ytimg.com/vi/mUkfiLjooxs/mqdefault.jpg",
-			"addedBy": {}
-		}
-	]
-}]
+[
+  {
+    "_id": "pl101",
+    "name": "Funky Monks",
+    "tags": ["Funk", "Happy", "Groove"],
+    "createdBy": {
+      "_id": "u101",
+      "fullname": "Puki Ben David",
+      "imgUrl": "https://randomuser.me/api/portraits/men/32.jpg"
+    },
+    "likedByUsers": ["u102", "u103"],
+    "songs": [
+      {
+        "id": "s101",
+        "title": "The Meters – Cissy Strut",
+        "url": "https://youtube.com/watch?v=4_iC0MyIykM",
+        "imgUrl": "https://i.ytimg.com/vi/4_iC0MyIykM/mqdefault.jpg",
+        "addedBy": "u101",
+        "likedBy": ["u102"],
+        "addedAt": 162521765262
+      },
+      {
+        "id": "s102",
+        "title": "The JB's – Pass The Peas",
+        "url": "https://youtube.com/watch?v=mUkfiLjooxs",
+        "imgUrl": "https://i.ytimg.com/vi/mUkfiLjooxs/mqdefault.jpg",
+        "addedBy": "u101",
+        "likedBy": [],
+        "addedAt": 162521865262
+      }
+    ]
+  },
+  {
+    "_id": "pl102",
+    "name": "Late Night Chill",
+    "tags": ["Chill", "Ambient", "Night"],
+    "createdBy": {
+      "_id": "u102",
+      "fullname": "Dana Levi",
+      "imgUrl": "https://randomuser.me/api/portraits/women/44.jpg"
+    },
+    "likedByUsers": ["u101"],
+    "songs": [
+      {
+        "id": "s201",
+        "title": "Tycho – Awake",
+        "url": "https://youtube.com/watch?v=YCJ5i9kT5zI",
+        "imgUrl": "https://i.ytimg.com/vi/YCJ5i9kT5zI/mqdefault.jpg",
+        "addedBy": "u102",
+        "likedBy": ["u101", "u103"],
+        "addedAt": 162622765262
+      },
+      {
+        "id": "s202",
+        "title": "Bonobo – Kerala",
+        "url": "https://youtube.com/watch?v=S0Q4gqBUs7c",
+        "imgUrl": "https://i.ytimg.com/vi/S0Q4gqBUs7c/mqdefault.jpg",
+        "addedBy": "u102",
+        "likedBy": [],
+        "addedAt": 162622865262
+      }
+    ]
+  },
+  {
+    "_id": "pl103",
+    "name": "Workout Boost",
+    "tags": ["Workout", "Energy", "Pop"],
+    "createdBy": {
+      "_id": "u103",
+      "fullname": "Ron Cohen",
+      "imgUrl": "https://randomuser.me/api/portraits/men/12.jpg"
+    },
+    "likedByUsers": ["u101", "u102"],
+    "songs": [
+      {
+        "id": "s301",
+        "title": "Dua Lipa – Physical",
+        "url": "https://youtube.com/watch?v=9HDEHj2yzew",
+        "imgUrl": "https://i.ytimg.com/vi/9HDEHj2yzew/mqdefault.jpg",
+        "addedBy": "u103",
+        "likedBy": ["u101"],
+        "addedAt": 162722765262
+      },
+      {
+        "id": "s302",
+        "title": "The Weeknd – Blinding Lights",
+        "url": "https://youtube.com/watch?v=fHI8X4OXluQ",
+        "imgUrl": "https://i.ytimg.com/vi/fHI8X4OXluQ/mqdefault.jpg",
+        "addedBy": "u103",
+        "likedBy": ["u102"],
+        "addedAt": 162722865262
+      }
+    ]
+  },
+  {
+    "_id": "pl104",
+    "name": "Indie Discovery",
+    "tags": ["Indie", "Alternative"],
+    "createdBy": {
+      "_id": "u101",
+      "fullname": "Puki Ben David",
+      "imgUrl": "https://randomuser.me/api/portraits/men/32.jpg"
+    },
+    "likedByUsers": [],
+    "songs": [
+      {
+        "id": "s401",
+        "title": "Tame Impala – Let It Happen",
+        "url": "https://youtube.com/watch?v=pFptt7Cargc",
+        "imgUrl": "https://i.ytimg.com/vi/pFptt7Cargc/mqdefault.jpg",
+        "addedBy": "u101",
+        "likedBy": [],
+        "addedAt": 162822765262
+      }
+    ]
+  }
+]

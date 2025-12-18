@@ -13,13 +13,14 @@ import { UserMsg } from './cmps/UserMsg.jsx'
 import { LoginSignup } from './pages/LoginSignup.jsx'
 import { Login } from './pages/Login.jsx'
 import { Signup } from './pages/Signup.jsx'
-// import { StationIndex } from './pages/StationIndex.jsx'
+import { SideBar } from './cmps/SideBar/SideBar.jsx'
 
 export function RootCmp() {
     return (
         <div className="main-container">
             <AppHeader />
             <UserMsg />
+            <SideBar />
             <main>
                 <Routes>
                     <Route path="about" element={<AboutUs />}>
