@@ -80,7 +80,7 @@
 
 .sidebar-filter {
     height: 2rem;
-    background-color: #2a2a2a;
+    background-color: #363636;
     border-radius: 1rem;
     font-weight: 650;
     padding-inline: 0.75rem;
@@ -90,4 +90,34 @@
     &:hover {
         background-color: #363636;
     }
+}
+
+.sidebar-station-preview-container{
+    display: flex;
+    gap: 0.25rem;
+    margin-inline: 0.5rem;
+    border-radius: 5px;
+    &:hover{
+        background-color: #1f1f1f;
+    }
+}
+
+.sidebar-preview-station{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+}
+
+.sidebar-preview-station-title{
+    font-size: 0.925rem;
+}
+
+.sidebar-preview-station-info{
+    font-size: 0.8rem;
+    color: #b2b2b2;
+}
+
+a.sidebar-station-preview-link{
+    text-decoration: none;
 }

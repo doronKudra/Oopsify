@@ -1,7 +1,7 @@
 
 .main-container {
     display: grid;
-    grid-template-columns: 26.75rem 1fr 2rem;
+    grid-template-columns: 4.5rem 1fr 2rem; /* mobile */
     column-gap: 0.5rem;
     grid-template-rows: 4rem 1fr 4rem;
     >* {
@@ -11,9 +11,13 @@
             grid-column: 1 / -1;
         }
     }
+    @media (min-width: 1048px){
+        grid-template-columns: 26.75rem 1fr 2rem;
+    }
+    
 }
 
-.sample-grid-layout {
+/* .sample-grid-layout {
     display: grid;
     grid-template-columns: 12px 1fr 12px;
 
@@ -22,7 +26,7 @@
     }
 
     @media (min-width: 784px) {
-        grid-template-columns: minmax(12px, 1fr) minmax(auto, 784px) minmax(12px, 1fr);        
+        grid-template-columns: minmax(12px, 1fr) minmax(auto, 784px) minmax(12px, 1fr);    
     }
 
     @media (min-width: 1048px) {
@@ -42,7 +46,7 @@
     >*:not(.full) {
         background-color: var(--clr4);
     }
-}
+} */
 
 .grid-container {
     display: grid;
