@@ -13,6 +13,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fortawesome/free-solid-svg-icons": "^7.1.0",
     "axios": "^1.5.0",
     "fast-average-color": "^9.5.0",
     "react": "^18.2.0",
