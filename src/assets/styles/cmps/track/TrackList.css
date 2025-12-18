@@ -1,0 +1,34 @@
+.track,
+.track-list-title {
+    display: grid;
+    grid-template-columns: 40px 1fr 60px;
+    align-items: center;
+    gap: 1rem;
+    color: #b3b3b3;
+    padding: 0.3em;
+
+}
+
+.track > div,
+.track-list-title > div {
+    text-align: center;
+}
+
+.track > .center,
+.track-list-title > .center {
+    text-align: start;
+}
+
+.track-artist {
+    font-size: 0.875em;
+}
+
+.track-name {
+    color: white;
+}
+
+
+
+.track-list-title {
+    border-bottom: 1px solid rgb(128, 128, 128, 0.5);
+}

@@ -1,7 +1,6 @@
 import rawTracks from '../../data/demo-tracks.json'
 
 export const tracks = normalizeTracks(rawTracks)
-console.log('tracks:', tracks)
 
 export function normalizeTracks(tracks) {
     return tracks.map((track) => ({
@@ -18,7 +17,6 @@ export function normalizeTracks(tracks) {
 
 export function getDemoStation() {
     const tracks = normalizeTracks(rawTracks)
-    console.log('tracks:', tracks)
     return {
         id: 'demo_station_001',
         name: 'Demo Album',
