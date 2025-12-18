@@ -8,7 +8,7 @@ import { StationDetails } from './cmps/StationDetails.jsx'
 import { UserDetails } from './pages/UserDetails'
 
 import { AppHeader } from './cmps/AppHeader'
-import { AppFooter } from './cmps/AppFooter'
+import { AppFooter } from './cmps/footer/AppFooter.jsx'
 import { UserMsg } from './cmps/UserMsg.jsx'
 import { LoginSignup } from './pages/LoginSignup.jsx'
 import { Login } from './pages/Login.jsx'
