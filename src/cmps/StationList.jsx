@@ -7,7 +7,7 @@ import { StationPreview } from './StationPreview'
 //     onRemoveStation,
 //     onUpdateStation,
 // }
-export function StationList({station}) {
+export function StationList({ stations }) {
     // function isCustomizable(station) {
     //     const user = userService.getLoggedinUser()
 
@@ -16,31 +16,30 @@ export function StationList({station}) {
     // }
     return (
         <section>
-            <div>
-                {station.tracks.map((track) => (
-                    <div key={track.id}>
-                        <h3>{track.album}</h3>
-                        <h4>
-                            {track.order}. {track.name} — {track.artist}
-                        </h4>
-                    </div>
-                ))}
-            </div>
             {/* <ul className="list">
-            {stations && stations.map(station =>
-                <li key={station._id}>
-                    <StationPreview station={station}/>
-                    <div className="actions">
-                        {!isMain && 
-                            <button onClick={() => onUpdateStation(station)}>Edit</button>
-                        }
-                        {isCustomizable(station) && 
-                            <button onClick={() => onRemoveStation(station)}>x</button>
-                        }
-                        </div>
-                </li>)
-            }
-        </ul> */}
+                {stations &&
+                    stations.map((station) => (
+                        <li key={station._id}>
+                            <StationPreview station={station} />
+                            <div className="actions">
+                                {!isMain && (
+                                    <button
+                                        onClick={() => onUpdateStation(station)}
+                                    >
+                                        Edit
+                                    </button>
+                                )}
+                                {isCustomizable(station) && (
+                                    <button
+                                        onClick={() => onRemoveStation(station)}
+                                    >
+                                        x
+                                    </button>
+                                )}
+                            </div>
+                        </li>
+                    ))}
+            </ul> */}
         </section>
     )
 }

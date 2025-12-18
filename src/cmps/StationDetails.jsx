@@ -6,7 +6,7 @@ import { tracks } from '../services/track/track.service.js'
 import { showSuccessMsg, showErrorMsg } from '../services/event-bus.service'
 import { loadStation, addStationMsg } from '../store/actions/station.actions'
 import { getDemoStation } from '../services/track/track.service.js'
-import { StationList } from './StationList.jsx'
+import { TrackList } from './TrackList.jsx'
 import { StationControls } from './StationControls.jsx'
 import { FastAverageColor } from 'fast-average-color'
 
@@ -42,15 +42,15 @@ export function StationDetails() {
     //     console.error('Error getting average color:', err)
     //   }
 
-    const fac = new FastAverageColor()
-    fac.getColorAsync(container.querySelector('img'))
-        .then((color) => {
-            container.style.backgroundColor = color.rgba
-            container.style.color = color.isDark ? '#fff' : '#000'
-        })
-        .catch((e) => {
-            console.log(e)
-        })
+    // const fac = new FastAverageColor()
+    // fac.getColorAsync(container.querySelector('img'))
+    //     .then((color) => {
+    //         container.style.backgroundColor = color.rgba
+    //         container.style.color = color.isDark ? '#fff' : '#000'
+    //     })
+    //     .catch((e) => {
+    //         console.log(e)
+    //     })
 
     return (
         <section className="station-details">
@@ -77,7 +77,7 @@ export function StationDetails() {
                 ♡
             </button>
             <StationControls station={demoStation}></StationControls>
-            <StationList station={demoStation} />{' '}
+            <TrackList station={demoStation} />{' '}
         </section>
     )
 }
