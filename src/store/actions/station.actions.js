@@ -110,7 +110,7 @@ async function unitTestActions() {
     await addStation(stationService.getEmptyStation())
     await updateStation({
         _id: 'm1oC7',
-        vendor: 'Station-Good',
+        name: 'Station-Good',
     })
     await removeStation('m1oC7')
     // TODO unit test addStationMsg

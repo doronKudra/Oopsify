@@ -6,8 +6,13 @@ export const storageService = {
     remove,
 }
 
+import stationDB from '../data/demo-stations.json'
+import tracksDB from '../data/demo-tracks.json'
+
 function query(entityType, delay = 500) {
-    var entities = JSON.parse(localStorage.getItem(entityType)) || []
+    const data = {station:stationDB,track:tracksDB}
+    console.log(data[entityType])
+    var entities = JSON.parse(localStorage.getItem(entityType)) || data[entityType]
     return new Promise(resolve => setTimeout(() => resolve(entities), delay))
 }
 
