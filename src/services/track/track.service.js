@@ -11,9 +11,8 @@ function normalizeTracks(tracks) {
         artist: track.artists?.[0]?.name || null,
         album: track.album?.name || null,
         duration_ms: track.duration_ms,
-        explicit: track.explicit,
         popularity: track.popularity,
-        preview_url: track.preview_url,
         cover_art: track.album?.images?.[0]?.url || null,
+        uri: track.uri,
     }))
 }
