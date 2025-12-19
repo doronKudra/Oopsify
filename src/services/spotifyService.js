@@ -7,8 +7,8 @@ export const spotifyService = {
 const token = await _getValidToken()
 const stationFields = 'tracks.items.track(duration_ms,id,album.name,album.id,artists.name,artists.id),tracks.total,tracks.items(added_at,added_by.id),type,name,owner.display_name,images,id'
 
-console.log('tracks', await search("eminem", "track"))
-console.log('albums', await search("eminem", "album"))
+// console.log('tracks', await search("eminem", "track"))
+// console.log('albums', await search("eminem", "album"))
 // console.log(await getById("4otkd9As6YaxxEkIjXPiZ6", 'albums'))
 // console.log(await getById("3xqcAMgjHGrv3ElA51zZRj", 'stations'))
 // console.log(await getById("4otkd9As6YaxxEkIjXPiZ6", 'albums'))
