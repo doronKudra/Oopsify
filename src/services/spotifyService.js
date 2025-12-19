@@ -1,18 +1,148 @@
 export const spotifyService = {
-    getStaitonById,
-    searchTracks,
+    getById,
+    search,
 }
 
 
-const token = await getValidToken()
+const token = await _getValidToken()
+const stationFields = 'tracks.items.track(duration_ms,id,album.name,album.id,artists.name,artists.id),tracks.total,tracks.items(added_at,added_by.id),type,name,owner.display_name,images,id'
 
-const stationFields =
-    'tracks.items.track(duration_ms,id,album.name,album.id,artists.name,artists.id),' +
-    'tracks.total,tracks.items(added_at,added_by.id),' +
-    'type,name,owner.display_name,images,id'
+console.log('await search("eminem"):', await search("eminem"))
+// console.log(await getById("4otkd9As6YaxxEkIjXPiZ6", 'albums'))
+// console.log(await getById("3xqcAMgjHGrv3ElA51zZRj", 'stations'))
+// console.log(await getById("4otkd9As6YaxxEkIjXPiZ6", 'albums'))
+// console.log(await getById(["4otkd9As6YaxxEkIjXPiZ6","4otkd9As6YaxxEkIjXPiZ6"], 'albums'))
+
+// console.log(await getById(["7ccTcabbJlCJiIqtrSSwBk", "7lQ8MOhq6IN2w8EYcFNSUk"], 'tracks'))
+
+async function getById(id, type = 'stations') { //Type must be plural, not singular.
+    const isArray = Array.isArray(id)
+    const idToSend = isArray ? id.join(',') : id
+
+    const url = `https://api.spotify.com/v1/${type === 'stations' ? 'playlists' : type}${isArray ? '?ids=' : '/'}${idToSend}`
+
+    const res = await fetch(url, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+
+    if (!res.ok) throw new Error(`Spotify getById failed: type=${type} id=${idToSend}`)
+
+    const clearedItem = isArray ? _clearObject(await res.json(),
+        type === 'stations' ? 'playlists' : type) :
+        _clearObject(await res.json())
+    return clearedItem
+}
 
 
-async function getToken() {
+function _clearObject(item, type) {
+    if (type) {
+        return item[type].map(i => _clearObject(i))
+    }
+
+    switch (item.type) {
+        case 'playlist':
+            return clearStation(item)
+        case 'track':
+            return clearTrack(item)
+        case 'album':
+            return clearAlbum(item)
+        // case 'station':
+        //     return clearStation(item)    
+        default: throw new Error('cannot clear item in clearObject')
+    }
+}
+
+
+async function search(txt, type = 'track', limit = 15) {
+    const url = `https://api.spotify.com/v1/search?q=${txt}&type=${type}&limit=${limit}`
+    const res = await fetch(url, {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+
+    if (!res.ok) throw new Error('Spotify searchTracks failed')
+
+    const data = await res.json()
+    return data[type + 's'].items.map(item => {
+        if (item) return clearTrack(item)
+    })
+}
+
+
+function clearStation({ id, name, type, owner, followers, images, description, tracks }) {
+    if (!id || !name || !type || !owner || !followers || !images || !description || !tracks)
+        return console.error(`missing data:\n id, name, type, owner, followers, images, description, tracks \n`,
+            id, name, type, owner, followers, images, description, tracks)
+
+    return {
+        id,
+        name,
+        type: 'station',
+        owner: {
+            id: owner.id,
+            name: owner.display_name,
+            type: owner.type,
+        },
+        savedCount: followers.total,
+        tracksCount: tracks.total,
+        images,
+        description,
+        tracks: tracks.items.map(item => clearTrack(item.track)),
+    }
+}
+
+function clearTrack({ id, name, type, album, artists, duration_ms, popularity, images }) {
+    if (!id || !name || !type || !artists || !duration_ms)
+        return console.error(`missing data from clearTrack:\n
+        id, name, type, artists, duration_ms\n`,
+            id, name, type, artists, duration_ms
+        )
+    return {
+        id,
+        name,
+        type,
+        duration: duration_ms,
+        images: album?.images || images,
+        ...(album && {
+            album: {
+                id: album.id,
+                name: album.name,
+                images: album.images,
+                type: album.type,
+            }
+        }),
+        artists: artists.map(a => ({
+            id: a.id,
+            name: a.name,
+            type: a.type
+        })),
+        ...(popularity && { popularity }),
+    }
+}
+
+function clearAlbum({ id, name, type, artists, images, release_date, total_tracks, tracks, popularity }) {
+    console.log('1:', 1)
+    return {
+        id,
+        name,
+        type,
+        images,
+        releaseDate: release_date,
+        artists: artists.map(a => ({
+            id: a.id,
+            name: a.name,
+            type: a.type,
+        })),
+        tracksCount: total_tracks,
+        tracks: tracks.items.map(track => clearTrack({ ...track, images: images })),
+        popularity,
+    }
+}
+
+async function _getToken() {
     const auth = btoa(
         'ab2e3abba52b4933ac5493e0dacb58c6:a0dcd426082f4d8b814a5125c79544ec' // exposed, stolen, doomed
     )
@@ -37,7 +167,7 @@ async function getToken() {
     return data.access_token
 }
 
-async function getValidToken() {
+async function _getValidToken() {
     const token = localStorage.getItem('spotify_token')
     const expires = localStorage.getItem('spotify_token_expires')
 
@@ -45,122 +175,33 @@ async function getValidToken() {
         return token
     }
 
-    return await getToken()
+    return await _getToken()
 }
 
+// async function getTrackById(id) {
+//     const url = `https://api.spotify.com/v1/tracks/${id}`
 
-async function getStaitonById(id) {
-    const url = `https://api.spotify.com/v1/playlists/${id}?fields=${encodeURIComponent(stationFields)}`
+//     const res = await fetch(url, {
+//         headers: {
+//             Authorization: `Bearer ${token}`
+//         }
+//     })
 
-    const res = await fetch(url, {
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    })
+//     if (!res.ok) throw new Error('Spotify getTrackById failed')
 
-    if (!res.ok) throw new Error('Spotify request failed')
-
-    return await res.json()
-}
-
-async function searchTracks(txt) {
-    const url = `https://api.spotify.com/v1/search?q=${txt}&type=track`
-    const res = await fetch(url, {
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    })
-
-    if (!res.ok) throw new Error('Search failed')
-
-    const data = await res.json()
-    return data.tracks.items
-    // return data.tracks.items.map(track => clearTrack(track))
-}
-
-function clearTrack(track) {
-    return {
-        id: track.id,
-        duration_ms: track.duration_ms,
-        album: {
-            id: track.album.id,
-            name: track.album.name
-        },
-        artists: track.artists.map(a => ({
-            id: a.id,
-            name: a.name
-        }))
-    }
-}
-
-//TODO:
-//1.getTrackById
-//2.searchStations & playlists & albums & artists
-
-
-export const demoSong = {
-    id: '2cWBwpqMsDJC1ZUwz813lo',
-    artist: 'Eminem',
-    title: 'The Eminem Show',
-    imgUrl: "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-    duration_ms: 290320,
-    addedBy: '{minimal-user}',
-    likedBy: ['{minimal-user}'],
-    addedAt: 162521765262,
-}
-
-
-
-// var trackExample = {
-//     id: 's1001',
-//     title: 'The Meters - Cissy Strut',
-//     url: 'youtube/song.mp4',
-//     imgUrl: 'https://i.ytimg.com/vi/4_iC0MyIykM/mqdefault.jpg',
-//     addedBy: '{minimal-user}',
-//     likedBy: ['{minimal-user}'],
-//     addedAt: 162521765262,
+//     return await res.json()
 // }
 
-// var stationExample = {
-//     _id: '5cksxjas89xjsa8xjsa8jxs09',
-//     name: 'Funky Monks',
-//     tags: ['Funk', 'Happy'],
-//     createdBy: {
-//         _id: 'u101',
-//         fullname: 'Puki Ben David',
-//         imgUrl: 'http://some-photo/',
-//     },
-//     likedByUsers: ['{minimal-user}', '{minimal-user}'],
-//     songs: [
-//         {
-//             id: 's1001',
-//             title: 'The Meters - Cissy Strut',
-//             url: 'youtube/song.mp4',
-//             imgUrl: 'https://i.ytimg.com/vi/4_iC0MyIykM/mqdefault.jpg',
-//             addedBy: '{minimal-user}',
-//             likedBy: ['{minimal-user}'],
-//             addedAt: 162521765262,
-//         },
-//         {
-//             id: 'mUkfiLjooxs',
-//             title: "The JB's - Pass The Peas",
-//             url: 'youtube/song.mp4',
-//             imgUrl: 'https://i.ytimg.com/vi/mUkfiLjooxs/mqdefault.jpg',
-//             addedBy: {},
-//         },
-//     ],
-//     msgs: [
-//         {
-//             id: 'm101',
-//             from: '{mini-user}',
-//             txt: 'Manish?',
-//         },
-//     ],
-// }
+// async function getStaitonById(id) {
+//     const url = `https://api.spotify.com/v1/playlists/${id}?fields=${encodeURIComponent(stationFields)}`
 
-// const user = {
-//     _id: '',
-//     // likedStations: ['{mini-stations}']
-//     likedStationIds: ['s101', 's102'],
-//     likedSongIds: ['s1001', 's1002'],
+//     const res = await fetch(url, {
+//         headers: {
+//             Authorization: `Bearer ${token}`
+//         }
+//     })
+
+//     if (!res.ok) throw new Error('Spotify getStaitonById failed')
+
+//     return await res.json()
 // }
