@@ -1,6 +1,6 @@
-
 .station-details {
     border-radius: 20px;
+    padding: 1em;
 }
 .station-header {
     display: flex;
@@ -9,7 +9,7 @@
     padding: 3em 3em 1em 1em;
     border-bottom: 1px solid rgb(0, 0, 0, 0.5);
 
-    img{
+    img {
         max-width: 30%;
         border-radius: 10px;
     }
@@ -18,4 +18,32 @@
 .station-header-title {
     align-self: end;
     margin: 0 1em;
+}
+
+.btn-container {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+}
+
+.btn-container button {
+    background-color: transparent;
+    color: #b3b3b3;
+}
+
+
+.icon-control {
+    width: 2em;
+    color: #b3b3b3;
+}
+
+.control-btn:hover .icon-control {
+    color: #fff;
+    transform: scale(1.1);
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.play-icon {
+    width: 3em;
+    color: #1ed760;
 }

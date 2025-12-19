@@ -148,7 +148,7 @@ function clearAlbum({ id, name, type, artists, images, release_date, total_track
 
 async function _getToken() {
     const auth = btoa(
-        'ab2e3abba52b4933ac5493e0dacb58c6:a0dcd426082f4d8b814a5125c79544ec' // exposed, stolen, doomed
+        'ab2e3abba52b4933ac5493e0dacb58c6:a0dcd426082f4d8b814a5125c79544ec'
     )
 
     const res = await fetch('https://accounts.spotify.com/api/token', {

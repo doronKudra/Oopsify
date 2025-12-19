@@ -8,7 +8,6 @@ import { StationList } from '../StationList.jsx';
 import { stationService } from '../../services/station/index.js'
 import { loadStations, addStation, updateStation, removeStation, addStationMsg } from '../../store/actions/station.actions.js'
 
-
 export function SideBar() {
 
     const [filterBy, setFilterBy] = useState(stationService.getDefaultFilter())
@@ -20,8 +19,10 @@ export function SideBar() {
 
     return (
         <aside className='sidebar-container'>
-            <SideBarHeader />
-            <SideBarFilter />
+            <header className='sidebar-actions'>
+                <SideBarHeader />
+                <SideBarFilter />
+            </header>
             <StationList stations={stations}
                 listType={'favorites'}
             />

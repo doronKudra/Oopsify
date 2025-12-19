@@ -24,3 +24,16 @@
 .debug * {
     outline: 1px solid gold
 }
+
+.small-img{
+    width: 48px;
+    height: 48px;
+}
+
+.small-img-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 64px;
+    height: 64px;
+}

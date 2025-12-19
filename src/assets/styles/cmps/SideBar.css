@@ -1,6 +1,123 @@
-.sidebar-container{
+.sidebar-container {
     background-color: #121212;
     grid-column: 1;
     margin-left: 0.5rem;
     border-radius: 0.5rem;
+}
+
+.sidebar-actions {
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-header {
+    display: flex;
+    height: 60px;
+    padding: 16px;
+    padding-bottom: 8px;
+    justify-content: space-between;
+
+    .sidebar-header-title {
+        align-self: center;
+        font-weight: 700;
+        font-size: 0.90625rem;
+        margin-left: 0.25rem;
+        margin-right: 7.5rem;
+    }
+}
+
+.sidebar-header-buttons-container {
+    max-width: 8.90625rem;
+    display: flex;
+    margin: 0;
+    gap: 0.5rem;
+    justify-content: center;
+
+    .sidebar-expand {
+        padding: 0;
+        min-block-size: 2.25rem;
+        min-inline-size: 2.1875rem;
+        background-color: transparent;
+        border-radius: 50%;
+
+        &:hover {
+            background-color: #1f1f1f;
+        }
+    }
+
+    .sidebar-create-station {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background-color: #1f1f1f;
+        border-radius: 1.25rem;
+        font-weight: 750;
+        font-size: 0.8rem;
+
+        &:hover {
+            background-color: #363636;
+        }
+    }
+}
+
+.icon-small {
+    fill: #b3b3b3;
+    width: 1rem;
+    height: 1rem;
+}
+
+.sidebar-expand-icon {
+    margin-top: 0.125rem;
+}
+
+.sidebar-filter-container {
+    display: flex;
+    margin-block: 0.5rem;
+    margin-inline: 1rem;
+    gap: 0.5rem
+}
+
+.sidebar-filter {
+    height: 2rem;
+    background-color: #363636;
+    border-radius: 1rem;
+    font-weight: 650;
+    padding-inline: 0.75rem;
+    padding-block: 0.25rem;
+    font-size: 0.775rem;
+
+    &:hover {
+        background-color: #363636;
+    }
+}
+
+.sidebar-station-preview-container{
+    display: flex;
+    gap: 0.25rem;
+    margin-inline: 0.5rem;
+    border-radius: 5px;
+    &:hover{
+        background-color: #1f1f1f;
+    }
+}
+
+.sidebar-preview-station{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+}
+
+.sidebar-preview-station-title{
+    font-size: 0.925rem;
+}
+
+.sidebar-preview-station-info{
+    font-size: 0.8rem;
+    color: #b2b2b2;
+}
+
+a.sidebar-station-preview-link{
+    text-decoration: none;
 }
