@@ -7,7 +7,8 @@ export const spotifyService = {
 const token = await _getValidToken()
 const stationFields = 'tracks.items.track(duration_ms,id,album.name,album.id,artists.name,artists.id),tracks.total,tracks.items(added_at,added_by.id),type,name,owner.display_name,images,id'
 
-console.log('await search("eminem"):', await search("eminem"))
+console.log('tracks', await search("eminem", "track"))
+console.log('albums', await search("eminem", "album"))
 // console.log(await getById("4otkd9As6YaxxEkIjXPiZ6", 'albums'))
 // console.log(await getById("3xqcAMgjHGrv3ElA51zZRj", 'stations'))
 // console.log(await getById("4otkd9As6YaxxEkIjXPiZ6", 'albums'))
@@ -15,9 +16,10 @@ console.log('await search("eminem"):', await search("eminem"))
 
 // console.log(await getById(["7ccTcabbJlCJiIqtrSSwBk", "7lQ8MOhq6IN2w8EYcFNSUk"], 'tracks'))
 
-async function getById(id, type = 'stations') { //Type must be plural, not singular.
+async function getById(id, type = 'station') { //Type must be plural, not singular.
     const isArray = Array.isArray(id)
     const idToSend = isArray ? id.join(',') : id
+    const typeToSearch = type === 'station' ? 'playlists' : type + 's'
 
     const url = `https://api.spotify.com/v1/${type === 'stations' ? 'playlists' : type}${isArray ? '?ids=' : '/'}${idToSend}`
 
@@ -66,7 +68,9 @@ async function search(txt, type = 'track', limit = 15) {
     if (!res.ok) throw new Error('Spotify searchTracks failed')
 
     const data = await res.json()
+    console.log('data:', data[type + 's'])
     return data[type + 's'].items.map(item => {
+        if (type === 'album') return item
         if (item) return clearTrack(item)
     })
 }
@@ -95,7 +99,7 @@ function clearStation({ id, name, type, owner, followers, images, description, t
 }
 
 function clearTrack({ id, name, type, album, artists, duration_ms, popularity, images }) {
-    if (!id || !name || !type || !artists || !duration_ms)
+    if (!id || !name || !type || !artists)
         return console.error(`missing data from clearTrack:\n
         id, name, type, artists, duration_ms\n`,
             id, name, type, artists, duration_ms
@@ -104,7 +108,7 @@ function clearTrack({ id, name, type, album, artists, duration_ms, popularity, i
         id,
         name,
         type,
-        duration: duration_ms,
+        duration_ms,
         images: album?.images || images,
         ...(album && {
             album: {
