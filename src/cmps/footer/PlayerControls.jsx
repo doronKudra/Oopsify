@@ -3,13 +3,11 @@ export function PlayerControls({ currTime, duration }) {
 
 
     function getCurrTime(time) {
-        console.log('time:', time)
         const totalSec = Math.floor(time / 1000)
         const hours = Math.floor(totalSec / 3600)
         const mins = Math.floor((totalSec % 3600) / 60)
         const secs = totalSec % 60
 
-        console.log('hours,mins,secs:', hours, mins, secs)
         if (duration >= 60000 * 60) {
             console.log('124124124:', 124124124)
             return (hours + ':' +

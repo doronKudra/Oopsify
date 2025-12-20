@@ -5,7 +5,7 @@
 .station-header {
     display: flex;
     flex-direction: row;
-    /* margin: 1em 2em; */
+    margin: 0;
     padding: 3em 3em 1em 1em;
     border-bottom: 1px solid rgb(0, 0, 0, 0.5);
 
@@ -22,15 +22,22 @@
 
 .btn-container {
     display: flex;
-    justify-content: start;
     align-items: center;
+    gap: 1em;
+    padding: 1em;
+}
+
+.list-btn {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
 .btn-container button {
     background-color: transparent;
     color: #b3b3b3;
 }
-
 
 .icon-control {
     width: 2em;
@@ -39,11 +46,17 @@
 
 .control-btn:hover .icon-control {
     color: #fff;
-    transform: scale(1.1);
     transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.control-btn:hover .icon-control:not(.list-btn) {
 }
 
 .play-icon {
     width: 3em;
     color: #1ed760;
+}
+
+.track-list-container {
+    padding: 1em;
 }

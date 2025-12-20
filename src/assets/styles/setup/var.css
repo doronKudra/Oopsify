@@ -1,7 +1,12 @@
 :root {
   --clr1: #1ED760; /* Spotify Green */
   --clr2: #121212; /* Background Dark Grey */
-  --clr3: #2a2a2a;  /* BGC for header inputs */
+
+
+
+  --header1: rgb(31,31,31);  /* BGC for header inputs */
+  --header2: rgb(42,42,42);  /* BGC for header inputs on hover */
+  --header3: rgb(179,179,179);  /* BGC for header inputs on hover */
   /* --clr1-light: color-mix(in lab, var(--clr1), white 15%); */
 
   --success: rgb(41, 189, 73);
