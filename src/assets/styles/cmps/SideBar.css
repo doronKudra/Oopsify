@@ -106,16 +106,23 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 4px;
+    max-width: 340px;
+    gap: 4px;  
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
 }
 
 .sidebar-preview-station-title{
     font-size: 0.925rem;
+    max-width: 80%;
 }
 
 .sidebar-preview-station-info{
     font-size: 0.8rem;
     color: #b2b2b2;
+    max-width: 80%;
 }
 
 a.sidebar-station-preview-link{

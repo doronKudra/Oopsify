@@ -28,6 +28,7 @@
 .small-img{
     width: 48px;
     height: 48px;
+    max-width: none;
 }
 
 .small-img-container{
@@ -36,4 +37,18 @@
     align-items: center;
     width: 64px;
     height: 64px;
+}
+
+.medium-img{
+    width: 140px;
+    height: 140px;
+    border-radius: 5px;
+}
+
+.medium-img-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 160px;
+    height: 160px;
 }

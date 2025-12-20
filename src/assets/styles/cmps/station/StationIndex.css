@@ -21,3 +21,79 @@
         margin-inline-end: 0;
     }
 }
+
+.index-station-preview-container {
+    display: flex;
+    flex-direction: column;
+    width: 160px;
+    padding-bottom: 10px;
+    border-radius: 8px;
+
+    &:hover {
+        background-color: #424242;
+    }
+}
+
+.index-station-preview-title {
+    max-width: 160px;
+    padding-inline: 10px;
+    font-weight: 500;
+}
+
+.index-station-preview-info {
+    font-size: 0.8rem;
+    color: #b2b2b2;
+    font-weight: 500;
+    padding-inline: 10px;
+}
+
+.index-station-preview {
+    display: flex;
+    flex-direction: column;
+}
+
+.index-station-list {
+    display: flex;
+    flex-direction: row;
+}
+
+a.index-station-preview-link {
+    text-decoration: none;
+}
+
+a.recent-station-preview-link {
+    text-decoration: none;
+}
+
+.recent-station-preview-container {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+    border-radius: 4px;
+    background-color: rgba(121, 121, 121, 0.5);
+    &:hover {
+        background-color: rgba(121, 121, 121, 0.85);
+    }
+}
+
+.recent-station-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    row-gap: 8px;
+    column-gap: 8px;
+    margin-inline: 10px;
+}
+
+.station-index {
+    display: flex;
+    flex-direction: column;
+    padding-inline: 30px;
+}
+
+.recent-preview-station-title {
+    align-self: start;
+    max-width: 160px;
+    font-weight: 700;
+    font-size: 0.75rem;
+}

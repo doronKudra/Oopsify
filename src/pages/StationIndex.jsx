@@ -34,7 +34,13 @@ export function StationIndex() {
                 listType={'recent'} />
             <StationList
                 stations={stations}
-                listType={'explore'} />
+                listType={'index'} />
+            <StationList
+                stations={stations}
+                listType={'index'} />
+            <StationList
+                stations={stations}
+                listType={'index'} />
         </main>
     )
 }
