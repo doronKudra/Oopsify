@@ -12,7 +12,7 @@ export function TrackList({ station }) {
 
     return (
         <section>
-            <div>
+            <div className='track-list-container'>
                 <div className='track-list-title'>
                     <div>#</div>
                     <div className='center'>Title</div>

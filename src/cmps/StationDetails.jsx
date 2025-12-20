@@ -33,9 +33,9 @@ export function StationDetails() {
         fetchColor()
     }, [demoStation?.cover_art])
 
-    // useEffect(() => {
-    //     loadStation(stationId)
-    // }, [stationId])
+    useEffect(() => {
+        loadStation(stationId)
+    }, [stationId])
 
     const stationDuration = Math.floor(
         demoStation.tracks.reduce(
@@ -52,10 +52,10 @@ export function StationDetails() {
             }}
         >
             <section className="station-header">
-                <img src={demoStation.cover_art} alt="Cover" />{' '}
+                <img src={station.cover_art} alt="Cover" />{' '}
                 <div className="station-header-title">
                     <p>Album</p>
-                    <h1>{demoStation.name}</h1>
+                    <h1>{station.name}</h1>
                     <div className="station-header-info">
                         <h4>{`${demoStation.artist} • ${
                             demoStation.year || 2002
