@@ -33,9 +33,9 @@ export function StationDetails() {
         fetchColor()
     }, [demoStation?.cover_art])
 
-    // useEffect(() => {
-    //     loadStation(stationId)
-    // }, [stationId])
+    useEffect(() => {
+        loadStation(stationId)
+    }, [stationId])
 
     const stationDuration = Math.floor(
         demoStation.tracks.reduce(
