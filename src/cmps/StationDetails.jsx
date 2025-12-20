@@ -12,40 +12,39 @@ import { FastAverageColor } from 'fast-average-color'
 
 export function StationDetails() {
     const dispatch = useDispatch()
-    const demoStation = getDemoStation()
     const { stationId } = useParams()
-    const station = useSelector(
-        (storeState) => storeState.stationModule.station
-    )
+
+    const station = useSelector((store) => store.stationModule.station)
 
     useEffect(() => {
         dispatch(loadStation(stationId))
     }, [stationId, dispatch])
 
-    // if (!station) return <div>Loading...</div>
-
     const [bgColor, setBgColor] = useState({ hex: '#121212' })
 
-    // useEffect(() => {
-    //     async function fetchColor() {
-    //         if (!station.cover_art) return
-    //         try {
-    //             const fac = new FastAverageColor()
-    //             const color = await fac.getColorAsync(station.cover_art)
-    //             setBgColor(color)
-    //         } catch (err) {
-    //             console.error('Error getting average color:', err)
-    //         }
-    //     }
-    //     fetchColor()
-    // }, [station?.cover_art])
+    const albumCoverArt =
+        station?.images?.[0]?.url || station?.tracks?.[0]?.images?.[0]?.url
 
-    const stationDuration = Math.floor(
-        station?.tracks?.reduce(
-            (sum, track) => sum + (track.duration_ms || 0),
-            0
-        ) / 60000
-    )
+    useEffect(() => {
+        if (!albumCoverArt) return
+        async function fetchColor() {
+            try {
+                const fac = new FastAverageColor()
+                const color = await fac.getColorAsync(albumCoverArt)
+                setBgColor(color)
+            } catch (err) {
+                console.error('Error getting average color:', err)
+            }
+        }
+        fetchColor()
+    }, [albumCoverArt])
+
+    if (!station) return <div>Loading...</div>
+
+const stationDuration = station.tracks.reduce(
+    (sum, t) => sum + (t.duration_ms || 0),
+    0
+)
 
     return (
         <section
@@ -54,20 +53,21 @@ export function StationDetails() {
                 background: `linear-gradient(to bottom, ${bgColor.hex}, #121212)`,
             }}
         >
-            {station && <section className="station-header">
-                <img src={station?.images} alt="Cover" />{' '}
+            <section className="station-header">
+                <img src={albumCoverArt} alt="Cover" />
                 <div className="station-header-title">
                     <p>Album</p>
-                    <h1>{station?.name}</h1>
+                    <h1>{station.name}</h1>
                     <div className="station-header-info">
-                        <h4>{`${station?.artist} • ${station?.year || 2002} • ${
-                            station?.tracks?.length
-                        } Songs, ${stationDuration} min`}</h4>
+                        <h4>{`${station.artist} • ${station.year || 2002} • ${
+                            station.tracks.length
+                        } Songs, ${Math.floor(stationDuration/60000)} min`}</h4>
                     </div>
                 </div>
-            </section>}
-            <StationControls station={station}></StationControls>
-            <TrackList station={station} />{' '}
+            </section>
+
+            <StationControls station={station} />
+            <TrackList station={station} durationMs={stationDuration} />
         </section>
     )
 }
