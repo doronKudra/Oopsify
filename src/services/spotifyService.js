@@ -1,6 +1,7 @@
 export const spotifyService = {
     getById,
     search,
+    getDemoTrack,
 }
 
 
@@ -14,12 +15,12 @@ const token = await _getValidToken()
 // console.log(await getById("4otkd9As6YaxxEkIjXPiZ6", 'albums'))
 // console.log(await getById(["4otkd9As6YaxxEkIjXPiZ6","4otkd9As6YaxxEkIjXPiZ6"], 'albums'))
 
-console.log(await getById("7gb4GZz7iIHGilXxD7638E", 'station'))
-console.log(await getById("4DJztJkufdlND0Hvg4nGkK", 'station'))
-console.log(await getById("3E0RgJpQug1ibE2jTGI0Hk", 'station'))
-console.log(await getById("7t4FkxnRhUOMDCxfRFyynH", 'station'))
-console.log(await getById("2O3jLuM3inA4vw5fZdGz9W", 'station'))
-console.log(await getById("089yh3bPPx15FTqFkQXmrV", 'station'))
+// console.log(await getById("7gb4GZz7iIHGilXxD7638E", 'station'))
+// console.log(await getById("4DJztJkufdlND0Hvg4nGkK", 'station'))
+// console.log(await getById("3E0RgJpQug1ibE2jTGI0Hk", 'station'))
+// console.log(await getById("7t4FkxnRhUOMDCxfRFyynH", 'station'))
+// console.log(await getById("2O3jLuM3inA4vw5fZdGz9W", 'station'))
+// console.log(await getById("089yh3bPPx15FTqFkQXmrV", 'station'))
 // 
 async function getById(id, type = 'station') { //Type must be plural, not singular.
     const isArray = Array.isArray(id)
@@ -50,23 +51,22 @@ function _clearObject(item, type) {
 
     switch (item.type) {
         case 'playlist':
-            console.log('1:', 1)
             return clearStation(item)
         case 'track':
             return clearTrack(item)
         case 'album':
             return clearAlbum(item)
-        // case 'station':
-        //     return clearStation(item)    
+        case 'artist':
+            return clearArtist(item)
         default: throw new Error('cannot clear item in clearObject')
     }
 }
 
-
 async function search(txt, type = 'track', limit = 15) {
     const typeToSearch = type === 'station' ? 'playlist' : type
-    console.log('txt,typeToSearch:', txt, typeToSearch)
-    const url = `https://api.spotify.com/v1/search?q=${txt}&type=${typeToSearch}&limit=${limit}`
+    const txtToSearch = encodeURIComponent(txt)
+    console.log('txt,typeToSearch:', txtToSearch, typeToSearch)
+    const url = `https://api.spotify.com/v1/search?q=${txtToSearch}&type=${typeToSearch}&limit=${limit}`
     const res = await fetch(url, {
         headers: {
             Authorization: `Bearer ${token}`
@@ -77,17 +77,13 @@ async function search(txt, type = 'track', limit = 15) {
 
     let data = await res.json()
     data = data[typeToSearch + 's'].items.filter(item => item)
-
+    console.log('data:', data)
 
     const dataToReturn = data.map(item => _clearObject(item))
     return dataToReturn
 }
 
 function clearStation({ id, name, owner, followers, images, description, tracks }) {
-    // if (!id || !name || !type || !owner || !followers || !images || !description || !tracks)
-    //     return console.error(`missing data:\n id, name, type, owner, followers, images, description, tracks \n`,
-    //         id, name, type, owner, followers, images, description, tracks)
-
     return {
         id,
         name,
@@ -97,25 +93,20 @@ function clearStation({ id, name, owner, followers, images, description, tracks 
             name: owner.display_name,
             type: owner.type,
         },
-        ...(followers && {savedCount: followers.total}),
+        ...(followers && { savedCount: followers.total }),
         tracksCount: tracks.total,
         images,
         description,
-        ...(tracks.items && {tracks: tracks.items.map(item => clearTrack(item.track))}),
+        ...(tracks.items && { tracks: tracks.items.map(item => clearTrack(item.track)) }),
     }
 }
 
 function clearTrack({ id, name, type, album, artists, duration_ms, popularity, images }) {
-    if (!id || !name || !type || !artists)
-        return console.error(`missing data from clearTrack:\n
-        id, name, type, artists, duration_ms\n`,
-            id, name, type, artists, duration_ms
-        )
     return {
         id,
         name,
         type,
-        duration_ms,
+        duration: duration_ms,
         images: album?.images || images,
         ...(album && {
             album: {
@@ -149,6 +140,17 @@ function clearAlbum({ id, name, type, artists, images, release_date, total_track
         tracksCount: total_tracks,
         tracks: tracks.items.map(track => clearTrack({ ...track, images: images })),
         popularity,
+    }
+}
+
+function clearArtist({ id, name, images, popularity, followers, type }) {
+    return {
+        id,
+        name,
+        images,
+        popularity,
+        followersCount: followers.total,
+        type,
     }
 }
 
@@ -188,30 +190,58 @@ async function _getValidToken() {
     return await _getToken()
 }
 
-// async function getTrackById(id) {
-//     const url = `https://api.spotify.com/v1/tracks/${id}`
-
-//     const res = await fetch(url, {
-//         headers: {
-//             Authorization: `Bearer ${token}`
-//         }
-//     })
-
-//     if (!res.ok) throw new Error('Spotify getTrackById failed')
-
-//     return await res.json()
-// }
-
-// async function getStaitonById(id) {
-//     const url = `https://api.spotify.com/v1/playlists/${id}?fields=${encodeURIComponent(stationFields)}`
-
-//     const res = await fetch(url, {
-//         headers: {
-//             Authorization: `Bearer ${token}`
-//         }
-//     })
-
-//     if (!res.ok) throw new Error('Spotify getStaitonById failed')
-
-//     return await res.json()
-// }
+function getDemoTrack() {
+    return {
+        id: "0lizgQ7Qw35od7CYaoMBZb",
+        name: "Santa Tell Me",
+        type: "track",
+        duration: 204093,
+        images: [
+            {
+                height: 640,
+                width: 640,
+                url: "https://i.scdn.co/image/ab67616d0000b273a1db745e63940bc06985dea5"
+            },
+            {
+                height: 300,
+                width: 300,
+                url: "https://i.scdn.co/image/ab67616d00001e02a1db745e63940bc06985dea5"
+            },
+            {
+                height: 64,
+                width: 64,
+                url: "https://i.scdn.co/image/ab67616d00004851a1db745e63940bc06985dea5"
+            }
+        ],
+        album: {
+            id: "27MNgBEnLCKoafz1g2Zu97",
+            name: "Santa Tell Me",
+            images: [
+                {
+                    height: 640,
+                    width: 640,
+                    url: "https://i.scdn.co/image/ab67616d0000b273a1db745e63940bc06985dea5"
+                },
+                {
+                    height: 300,
+                    width: 300,
+                    url: "https://i.scdn.co/image/ab67616d00001e02a1db745e63940bc06985dea5"
+                },
+                {
+                    height: 64,
+                    width: 64,
+                    url: "https://i.scdn.co/image/ab67616d00004851a1db745e63940bc06985dea5"
+                }
+            ],
+            type: "album"
+        },
+        artists: [
+            {
+                id: "66CXWjxzNUsdJxJ2JdwvnR",
+                name: "Ariana Grande",
+                type: "artist"
+            }
+        ],
+        popularity: 96
+    }
+}
