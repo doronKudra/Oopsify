@@ -7,10 +7,10 @@ export function StationPreview({ station, listType }) {
 function DynamicCmp({ station, listType }) {
     switch (listType) {
         case 'favorites': // small image, pinned, type, creator (for liked tracks show number of tracks)
-            return <Link className='sidebar-station-preview-link' to={`/station/${station._id}`}>
+            return <Link className='sidebar-station-preview-link' to={`/station/${station.id}`}>
                 <article className="sidebar-station-preview-container">
                     <div className="small-img-container">
-                        <img className="small-img" src="https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4"></img>
+                        <img className="small-img" src={station.images.at(-1).url}></img>
                     </div>
                     <div className="sidebar-preview-station">
                         <span className="sidebar-preview-station-title">
