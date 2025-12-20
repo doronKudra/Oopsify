@@ -18,7 +18,7 @@ export function StationIndex() {
     const [filterBy, setFilterBy] = useState(stationService.getDefaultFilter())
     const stations = useSelector(storeState => storeState.stationModule.stations)
 
-    const [bgColor, setBgColor] = useState({ hex: '#121212' })
+    const [bgColor, setBgColor] = useState({ hex: '#3f3f3fff' })
 
     useEffect(() => {
         dispatch(loadStations(filterBy))
