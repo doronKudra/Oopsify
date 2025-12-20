@@ -14,12 +14,12 @@ const token = await _getValidToken()
 // console.log(await getById("4otkd9As6YaxxEkIjXPiZ6", 'albums'))
 // console.log(await getById(["4otkd9As6YaxxEkIjXPiZ6","4otkd9As6YaxxEkIjXPiZ6"], 'albums'))
 
-console.log(await getById("7gb4GZz7iIHGilXxD7638E", 'station'))
-console.log(await getById("4DJztJkufdlND0Hvg4nGkK", 'station'))
-console.log(await getById("3E0RgJpQug1ibE2jTGI0Hk", 'station'))
-console.log(await getById("7t4FkxnRhUOMDCxfRFyynH", 'station'))
-console.log(await getById("2O3jLuM3inA4vw5fZdGz9W", 'station'))
-console.log(await getById("089yh3bPPx15FTqFkQXmrV", 'station'))
+// console.log(await getById("7gb4GZz7iIHGilXxD7638E", 'station'))
+// console.log(await getById("4DJztJkufdlND0Hvg4nGkK", 'station'))
+// console.log(await getById("3E0RgJpQug1ibE2jTGI0Hk", 'station'))
+// console.log(await getById("7t4FkxnRhUOMDCxfRFyynH", 'station'))
+// console.log(await getById("2O3jLuM3inA4vw5fZdGz9W", 'station'))
+// console.log(await getById("089yh3bPPx15FTqFkQXmrV", 'station'))
 // 
 async function getById(id, type = 'station') { //Type must be plural, not singular.
     const isArray = Array.isArray(id)
