@@ -18,15 +18,15 @@ export function TrackList({ station }) {
                     <div className='center'>Title</div>
                     <div>xx:xx</div>
                 </div>
-                {station.tracks.map((track) => (
-                    <div key={track.id} className="track">
-                        <div className="track-num">{track.order}</div>
+                {station?.tracks.map((track) => (
+                    <div key={track?.id} className="track">
+                        <div className="track-num">{track?.order}</div>
                         <div className="track-details center">
-                            <div className='track-name'>{track.name}</div>
-                            <div>{track.artist}</div>
+                            <div className='track-name'>{track?.name}</div>
+                            <div>{track?.artist}</div>
                         </div>
                         <div className="track-duration">
-                            {msToTimeString(track.duration_ms)}
+                            {msToTimeString(track?.duration_ms)}
                         </div>
                     </div>
                 ))}

@@ -15,12 +15,11 @@ export function StationDetails() {
     const demoStation = getDemoStation()
     const { stationId } = useParams()
     const station = useSelector(
-        (storeState) => storeState.stationModule.stations
+        (storeState) => storeState.stationModule.station
     )
 
     useEffect(() => {
         dispatch(loadStation(stationId))
-        console.log('station:', station)
     }, [stationId, dispatch])
 
     // if (!station) return <div>Loading...</div>
@@ -41,12 +40,12 @@ export function StationDetails() {
     //     fetchColor()
     // }, [station?.cover_art])
 
-    // const stationDuration = Math.floor(
-    //     station.tracks.reduce(
-    //         (sum, track) => sum + (track.duration_ms || 0),
-    //         0
-    //     ) / 60000
-    // )
+    const stationDuration = Math.floor(
+        station?.tracks?.reduce(
+            (sum, track) => sum + (track.duration_ms || 0),
+            0
+        ) / 60000
+    )
 
     return (
         <section
@@ -55,20 +54,20 @@ export function StationDetails() {
                 background: `linear-gradient(to bottom, ${bgColor.hex}, #121212)`,
             }}
         >
-            {/* <section className="station-header">
-                <img src={station.cover_art} alt="Cover" />{' '}
+            {station && <section className="station-header">
+                <img src={station?.images} alt="Cover" />{' '}
                 <div className="station-header-title">
                     <p>Album</p>
-                    <h1>{station.name}</h1>
+                    <h1>{station?.name}</h1>
                     <div className="station-header-info">
-                        <h4>{`${station.artist} • ${station.year || 2002} • ${
-                            station.tracks.length
+                        <h4>{`${station?.artist} • ${station?.year || 2002} • ${
+                            station?.tracks?.length
                         } Songs, ${stationDuration} min`}</h4>
                     </div>
                 </div>
-            </section>
+            </section>}
             <StationControls station={station}></StationControls>
-            <TrackList station={station} />{' '} */}
+            <TrackList station={station} />{' '}
         </section>
     )
 }
