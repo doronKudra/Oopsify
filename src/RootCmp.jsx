@@ -14,6 +14,7 @@ import { LoginSignup } from './pages/LoginSignup.jsx'
 import { Login } from './pages/Login.jsx'
 import { Signup } from './pages/Signup.jsx'
 import { SideBar } from './cmps/SideBar/SideBar.jsx'
+import { SearchPage } from './pages/SearchPage.jsx'
 
 export function RootCmp() {
     return (
@@ -29,6 +30,7 @@ export function RootCmp() {
                     </Route>
                     <Route path="/" element={<Index />} />
                     <Route path="/" element={<StationDetails />} />
+                    <Route path='search' element={<SearchPage />} />
                     <Route path="station/:stationId" element={<StationDetails />} />
                     <Route path="user/:id" element={<UserDetails />} />
                     <Route path="login" element={<LoginSignup />}>

@@ -5,40 +5,85 @@
     align-items: center;
     justify-content: space-between;
     grid-column: 1 / 6;
-    padding: 0 6px 0 24px;
+    padding: 8px 6px 8px 28px;
     gap: 12px;
 
-    >* {
-        height: 48px;
-    }
-
     .search-container {
+        flex: 1;
         display: flex;
         justify-content: center;
         gap: 10px;
-        min-width: 160px;
+    }
 
-        .search-bar {
-            position: relative;
+    .search-bar {
+        position: relative;
+        width: 100%;
+        max-width: 475px;
+    }
 
-            .magnifying-glass,
-            .xmark {
-                fill: rgb(233, 233, 233);
-                position: absolute;
-                height: 24px;
-                width: 24px;
-                top: 50%;
-                translate: -50% -50%;
-                font-size: 22px;
-                cursor: pointer;
-            }
+    .magnifying-glass,
+    .xmark {
+        fill: var(--header3);
+        position: absolute;
+        height: 24px;
+        width: 24px;
+        top: 50%;
+        translate: -50% -50%;
+        font-size: 22px;
+    }
+
+    #header-search {
+        height: 100%;
+        width: 100%;
+        max-width: 475px;
+        background-color: var(--header1);
+        border-radius: 30px;
+        border: 0;
+        outline: 0;
+        overflow: hidden;
+
+        padding: 0 48px;
+        font-size: 15px;
+        font-weight: 500;
+        color: white;
+
+        box-shadow: inset 0 0 0 0 transparent;
+        transition: box-shadow 0.3s;
+
+
+        &:hover {
+            box-shadow: inset 0 0 0 1px rgb(80, 80, 80);
         }
-        .magnifying-glass{
-            left: 25px;
+
+        &:focus {
+            box-shadow: inset 0 0 0 2px white;
         }
 
-        .xmark {
-            right: 2px;
+        &::placeholder {
+            font-weight: 500;
+            color: rgb(187, 187, 187);
+        }
+    }
+
+    &:has(#header-search:hover) .magnifying-glass,
+    &:has(#header-search:focus) .magnifying-glass {
+        fill: white;
+    }
+
+
+    /* ICONS */
+
+
+    .magnifying-glass {
+        left: 25px;
+    }
+
+    .xmark {
+        right: 2px;
+        cursor: pointer;
+
+        &:hover {
+            fill: white;
         }
     }
 
@@ -48,108 +93,25 @@
         height: 48px;
         width: 48px;
         border-radius: 50%;
-        background-color: var(--clr3);
+        background-color: var(--header1);
         align-items: center;
-        >* {
-            translate: -0.5px 0;
-            height: 24px;
-            width: 24px;
-            fill: white;
+
+        .home-icon {
+            fill: var(--header3);
+        }
+
+        &:hover {
+            .home-icon {
+                fill: white;
+
+            }
+        }
+        .active{
+            fill:white;
         }
     }
 
-    #header-search {
-        height: 100%;
-        /* width: 100%; */
-        /* max-width: 475px; */
-        width: 475px;
-        padding: 0 48px;
-        border-radius: 30px;
-        background-color: var(--clr3);
-        outline: 0 solid;
-        font-size: 15px;
-        font-weight: 500;
-        transition: outline 0.05s 0.05s, filter 0.3s;
-        color: white;
-        border: 0;
-        &:hover{ 
-            outline: 0.5px solid rgb(102, 102, 102);
-            
-        }
-        &:focus {
-            outline: 2px solid white;
-        }
-
-        &::placeholder{
-            font-weight: 500;
-            color: rgb(187, 187, 187);
-        }
-    }
-
-    .fa-spotify {
-        font-size: 32px;
-        display: flex;
-        align-items: center;
-        cursor: pointer;
-        width: max-content;
-        height: max-content;
+    .spotify-logo {
+        fill: white;
     }
 }
-
-/*
-    display: flex;
-    min-height: 3.5rem;
-
-    background-color: var(--clr4);
-    padding: .8rem 1rem;
-    
-    & nav {
-        display: flex;
-        width: 100%;
-        align-items: center;
-        gap: 1em;
-        
-        font-size: .8em;
-
-        .active {
-            color: var(--clr1);
-        }
-
-        .logo {
-            font-size: 1.4em;
-            font-weight: bold;
-            margin-inline-end: 2em;
-        }
-
-        .login-link {
-            margin-inline-start: auto;
-        }
-
-        & button {
-            margin-inline-end: 0;
-        }
-    }
-
-    .user-info {
-        display: flex;
-        align-items: center;
-        margin-inline-start: auto;
-
-        color: var(--clr1);
-
-        .score {
-            padding: 8px;
-            background-color: var(--clr2);
-            border-radius: 50%;
-            margin: 10px;
-
-            color: var(--gray1);
-        }
-
-        & img {
-            width: 2em;
-            aspect-ratio: 1;
-            border-radius: 50%;
-        }
-    }
-} */
