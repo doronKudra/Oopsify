@@ -7,21 +7,26 @@ export const spotifyService = {
 const token = await _getValidToken()
 // const stationFields = 'tracks.items.track(duration_ms,id,album.name,album.id,artists.name,artists.id),tracks.total,tracks.items(added_at,added_by.id),type,name,owner.display_name,images,id'
 
-// console.log('tracks', await search("eminem", "track"))
+// console.log('station', await search("eminem", "station"))
 // console.log('albums', await search("eminem", "album"))
 // console.log(await getById("4otkd9As6YaxxEkIjXPiZ6", 'albums'))
 // console.log(await getById("3xqcAMgjHGrv3ElA51zZRj", 'stations'))
 // console.log(await getById("4otkd9As6YaxxEkIjXPiZ6", 'albums'))
 // console.log(await getById(["4otkd9As6YaxxEkIjXPiZ6","4otkd9As6YaxxEkIjXPiZ6"], 'albums'))
 
-// console.log(await getById(["7ccTcabbJlCJiIqtrSSwBk", "7lQ8MOhq6IN2w8EYcFNSUk"], 'tracks'))
-
+console.log(await getById("7gb4GZz7iIHGilXxD7638E", 'station'))
+console.log(await getById("4DJztJkufdlND0Hvg4nGkK", 'station'))
+console.log(await getById("3E0RgJpQug1ibE2jTGI0Hk", 'station'))
+console.log(await getById("7t4FkxnRhUOMDCxfRFyynH", 'station'))
+console.log(await getById("2O3jLuM3inA4vw5fZdGz9W", 'station'))
+console.log(await getById("089yh3bPPx15FTqFkQXmrV", 'station'))
+// 
 async function getById(id, type = 'station') { //Type must be plural, not singular.
     const isArray = Array.isArray(id)
     const idToSend = isArray ? id.join(',') : id
     const typeToSearch = type === 'station' ? 'playlists' : type + 's'
 
-    const url = `https://api.spotify.com/v1/${type === 'stations' ? 'playlists' : type}${isArray ? '?ids=' : '/'}${idToSend}`
+    const url = `https://api.spotify.com/v1/${typeToSearch}${isArray ? '?ids=' : '/'}${idToSend}`
 
     const res = await fetch(url, {
         headers: {
@@ -38,18 +43,19 @@ async function getById(id, type = 'station') { //Type must be plural, not singul
 }
 
 
-async function _clearObject(item, type) {
+function _clearObject(item, type) {
     if (type) {
         return item[type].map(i => _clearObject(i))
     }
 
     switch (item.type) {
         case 'playlist':
-            return await clearStation(item)
+            console.log('1:', 1)
+            return clearStation(item)
         case 'track':
-            return await clearTrack(item)
+            return clearTrack(item)
         case 'album':
-            return await clearAlbum(item)
+            return clearAlbum(item)
         // case 'station':
         //     return clearStation(item)    
         default: throw new Error('cannot clear item in clearObject')
@@ -58,7 +64,9 @@ async function _clearObject(item, type) {
 
 
 async function search(txt, type = 'track', limit = 15) {
-    const url = `https://api.spotify.com/v1/search?q=${txt}&type=${type}&limit=${limit}`
+    const typeToSearch = type === 'station' ? 'playlist' : type
+    console.log('txt,typeToSearch:', txt, typeToSearch)
+    const url = `https://api.spotify.com/v1/search?q=${txt}&type=${typeToSearch}&limit=${limit}`
     const res = await fetch(url, {
         headers: {
             Authorization: `Bearer ${token}`
@@ -67,18 +75,18 @@ async function search(txt, type = 'track', limit = 15) {
 
     if (!res.ok) throw new Error('Spotify searchTracks failed')
 
-    const data = await res.json()
-    return data[type + 's'].items.map(item => {
-        if (type === 'album') return item
-        if (item) return clearTrack(item)
-    })
+    let data = await res.json()
+    data = data[typeToSearch + 's'].items.filter(item => item)
+
+
+    const dataToReturn = data.map(item => _clearObject(item))
+    return dataToReturn
 }
 
-
-async function clearStation({ id, name, type, owner, followers, images, description, tracks }) {
-    if (!id || !name || !type || !owner || !followers || !images || !description || !tracks)
-        return console.error(`missing data:\n id, name, type, owner, followers, images, description, tracks \n`,
-            id, name, type, owner, followers, images, description, tracks)
+function clearStation({ id, name, owner, followers, images, description, tracks }) {
+    // if (!id || !name || !type || !owner || !followers || !images || !description || !tracks)
+    //     return console.error(`missing data:\n id, name, type, owner, followers, images, description, tracks \n`,
+    //         id, name, type, owner, followers, images, description, tracks)
 
     return {
         id,
@@ -89,11 +97,11 @@ async function clearStation({ id, name, type, owner, followers, images, descript
             name: owner.display_name,
             type: owner.type,
         },
-        savedCount: followers.total,
+        ...(followers && {savedCount: followers.total}),
         tracksCount: tracks.total,
         images,
         description,
-        tracks: tracks.items.map(item => clearTrack(item.track)),
+        ...(tracks.items && {tracks: tracks.items.map(item => clearTrack(item.track))}),
     }
 }
 
@@ -126,7 +134,7 @@ function clearTrack({ id, name, type, album, artists, duration_ms, popularity, i
     }
 }
 
-async function clearAlbum({ id, name, type, artists, images, release_date, total_tracks, tracks, popularity }) {
+function clearAlbum({ id, name, type, artists, images, release_date, total_tracks, tracks, popularity }) {
     return {
         id,
         name,
