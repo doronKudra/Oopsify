@@ -38,9 +38,6 @@ export function StationIndex() {
             <StationList
                 stations={stations}
                 listType={'index'} />
-            <StationList
-                stations={stations}
-                listType={'index'} />
         </main>
     )
 }
