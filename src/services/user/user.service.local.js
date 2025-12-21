@@ -78,7 +78,7 @@ function saveLoggedinUser(user) {
         password: user.password,
         imgUrl: user.imgUrl,
         stations: user.stations || [],
-        likedSongs: user.likedSongs || [],
+        likedTracks: user.likedTracks || [],
     }
     sessionStorage.setItem(STORAGE_KEY_LOGGEDIN_USER, JSON.stringify(user))
     return user
