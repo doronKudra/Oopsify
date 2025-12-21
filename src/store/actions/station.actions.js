@@ -11,6 +11,7 @@ import { stationService } from '../../services/station'
 
 // 🔹 LOAD LIST
 export function loadStations(filterBy) {
+    //console.log('filterBy load station:',filterBy)
     return async dispatch => {
         try {
             const stations = await stationService.query(filterBy)
