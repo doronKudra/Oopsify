@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { tracks } from '../services/track/track.service.js'
 import { showSuccessMsg, showErrorMsg } from '../services/event-bus.service'
@@ -11,38 +11,40 @@ import { StationControls } from './StationControls.jsx'
 import { FastAverageColor } from 'fast-average-color'
 
 export function StationDetails() {
-    const demoStation = getDemoStation()
+    const dispatch = useDispatch()
     const { stationId } = useParams()
-    const station = useSelector(
-        (storeState) => storeState.stationModule.station
-    )
+
+    const station = useSelector((store) => store.stationModule.station)
+
+    useEffect(() => {
+        dispatch(loadStation(stationId))
+    }, [stationId, dispatch])
 
     const [bgColor, setBgColor] = useState({ hex: '#121212' })
 
+    const albumCoverArt =
+        station?.images?.[0]?.url || station?.tracks?.[0]?.images?.[0]?.url
+
     useEffect(() => {
+        if (!albumCoverArt) return
         async function fetchColor() {
-            if (!demoStation.cover_art) return
             try {
                 const fac = new FastAverageColor()
-                const color = await fac.getColorAsync(demoStation.cover_art)
+                const color = await fac.getColorAsync(albumCoverArt)
                 setBgColor(color)
             } catch (err) {
                 console.error('Error getting average color:', err)
             }
         }
         fetchColor()
-    }, [demoStation?.cover_art])
+    }, [albumCoverArt])
 
-    useEffect(() => {
-        loadStation(stationId)
-    }, [stationId])
+    if (!station) return <div>Loading...</div>
 
-    const stationDuration = Math.floor(
-        demoStation.tracks.reduce(
-            (sum, track) => sum + (track.duration_ms || 0),
-            0
-        ) / 60000
-    )
+const stationDuration = station.tracks.reduce(
+    (sum, t) => sum + (t.duration_ms || 0),
+    0
+)
 
     return (
         <section
@@ -52,28 +54,30 @@ export function StationDetails() {
             }}
         >
             <section className="station-header">
-                <img src={station.cover_art} alt="Cover" />{' '}
+                <img src={albumCoverArt} alt="Cover" />
                 <div className="station-header-title">
                     <p>Album</p>
                     <h1>{station.name}</h1>
                     <div className="station-header-info">
-                        <h4>{`${demoStation.artist} • ${
-                            demoStation.year || 2002
-                        } • ${
-                            demoStation.tracks.length
-                        } Songs, ${stationDuration} min`}</h4>
+                        <h4>{`${station.artist} • ${station.year || 2002} • ${
+                            station.tracks.length
+                        } Songs, ${Math.floor(stationDuration/60000)} min`}</h4>
                     </div>
                 </div>
             </section>
-            {/* <button
+
+            <StationControls station={station} />
+            <TrackList station={station} durationMs={stationDuration} />
+        </section>
+    )
+}
+
+{
+    /* <button
                 onClick={() => {
                     onFavoriteStationMsg(station._id)
                 }}
             >
                 ♡
-            </button> */}
-            <StationControls station={demoStation}></StationControls>
-            <TrackList station={demoStation} />{' '}
-        </section>
-    )
+            </button> */
 }

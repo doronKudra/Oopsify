@@ -7,18 +7,18 @@ import { stationService as remote } from './station.service.remote'
 
 function getEmptyStation() {
 	return {
-        _id: '',
-		vendor: makeId(),
-		speed: getRandomIntInclusive(80, 240),
-		msgs: [],
+        _id: makeId(),
+		name: '',
+        tags: '',
+        createdBy: {},
+		likedByUsers: [],
+		songs: [],
 	}
 }
 
 function getDefaultFilter() {
     return {
         txt: '',
-        minSpeed: '',
-        sortField: '',
         sortDir: '',
     }
 }

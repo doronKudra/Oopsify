@@ -24,7 +24,7 @@ async function query(filterBy = '') {
     return stations
 }
 
-function getById(stationId) {
+async function getById(stationId) {
     return storageService.get(STORAGE_KEY, stationId)
 }
 
