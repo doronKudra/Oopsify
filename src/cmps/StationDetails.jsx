@@ -13,12 +13,19 @@ import { FastAverageColor } from 'fast-average-color'
 export function StationDetails() {
     const dispatch = useDispatch()
     const { stationId } = useParams()
+    const user = useSelector((store) => store.userModule.user)
+    const stationFromStore = useSelector((store) => store.stationModule.station)
 
-    const station = useSelector((store) => store.stationModule.station)
+    const station =
+        stationId === 'likedTracks' ? user.likedTracks : stationFromStore
 
     useEffect(() => {
-        dispatch(loadStation(stationId))
-    }, [stationId, dispatch])
+        if (stationId === 'likedTracks') {
+            dispatch(loadLikedTracks(user._id))
+        } else {
+            dispatch(loadStation(stationId))
+        }
+    }, [stationId, user._id, dispatch])
 
     const [bgColor, setBgColor] = useState({ hex: '#121212' })
 
@@ -68,9 +75,9 @@ export function StationDetails() {
                         <h4>
                             {[
                                 station.artist && station.artist,
-                                station.year || 2002, 
-                                `${station.tracks.length} Songs`, 
-                                `${Math.floor(stationDuration / 60000)} min`, 
+                                station.year || 2002,
+                                `${station.tracks.length} Songs`,
+                                `${Math.floor(stationDuration / 60000)} min`,
                             ]
                                 .filter(Boolean)
                                 .join(' • ')}
