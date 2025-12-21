@@ -91,6 +91,7 @@ export async function loadUser(userId) {
 export async function updateUser(user) {
         try {
             const savedUser = await userService.update(user)
+            console.log('savedUser:', savedUser)
             store.dispatch({ type: UPDATE_USER, user: savedUser })
             return savedUser
         } catch (err) {

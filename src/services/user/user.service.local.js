@@ -35,13 +35,13 @@ function remove(userId) {
 }
 
 async function update(userToUpdate) {
-    // const loggedinUser = getLoggedinUser()
     // const user = await storageService.query(STORAGE_KEY_LOGGEDIN_USER)
     // console.log('user:', user)
     // user.likedTracks.tracks = userToUpdate.likedTracks.tracks
-    await storageService.put(STORAGE_KEY_USER, user)
-
+    const user = await storageService.put(STORAGE_KEY_USER, userToUpdate)
+    
     // When admin updates other user's details, do not update loggedinUser
+    const loggedinUser = getLoggedinUser()
     if (loggedinUser._id === user._id) saveLoggedinUser(user)
 
     return user
@@ -60,7 +60,6 @@ async function signup(user) {
             'https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png'
 
     const userToSave = {
-        // _id: user._id || makeId(),
         fullName: user.fullName,
         userName: user.userName,
         password: user.password,
@@ -88,6 +87,7 @@ function getLoggedinUser() {
 
 async function saveLoggedinUser(user) {
     const loggedinUser = {
+        id: user.id,
         fullName: user.fullName,
         userName: user.userName,
         password: user.password,
@@ -101,7 +101,10 @@ async function saveLoggedinUser(user) {
             id: 'liked-songs',
         },
     }
-    sessionStorage.setItem(STORAGE_KEY_LOGGEDIN_USER, JSON.stringify(loggedinUser))
+    sessionStorage.setItem(
+        STORAGE_KEY_LOGGEDIN_USER,
+        JSON.stringify(loggedinUser)
+    )
     return loggedinUser
 }
 
@@ -112,6 +115,7 @@ async function _createLoggedinUser() {
     const users = []
     console.log('hi')
     const user = {
+        id: makeId(),
         fullName: 'Mustafa Adminsky',
         userName: 'admin',
         password: 'admin',
