@@ -8,12 +8,13 @@ export const SET_WATCHED_USER = 'SET_WATCHED_USER'
 export const REMOVE_USER = 'REMOVE_USER'
 export const SET_USERS = 'SET_USERS'
 export const SET_SCORE = 'SET_SCORE'
+export const SET_LIKED_TRACKS = 'SET_LIKED_TRACKS'
 
 const initialState = {
     count: 10,
     user: userService.getLoggedinUser(),
     users: [],
-    watchedUser : null
+    watchedUser: null,
 }
 
 export function userReducer(state = initialState, action) {
@@ -37,7 +38,7 @@ export function userReducer(state = initialState, action) {
         case REMOVE_USER:
             newState = {
                 ...state,
-                users: state.users.filter(user => user._id !== action.userId)
+                users: state.users.filter((user) => user._id !== action.userId),
             }
             break
         case SET_USERS:
@@ -48,11 +49,23 @@ export function userReducer(state = initialState, action) {
             newState = { ...state, user }
             userService.saveLoggedinUser(user)
             break
+        case SET_LIKED_TRACKS:
+            newState = {
+                ...state,
+                user: {
+                    ...state.user,
+                    likedTracks: {
+                        ...state.user.likedTracks,
+                        tracks: action.tracks,
+                    },
+                },
+            }
+            break
+
         default:
     }
     // For debug:
     // window.userState = newState
     // console.log('State:', newState)
     return newState
-
 }

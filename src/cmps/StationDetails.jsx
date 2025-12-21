@@ -13,19 +13,21 @@ import { FastAverageColor } from 'fast-average-color'
 export function StationDetails() {
     const dispatch = useDispatch()
     const { stationId } = useParams()
+
     const user = useSelector((store) => store.userModule.user)
+    const likedTracks = user?.likedTracks?.tracks || []
+    console.log('user:', user)
+
     const stationFromStore = useSelector((store) => store.stationModule.station)
 
     const station =
-        stationId === 'likedTracks' ? user.likedTracks : stationFromStore
+        stationId === 'liked-tracks' ? user.likedTracks : stationFromStore
 
     useEffect(() => {
-        if (stationId === 'likedTracks') {
-            dispatch(loadLikedTracks(user._id))
-        } else {
+        if (stationId !== 'liked-tracks') {
             dispatch(loadStation(stationId))
         }
-    }, [stationId, user._id, dispatch])
+    }, [stationId, dispatch])
 
     const [bgColor, setBgColor] = useState({ hex: '#121212' })
 
@@ -53,6 +55,22 @@ export function StationDetails() {
         0
     )
     console.log('station:', station)
+
+    function onToggleLiked(clickedTrack) {
+        const isLiked = likedTracks.some(
+            (track) => track.id === clickedTrack.id
+        )
+        let updatedTracks
+
+        if (isLiked) {
+            updatedTracks = likedTracks.filter(
+                (track) => track.id !== clickedTrack.id
+            )
+        } else {
+            updatedTracks = [...likedTracks, clickedTrack]
+        }
+        dispatch(updateUserLikedTracks(updatedTracks))
+    }
 
     return (
         <section
@@ -87,17 +105,12 @@ export function StationDetails() {
             </section>
 
             <StationControls station={station} />
-            <TrackList station={station} durationMs={stationDuration} />
+            <TrackList
+                station={station}
+                durationMs={stationDuration}
+                user={user}
+                onToggleLiked={onToggleLiked}
+            />
         </section>
     )
-}
-
-{
-    /* <button
-                onClick={() => {
-                    onFavoriteStationMsg(station._id)
-                }}
-            >
-                ♡
-            </button> */
 }
