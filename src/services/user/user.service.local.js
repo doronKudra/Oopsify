@@ -77,8 +77,8 @@ function saveLoggedinUser(user) {
         userName: user.userName,
         password: user.password,
         imgUrl: user.imgUrl,
-        isAdmin: user.isAdmin,
         stations: user.stations || [],
+        likedSongs: user.likedSongs || [],
     }
     sessionStorage.setItem(STORAGE_KEY_LOGGEDIN_USER, JSON.stringify(user))
     return user
@@ -87,6 +87,7 @@ function saveLoggedinUser(user) {
 // To quickly create an admin user, uncomment the next line
 // _createAdmin()
 async function _createLoggedinUser() {
+    if(getLoggedinUser()) return
     const user = {
         fullName: 'Mustafa Adminsky',
         userName: 'admin',
