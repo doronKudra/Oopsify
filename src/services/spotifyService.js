@@ -6,22 +6,7 @@ export const spotifyService = {
 
 
 const token = await _getValidToken()
-// const stationFields = 'tracks.items.track(duration_ms,id,album.name,album.id,artists.name,artists.id),tracks.total,tracks.items(added_at,added_by.id),type,name,owner.display_name,images,id'
 
-// console.log('station', await search("eminem", "station"))
-// console.log('albums', await search("eminem", "album"))
-// console.log(await getById("4otkd9As6YaxxEkIjXPiZ6", 'albums'))
-// console.log(await getById("3xqcAMgjHGrv3ElA51zZRj", 'stations'))
-// console.log(await getById("4otkd9As6YaxxEkIjXPiZ6", 'albums'))
-// console.log(await getById(["4otkd9As6YaxxEkIjXPiZ6","4otkd9As6YaxxEkIjXPiZ6"], 'albums'))
-
-// console.log(await getById("7gb4GZz7iIHGilXxD7638E", 'station'))
-// console.log(await getById("4DJztJkufdlND0Hvg4nGkK", 'station'))
-// console.log(await getById("3E0RgJpQug1ibE2jTGI0Hk", 'station'))
-// console.log(await getById("7t4FkxnRhUOMDCxfRFyynH", 'station'))
-// console.log(await getById("2O3jLuM3inA4vw5fZdGz9W", 'station'))
-// console.log(await getById("089yh3bPPx15FTqFkQXmrV", 'station'))
-// 
 async function getById(id, type = 'station') { //Type must be plural, not singular.
     const isArray = Array.isArray(id)
     const idToSend = isArray ? id.join(',') : id
@@ -77,7 +62,6 @@ async function search(txt, type = 'track', limit = 15) {
 
     let data = await res.json()
     data = data[typeToSearch + 's'].items.filter(item => item)
-    console.log('data:', data)
 
     const dataToReturn = data.map(item => _clearObject(item))
     return dataToReturn

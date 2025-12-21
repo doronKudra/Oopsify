@@ -4,6 +4,7 @@
     height: 88px;
     width: 100%;
     gap: 10px;
+    z-index: 1;
 
     display: grid;
     align-items: center;

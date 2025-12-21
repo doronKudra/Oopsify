@@ -21,17 +21,6 @@
         max-width: 475px;
     }
 
-    .magnifying-glass,
-    .xmark {
-        fill: var(--header3);
-        position: absolute;
-        height: 24px;
-        width: 24px;
-        top: 50%;
-        translate: -50% -50%;
-        font-size: 22px;
-    }
-
     #header-search {
         height: 100%;
         width: 100%;
@@ -65,25 +54,56 @@
         }
     }
 
-    &:has(#header-search:hover) .magnifying-glass,
-    &:has(#header-search:focus) .magnifying-glass {
+    &:has(#header-search:hover) .magnifying-glass-svg,
+    &:has(#header-search:focus) .magnifying-glass-svg {
         fill: white;
     }
 
 
     /* ICONS */
 
+    .search-genre-svg,
+    .magnifying-glass-svg,
+    .xmark-svg {
+        fill: var(--header3);
+        height: 24px;
+        width: 24px;
+    }
 
-    .magnifying-glass {
+    .magnifying-glass-btn {
+        position: absolute;
+        top: 55%;
+        translate: -50% -50%;
         left: 25px;
     }
 
-    .xmark {
-        right: 2px;
+    .search-genre-btn,
+    .xmark-btn {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        top: 50%;
+        translate: 0 -50%;
         cursor: pointer;
+        padding: 0 12px;
+    }
 
+    .search-genre-btn {
+        right: 2px;
+        border-left: 1px solid var(--header3);
         &:hover {
-            fill: white;
+            >* {
+                fill: white;
+            }
+        }
+    }
+
+    .xmark-btn {
+        right: 50px;
+        &:hover {
+            >* {
+                fill: white;
+            }
         }
     }
 
@@ -106,8 +126,9 @@
 
             }
         }
-        .active{
-            fill:white;
+
+        .active {
+            fill: white;
         }
     }
 
