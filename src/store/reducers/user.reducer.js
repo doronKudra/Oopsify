@@ -9,9 +9,9 @@ export const REMOVE_USER = 'REMOVE_USER'
 export const SET_USERS = 'SET_USERS'
 export const SET_SCORE = 'SET_SCORE'
 export const SET_LIKED_TRACKS = 'SET_LIKED_TRACKS'
+export const UPDATE_USER = 'UPDATE_USER'
 
 const initialState = {
-    count: 10,
     user: userService.getLoggedinUser(),
     users: [],
     watchedUser: null,
@@ -46,6 +46,9 @@ export function userReducer(state = initialState, action) {
                     },
                 },
             }
+            break
+        case UPDATE_USER:
+            newState = { ...state, user: { ...state.user, ...action.user } }
             break
         default:
     }

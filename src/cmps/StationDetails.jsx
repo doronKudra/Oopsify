@@ -9,7 +9,7 @@ import { getDemoStation } from '../services/track/track.service.js'
 import { TrackList } from './TrackList.jsx'
 import { StationControls } from './StationControls.jsx'
 import { FastAverageColor } from 'fast-average-color'
-import { updateUserLikedTracks } from '../store/actions/user.actions.js'
+import { updateUserLikedTracks, updateUser } from '../store/actions/user.actions.js'
 
 export function StationDetails() {
     const dispatch = useDispatch()
@@ -57,7 +57,7 @@ export function StationDetails() {
     )
     console.log('station:', station)
 
-    function onToggleLiked(clickedTrack) {
+    async function onToggleLiked(clickedTrack) {
         const isLiked = likedTracks.some(
             (track) => track.id === clickedTrack.id
         )
@@ -71,6 +71,8 @@ export function StationDetails() {
             updatedTracks = [...likedTracks, clickedTrack]
         }
         dispatch(updateUserLikedTracks(updatedTracks))
+        const userToUpdate = {...user, likedTracks: {...user.likedTracks, tracks: updatedTracks}}
+        await updateUser(userToUpdate)
     }
 
     return (
