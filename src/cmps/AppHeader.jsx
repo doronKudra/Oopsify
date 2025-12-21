@@ -11,36 +11,40 @@ export function AppHeader() {
 	const location = useLocation()
 	const [searchParams, setSearchParams] = useSearchParams()
 
-	const [filterBy, setFilterBy] = useState({ txt: searchParams.get('txt') || '', type: searchParams.get('type') || '' })
-	const debouncedSearchRef = useRef(null)
+	const [filterBy, setFilterBy] = useState({ txt: searchParams.get('txt') || '', type: searchParams.get('type') || 'track' })
+
+	const debouncedSearchRef = useRef(debounce(handleSearch, 400))
+
+	useEffect(() => {
+		const txt = searchParams.get('txt') || ''
+		const type = searchParams.get('type') || 'track'
+
+		setFilterBy(prev => {
+			if (prev.txt === txt && prev.type === type) return prev
+			return { txt, type }
+		})
+	}, [location.search])
 
 	useEffect(() => {
 		debouncedSearchRef.current(filterBy)
 	}, [filterBy])
 
-	if (!debouncedSearchRef.current) {
-		debouncedSearchRef.current = debounce(onSearch)
-	}
-
-	async function onSearch(filterBy) {
-		const { pathname } = location
-		setSearchParams({ txt: filterBy.txt, type: filterBy.type })
+	async function handleSearch(filterBy) {
 
 		if (!filterBy.txt) {
 			setSearchParams({})
-			if (pathname === '/search') navigate(-1)
+			if (location.pathname === '/search') {
+				navigate('/', { replace: true })
+			}
 			return
 		}
-
-		if (pathname !== '/search') {
-			navigate('/search')
-		}
+		navigate(`/search?txt=${encodeURIComponent(filterBy.txt)}&type=${filterBy.type}`, {
+			replace: true
+		})
 	}
 
-
-
 	function handleTxt({ target }) {
-		const updatedFilter = { type: 'track', txt: target.value || '' }
+		const updatedFilter = { ...filterBy, txt: target.value }
 		setFilterBy(updatedFilter)
 	}
 
