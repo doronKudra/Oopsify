@@ -46,7 +46,7 @@ function DynamicCmp({ station, listType }) {
         case 'recent': // small image, title
             return <Link className='recent-station-preview-link' to={`/station/${station?.id}`}>
                 <article className="recent-station-preview-container">
-                    <img className="small-img" src={station?.images?.at(-1)?.url}></img>
+                    <img className="recent-small-img small-img" src={station?.images?.at(-1)?.url}></img>
                     <div className="recent-preview-station">
                         <span className="recent-preview-station-title">
                             {station?.name?.slice(0,19)}

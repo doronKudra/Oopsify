@@ -97,3 +97,8 @@ a.recent-station-preview-link {
     font-weight: 700;
     font-size: 0.75rem;
 }
+
+img.recent-small-img{
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}

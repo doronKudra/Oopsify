@@ -21,7 +21,7 @@ const token = await _getValidToken()
 // console.log(await getById("7t4FkxnRhUOMDCxfRFyynH", 'station'))
 // console.log(await getById("2O3jLuM3inA4vw5fZdGz9W", 'station'))
 // console.log(await getById("089yh3bPPx15FTqFkQXmrV", 'station'))
-// 
+
 async function getById(id, type = 'station') { //Type must be plural, not singular.
     const isArray = Array.isArray(id)
     const idToSend = isArray ? id.join(',') : id
