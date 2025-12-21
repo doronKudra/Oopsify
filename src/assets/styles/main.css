@@ -19,7 +19,7 @@
 @import "cmps/UserMsg.css";
 @import "cmps/SearchPage.css";
 
-@import "cmps/station/Index.css";
+/* @import "cmps/station/Index.css"; */
 
 @import "cmps/station/StationDetails.css";
 @import "cmps/station/StationPreview.css";
