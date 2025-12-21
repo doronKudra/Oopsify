@@ -1,6 +1,6 @@
 import { Link, NavLink } from 'react-router-dom'
 import { useNavigate } from 'react-router'
-import { addStation } from '../../store/actions/station.actions'
+import { addStation } from '../../store/actions/station.actions.js'
 import { userService } from '../../services/user'
 
 export function SideBarHeader() {

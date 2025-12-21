@@ -4,14 +4,15 @@ import { getRandomIntInclusive, makeId } from '../util.service'
 import { stationService as local } from './station.service.local'
 import { stationService as remote } from './station.service.remote'
 
-function getEmptyStation() {
+function getEmptyStation(owner) {
 	return {
-        id: makeId(),
 		name: '',
-        tags: '',
-        createdBy: {},
+        description: '',
 		likedByUsers: [],
+        owner,
 		songs: [],
+        images: [],
+        tracks: [],
 	}
 }
 

@@ -43,20 +43,20 @@ async function remove(stationId) {
 
 async function save(station) {
     var savedStation
-    if (station._id) {
+    if (station.id) {
         const stationToSave = {
-            _id: station._id,
+            id: station.id,
             songs: station.songs,
         }
-        savedStation = await storageService.put(STORAGE_KEY, stationToSave)
+        savedStation = await storageService.put(STORAGE_KEY,{...station, ...stationToSave})
     } else {
         const stationToSave = {
+            description: station.description,
+            id: makeId(),
+            images: [...station.images],
             name: station.name,
-            songs: station.songs,
-            // Later, owner is set by the backend
-            createdBy: userService.getLoggedinUser(),
-            likedByUsers: station.likedByUsers,
-            tags: station.tags
+            tracks: station.tracks,
+            owner: station.owner,
         }
         savedStation = await storageService.post(STORAGE_KEY, stationToSave)
     }

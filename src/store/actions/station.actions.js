@@ -38,14 +38,12 @@ export async function removeStation(stationId) {
     }
 }
 
-export async function addStation(owner) {
+export async function addStation({userName,id}) {
     try {
-        const station = stationService.getEmptyStation()
+        const station = stationService.getEmptyStation({userName,id})
         console.log('we got here ',station)
-        const stationToSave = {...station,createdBy:owner}
-        station.createdBy = {...owner}
-        const savedStation = await stationService.save(station)
-        store.dispatch({ type: ADD_STATION, station: savedStation })
+        const savedStation = await stationService.save(station).then(store.dispatch({ type: ADD_STATION, station }))
+        
         return savedStation
     } catch (err) {
         console.error('Cannot add station', err)
