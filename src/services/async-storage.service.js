@@ -10,23 +10,27 @@ import stationDB from '../data/demo-stations.json'
 import tracksDB from '../data/demo-tracks.json'
 
 function query(entityType, delay = 500) {
-    const data = {station:stationDB,track:tracksDB}
+    const data = { station: stationDB, track: tracksDB }
     console.log(data[entityType])
-    var entities = JSON.parse(localStorage.getItem(entityType)) || data[entityType]
-    return new Promise(resolve => setTimeout(() => resolve(entities), delay))
+    var entities =
+        JSON.parse(localStorage.getItem(entityType)) || data[entityType]
+    return new Promise((resolve) => setTimeout(() => resolve(entities), delay))
 }
 
 function get(entityType, entityId) {
-    return query(entityType).then(entities => {
-        const entity = entities.find(entity => entity.id === entityId)
-        if (!entity) throw new Error(`Get failed, cannot find entity with id: ${entityId} in: ${entityType}`)
+    return query(entityType).then((entities) => {
+        const entity = entities.find((entity) => entity._id === entityId)
+        if (!entity)
+            throw new Error(
+                `Get failed, cannot find entity with id: ${entityId} in: ${entityType}`
+            )
         return entity
     })
 }
 
 function post(entityType, newEntity) {
-    newEntity.id = _makeId()
-    return query(entityType).then(entities => {
+    newEntity._id = _makeId()
+    return query(entityType).then((entities) => {
         entities.push(newEntity)
         _save(entityType, entities)
         return newEntity
@@ -34,10 +38,15 @@ function post(entityType, newEntity) {
 }
 
 function put(entityType, updatedEntity) {
-    return query(entityType).then(entities => {
-        const idx = entities.findIndex(entity => entity.id === updatedEntity.id)
-        if (idx < 0) throw new Error(`Update failed, cannot find entity with id: ${updatedEntity.id} in: ${entityType}`)
-        const entityToUpdate = {...entities[idx], ...updatedEntity}
+    return query(entityType).then((entities) => {
+        const idx = entities.findIndex(
+            (entity) => entity._id === updatedEntity._id
+        )
+        if (idx < 0)
+            throw new Error(
+                `Update failed, cannot find entity with id: ${updatedEntity.id} in: ${entityType}`
+            )
+        const entityToUpdate = { ...entities[idx], ...updatedEntity }
         entities.splice(idx, 1, entityToUpdate)
         _save(entityType, entities)
         return entityToUpdate
@@ -45,9 +54,12 @@ function put(entityType, updatedEntity) {
 }
 
 function remove(entityType, entityId) {
-    return query(entityType).then(entities => {
-        const idx = entities.findIndex(entity => entity.id === entityId)
-        if (idx < 0) throw new Error(`Remove failed, cannot find entity with id: ${entityId} in: ${entityType}`)
+    return query(entityType).then((entities) => {
+        const idx = entities.findIndex((entity) => entity._id === entityId)
+        if (idx < 0)
+            throw new Error(
+                `Remove failed, cannot find entity with id: ${entityId} in: ${entityType}`
+            )
         entities.splice(idx, 1)
         _save(entityType, entities)
     })
@@ -61,7 +73,8 @@ function _save(entityType, entities) {
 
 function _makeId(length = 5) {
     var text = ''
-    var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+    var possible =
+        'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
     for (var i = 0; i < length; i++) {
         text += possible.charAt(Math.floor(Math.random() * possible.length))
     }

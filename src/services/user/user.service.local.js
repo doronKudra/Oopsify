@@ -2,6 +2,7 @@ import { storageService } from '../async-storage.service'
 import { makeId } from '../util.service.js'
 
 const STORAGE_KEY_LOGGEDIN_USER = 'loggedinUser'
+const STORAGE_KEY_USER = 'user'
 
 export const userService = {
     login,
@@ -18,7 +19,7 @@ export const userService = {
 _createLoggedinUser()
 
 async function getUsers() {
-    const users = await storageService.query('user')
+    const users = await storageService.query(STORAGE_KEY_USER)
     return users.map((user) => {
         delete user.password
         return user
@@ -26,40 +27,55 @@ async function getUsers() {
 }
 
 async function getById(userId) {
-    return await storageService.get('user', userId)
+    return await storageService.get(STORAGE_KEY_USER, userId)
 }
 
 function remove(userId) {
-    return storageService.remove('user', userId)
+    return storageService.remove(STORAGE_KEY_USER, userId)
 }
 
-async function update({ _id, score }) {
-    const user = await storageService.get('user', _id)
-    user.score = score
-    await storageService.put('user', user)
+async function update(userToUpdate) {
+    // const loggedinUser = getLoggedinUser()
+    // const user = await storageService.query(STORAGE_KEY_LOGGEDIN_USER)
+    // console.log('user:', user)
+    // user.likedTracks.tracks = userToUpdate.likedTracks.tracks
+    await storageService.put(STORAGE_KEY_USER, user)
 
     // When admin updates other user's details, do not update loggedinUser
-    const loggedinUser = getLoggedinUser()
     if (loggedinUser._id === user._id) saveLoggedinUser(user)
 
     return user
 }
 
 async function login(userCred) {
-    const users = await storageService.query('user')
+    const users = await storageService.query(STORAGE_KEY_USER)
     const user = users.find((user) => user.username === userCred.username)
 
     if (user) return saveLoggedinUser(user)
 }
 
-async function signup(userCred) {
-    if (!userCred.imgUrl)
-        userCred.imgUrl =
+async function signup(user) {
+    if (!user.imgUrl)
+        user.imgUrl =
             'https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png'
-    userCred.score = 10000
 
-    const user = await storageService.post('user', userCred)
-    return saveLoggedinUser(user)
+    const userToSave = {
+        // _id: user._id || makeId(),
+        fullName: user.fullName,
+        userName: user.userName,
+        password: user.password,
+        imgUrl: user.imgUrl,
+        likedStations: user.likedStations || [],
+        likedTracks: {
+            name: 'Liked Songs',
+            tracks: user.likedTracks.tracks || [],
+            createdBy: user.userName,
+            images: [{ url: 'src/assets/images/liked-songs.png' }],
+            id: 'liked-songs',
+        },
+    }
+    const savedUser = await storageService.post(STORAGE_KEY_USER, userToSave)
+    return saveLoggedinUser(savedUser)
 }
 
 async function logout() {
@@ -70,41 +86,46 @@ function getLoggedinUser() {
     return JSON.parse(sessionStorage.getItem(STORAGE_KEY_LOGGEDIN_USER))
 }
 
-function saveLoggedinUser(user) {
-    user = {
-        _id: user._id || makeId(),
+async function saveLoggedinUser(user) {
+    const loggedinUser = {
         fullName: user.fullName,
         userName: user.userName,
         password: user.password,
         imgUrl: user.imgUrl,
-        likedStations: user.likedStations || [],
-        likedTracks: {        
+        likedStations: user.likedStations,
+        likedTracks: {
             name: 'Liked Songs',
-            tracks:user.likedTracks.tracks || [],
-            createdBy: user.userName,
-            images: [{url: 'src/assets/images/liked-songs.png'}],
-            id: 'liked-songs'},
+            tracks: user.likedTracks.tracks,
+            createdBy: 'admin',
+            images: [{ url: 'src/assets/images/liked-songs.png' }],
+            id: 'liked-songs',
+        },
     }
-    sessionStorage.setItem(STORAGE_KEY_LOGGEDIN_USER, JSON.stringify(user))
-    return user
+    sessionStorage.setItem(STORAGE_KEY_LOGGEDIN_USER, JSON.stringify(loggedinUser))
+    return loggedinUser
 }
 
 // To quickly create an admin user, uncomment the next line
 // _createAdmin()
 async function _createLoggedinUser() {
-    if(getLoggedinUser()) return
+    if (getLoggedinUser()) return
+    const users = []
+    console.log('hi')
     const user = {
         fullName: 'Mustafa Adminsky',
         userName: 'admin',
         password: 'admin',
         imgUrl: 'https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png',
         likedStations: [],
-        likedTracks: {  
+        likedTracks: {
             name: 'Liked Songs',
-            tracks:[],
+            tracks: [],
             createdBy: 'admin',
-            images: [{url: 'src/assets/images/liked-songs.png'}],
-            id: 'liked-songs'},
+            images: [{ url: 'src/assets/images/liked-songs.png' }],
+            id: 'liked-songs',
+        },
     }
-    saveLoggedinUser(user)
+    users.push(user)
+    localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(users))
+    login({ userName: 'admin', password: 'admin' })
 }

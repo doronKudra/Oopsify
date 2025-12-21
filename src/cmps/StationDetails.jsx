@@ -4,15 +4,14 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { tracks } from '../services/track/track.service.js'
 import { showSuccessMsg, showErrorMsg } from '../services/event-bus.service'
-import { loadStation, addStationMsg } from '../store/actions/station.actions'
+import { loadStation } from '../store/actions/station.actions'
 import { getDemoStation } from '../services/track/track.service.js'
 import { TrackList } from './TrackList.jsx'
 import { StationControls } from './StationControls.jsx'
 import { FastAverageColor } from 'fast-average-color'
-import { updateUserLikedTracks } from '../store/actions/user.actions.js'
+import { updateUserLikedTracks, updateUser } from '../store/actions/user.actions.js'
 
 export function StationDetails() {
-    const dispatch = useDispatch()
     const { stationId } = useParams()
 
     const user = useSelector((store) => store.userModule.user)
@@ -26,9 +25,9 @@ export function StationDetails() {
 
     useEffect(() => {
         if (stationId !== 'liked-tracks') {
-            dispatch(loadStation(stationId))
+            loadStation(stationId)
         }
-    }, [stationId, dispatch])
+    }, [stationId])
 
     const [bgColor, setBgColor] = useState({ hex: '#121212' })
 
@@ -57,7 +56,7 @@ export function StationDetails() {
     )
     console.log('station:', station)
 
-    function onToggleLiked(clickedTrack) {
+    async function onToggleLiked(clickedTrack) {
         const isLiked = likedTracks.some(
             (track) => track.id === clickedTrack.id
         )
@@ -71,6 +70,8 @@ export function StationDetails() {
             updatedTracks = [...likedTracks, clickedTrack]
         }
         dispatch(updateUserLikedTracks(updatedTracks))
+        const userToUpdate = {...user, likedTracks: {...user.likedTracks, tracks: updatedTracks}}
+        await updateUser(userToUpdate)
     }
 
     return (

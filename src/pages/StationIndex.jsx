@@ -13,7 +13,6 @@ import { FastAverageColor } from 'fast-average-color'
 
 
 export function StationIndex() {
-    const dispatch = useDispatch()
 
     const [filterBy, setFilterBy] = useState(stationService.getDefaultFilter())
     const stations = useSelector(storeState => storeState.stationModule.stations)
@@ -21,8 +20,8 @@ export function StationIndex() {
     const [bgColor, setBgColor] = useState({ hex: '#3f3f3fff' })
     // const user = useSelector(storeState => userService.userModule.user)
     useEffect(() => {
-        dispatch(loadStations(filterBy))
-    }, [filterBy, dispatch])
+        loadStations(filterBy)
+    }, [filterBy])
 
     return (
         <main className="station-index" style={{
