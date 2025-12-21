@@ -15,9 +15,14 @@ export function TrackList({ station, durationMs }) {
         <section>
             <div className="track-list-container">
                 <div className="track-list-title">
-                    <div>#</div>
+                    {/* LEFT*/}
+                    <div className="title-track-number left">#</div>
+
+                    {/* Center*/}
                     <div className="center">Title</div>
-                    <div>
+
+                    {/* Right*/}
+                    <div className="title-track-duration right">
                         <svg
                             viewBox="0 0 16 16"
                             className="icon-control duration-icon"
@@ -34,10 +39,12 @@ export function TrackList({ station, durationMs }) {
                         </svg>
                     </div>
                 </div>
+
                 <div className="track-container">
                     {station?.tracks.map((track, idx) => (
-                        <div key={idx + 1} className="track">
-                            <div className="track-num">
+                        <div key={idx} className="track">
+                            {/* LEFT: number + play icon */}
+                            <div className="track-num left">
                                 <span className="track-num-text">
                                     {idx + 1}
                                 </span>
@@ -52,16 +59,50 @@ export function TrackList({ station, durationMs }) {
                                     />
                                 </svg>
                             </div>
+
+                            {/* MIDDLE: title + artists */}
                             <div className="track-details center">
-                                <div className="track-name">{track?.name}</div>
+                                <div className="track-name">{track.name}</div>
                                 <div>
                                     {track.artists
-                                        .map((artist) => artist.name)
+                                        .map((a) => a.name)
                                         .join(', ')}
                                 </div>
                             </div>
-                            <div className="track-duration">
-                                {msToTimeString(track?.duration_ms)}
+
+                            {/* RIGHT: like + duration + more */}
+                            <div className="track-actions right">
+                                <button className="control-btn liked-btn">
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        className="icon-control"
+                                    >
+                                        <path
+                                            d="M11.999 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18m-11 9c0-6.075 4.925-11 11-11s11 4.925 11 11-4.925 11-11 11-11-4.925-11-11"
+                                            fill="currentColor"
+                                        />
+                                        <path
+                                            d="M17.999 12a1 1 0 0 1-1 1h-4v4a1 1 0 1 1-2 0v-4h-4a1 1 0 1 1 0-2h4V7a1 1 0 1 1 2 0v4h4a1 1 0 0 1 1 1"
+                                            fill="currentColor"
+                                        />
+                                    </svg>
+                                </button>
+
+                                <div className="track-duration-list">
+                                    {msToTimeString(track.duration_ms)}
+                                </div>
+
+                                <button className="control-btn more-btn">
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        className="icon-control"
+                                    >
+                                        <path
+                                            d="M4.5 13.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3m15 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3m-7.5 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3"
+                                            fill="currentColor"
+                                        />
+                                    </svg>
+                                </button>
                             </div>
                         </div>
                     ))}

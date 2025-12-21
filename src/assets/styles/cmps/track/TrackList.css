@@ -5,7 +5,7 @@
 .track,
 .track-list-title {
     display: grid;
-    grid-template-columns: 40px 1fr 60px;
+    grid-template-columns: 2em 1fr minmax(10em, auto);
     align-items: center;
     gap: 1rem;
     color: #b3b3b3;
@@ -16,6 +16,10 @@
     position: relative;
     overflow: hidden;
     border-radius: 5px;
+}
+
+.left, .right {
+    text-align: center;
 }
 
 .track:hover {
@@ -34,11 +38,6 @@
 
 .track:hover::after {
     opacity: 1;
-}
-
-.track > div,
-.track-list-title > div {
-    text-align: center;
 }
 
 .track > .center,
@@ -90,4 +89,30 @@
 
 .track:hover .track-num-icon {
     opacity: 1;
+}
+
+.track-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #b3b3b3;
+}
+
+.track-actions button {
+    background-color: transparent;
+}
+
+.track-duration {
+    width: 40px;
+    text-align: right;
+}
+
+.track-actions .icon-control {
+    opacity: 0.7;
+    transition: opacity 0.15s ease, color 0.15s ease;
+}
+
+.track:hover .track-actions .icon-control {
+    opacity: 1;
+    color: white;
 }
