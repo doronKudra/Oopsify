@@ -1,10 +1,10 @@
 import { StationPreview } from './StationPreview'
 
 export function LikedTracks({ user, listType}){
-    const likedTracks = user ? user.likedTracks : {tracks:[]}
+    const likedTracks = user ? user.likedTracks : {}
     const station = {
         name: 'Liked Songs',
-        tracks: likedTracks?.tracks || [],
+        tracks: likedTracks.tracks || [],
         createdBy: user.userName,
         images: [{url: 'src/assets/images/liked-songs.png'}],
         id: 'liked-songs'

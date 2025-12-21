@@ -38,8 +38,12 @@ export async function removeStation(stationId) {
     }
 }
 
-export async function addStation(station) {
+export async function addStation(owner) {
     try {
+        const station = stationService.getEmptyStation()
+        console.log('we got here ',station)
+        const stationToSave = {...station,createdBy:owner}
+        station.createdBy = {...owner}
         const savedStation = await stationService.save(station)
         store.dispatch({ type: ADD_STATION, station: savedStation })
         return savedStation

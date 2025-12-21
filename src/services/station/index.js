@@ -6,7 +6,7 @@ import { stationService as remote } from './station.service.remote'
 
 function getEmptyStation() {
 	return {
-        _id: makeId(),
+        id: makeId(),
 		name: '',
         tags: '',
         createdBy: {},
