@@ -46,7 +46,7 @@ export function PlayerControls({ currTime, duration }) {
             </div>
             <div className="time-display">
                 <span>{duration ? getCurrTime(currTime) : '-:--'}</span>
-                <div className="track-duration"><div className="duration-bar" style={{ width: `${(currTime / duration) * 100}%` }}></div></div>
+                <div className="track-duration-footer"><div className="duration-bar" style={{ width: `${(currTime / duration) * 100}%` }}></div></div>
                 <span>{duration ? getCurrTime(duration) : '-:--'}</span>
             </div>
         </section>

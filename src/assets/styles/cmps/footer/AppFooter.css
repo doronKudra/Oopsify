@@ -69,7 +69,7 @@
     color: #b3b3b3;
 }
 
-.track-duration {
+.track-duration-footer {
     flex: 1;
     height: 4px;
     background-color: #4d4d4d;
@@ -91,7 +91,7 @@
     button {
         &:hover svg {
             fill: white;
-            transform: scale(1.1);
+            transform: scale(1.05);
         }
 
         padding: 8px;
@@ -111,25 +111,39 @@
     gap: 8px;
     justify-content: center;
     margin-bottom: 6px;
-    button {
+
+    button:not(.control-play-btn) {
         background-color: transparent;
         padding: 8px;
-        
+
+        &:hover svg {
+            fill: white;
+            transform: scale(1.05);
+        }
+
         svg {
             fill: var(--header3);
             width: 16px;
             height: 16px;
         }
     }
-    
+
     .control-play-btn {
+        padding: 8px;
         width: 32px;
         height: 32px;
         border-radius: 50%;
-        margin:0 10px;
+        margin: 0 10px;
         background-color: #fff;
-        svg{
+
+        &:hover {
+            transform: scale(1.05);
+        }
+
+        svg {
             fill: black;
+            width: 16px;
+            height: 16px;
         }
     }
 }
