@@ -11,12 +11,14 @@ export function SearchPage() {
     const [isLoading, setIsLoading] = useState(false)
     const [currentType, setCurrentType] = useState(null)
     const navigate = useNavigate()
-    console.log('items:', items)
+    
     useEffect(() => {
         const filterBy = { txt: searchParams.get('txt'), type: searchParams.get('type') }
         if (filterBy.txt && filterBy.type) {
             setIsLoading(true)
             onSearch(filterBy)
+        } else {
+            navigate('/genres')
         }
     }, [searchParams])
 
@@ -32,7 +34,7 @@ export function SearchPage() {
     }
 
     function onArtist(id) {
-        console.log('id:',id)
+        console.log('id:', id)
     }
 
 
