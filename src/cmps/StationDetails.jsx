@@ -9,7 +9,10 @@ import { getDemoStation } from '../services/track/track.service.js'
 import { TrackList } from './TrackList.jsx'
 import { StationControls } from './StationControls.jsx'
 import { FastAverageColor } from 'fast-average-color'
-import { updateUserLikedTracks, updateUser } from '../store/actions/user.actions.js'
+import {
+    updateUserLikedTracks,
+    updateUser,
+} from '../store/actions/user.actions.js'
 
 export function StationDetails() {
     const { stationId } = useParams()
@@ -21,10 +24,10 @@ export function StationDetails() {
     const stationFromStore = useSelector((store) => store.stationModule.station)
 
     const station =
-        stationId === 'liked-tracks' ? user.likedTracks : stationFromStore
+        stationId === 'liked-songs' ? user.likedTracks : stationFromStore
 
     useEffect(() => {
-        if (stationId !== 'liked-tracks') {
+        if (stationId !== 'liked-songs') {
             loadStation(stationId)
         }
     }, [stationId])
@@ -69,8 +72,11 @@ export function StationDetails() {
         } else {
             updatedTracks = [...likedTracks, clickedTrack]
         }
-        dispatch(updateUserLikedTracks(updatedTracks))
-        const userToUpdate = {...user, likedTracks: {...user.likedTracks, tracks: updatedTracks}}
+        updateUserLikedTracks(updatedTracks)
+        const userToUpdate = {
+            ...user,
+            likedTracks: { ...user.likedTracks, tracks: updatedTracks },
+        }
         await updateUser(userToUpdate)
     }
 

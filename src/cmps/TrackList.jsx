@@ -9,7 +9,6 @@ export function TrackList({ station, durationMs, user, onToggleLiked }) {
     }
 
     const likedTracks = user?.likedTracks?.tracks || []
-    console.log('user:', user)
 
     return (
         <section>
@@ -83,11 +82,30 @@ export function TrackList({ station, durationMs, user, onToggleLiked }) {
                                                 width="1em"
                                                 height="1em"
                                                 viewBox="0 0 16 16"
-                                                style={{ color: '#1db954' }}
                                             >
-                                                <path
-                                                    d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m11.748-1.97a.75.75 0 0 0-1.06-1.06l-4.47 4.47-1.405-1.406a.75.75 0 1 0-1.061 1.06l2.466 2.467 5.53-5.53z"
-                                                    fill="currentColor"
+                                                <defs>
+                                                    <mask id="check-cutout">
+                                                        <rect
+                                                            width="16"
+                                                            height="16"
+                                                            fill="white"
+                                                        />
+                                                        <path
+                                                            d="M4.5 8.5l2 2 5-5"
+                                                            stroke="black"
+                                                            strokeWidth="1.8"
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                        />
+                                                    </mask>
+                                                </defs>
+
+                                                <circle
+                                                    cx="8"
+                                                    cy="8"
+                                                    r="7"
+                                                    fill="#1db954"
+                                                    mask="url(#check-cutout)"
                                                 />
                                             </svg>
                                         ) : (
