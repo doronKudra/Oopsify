@@ -1,0 +1,60 @@
+
+.edit-modal{
+    position: fixed; /* Stays in place relative to the viewport */
+    top: 0;
+    left: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    display: flex;
+    flex-direction: column;
+    width: 32.75em;
+    height: 23.75em;
+    background-color: #282828;
+    border-radius: 8px;
+}
+
+.edit-modal-header{
+    display: flex;
+    justify-content: space-between;
+    padding: 1.5em;
+    h2{
+        display: inline-block;
+        margin: 0;
+    }
+    button{
+        
+    }
+}
+
+.edit-modal-img{
+    max-height: 11.25em;
+    max-width: 11.25em;
+    border-radius: 5px;
+}
+
+.edit-modal-body{
+    display: flex;
+    padding-inline: 18px;
+}
+
+.edit-modal-fields{
+    display: flex;
+    flex-direction: column;
+    width: 17.5rem;
+    height: 2.5rem;
+    margin-left: 1rem;
+    gap: 1rem;
+    input,textarea{
+        padding-inline: 12px;
+        width: 100%;
+        background-color: #3e3e3e;
+        border: none;
+    }
+    textarea{
+       height: 7.75rem; 
+       resize: none;
+    }
+    input{
+        height: 40px;
+    }
+}

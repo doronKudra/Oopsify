@@ -18,6 +18,7 @@ import { SideBar } from './cmps/SideBar/SideBar.jsx'
 import { SearchPage } from './pages/SearchPage.jsx'
 import { SearchGenres } from './pages/SearchGenres.jsx'
 import { SearchInDetails } from './cmps/SearchInDetails.jsx'
+import { EditStation } from './cmps/EditStation.jsx'
 
 export function RootCmp() {
     return (
