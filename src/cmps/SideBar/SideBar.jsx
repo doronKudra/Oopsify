@@ -12,7 +12,7 @@ import { LikedTracks} from '../LikedTracks.jsx'
 export function SideBar() {
     const dispatch = useDispatch()
     const user = useSelector(storeState => storeState.userModule.user)
-    const [filterBy, setFilterBy] = useState({...stationService.getDefaultFilter(), likedStations: user.likedStations})
+    const [filterBy, setFilterBy] = useState({...stationService.getDefaultFilter(), likedStations:user.likedStations})
     const allStations = useSelector(storeState => storeState.stationModule.stations)
     var stations = {...allStations}
     

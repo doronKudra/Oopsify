@@ -78,7 +78,12 @@ function saveLoggedinUser(user) {
         password: user.password,
         imgUrl: user.imgUrl,
         likedStations: user.likedStations || [],
-        likedTracks: user.likedTracks || [],
+        likedTracks: {        
+            name: 'Liked Songs',
+            tracks:user.likedTracks.tracks || [],
+            createdBy: user.userName,
+            images: [{url: 'src/assets/images/liked-songs.png'}],
+            id: 'liked-songs'},
     }
     sessionStorage.setItem(STORAGE_KEY_LOGGEDIN_USER, JSON.stringify(user))
     return user
@@ -93,7 +98,13 @@ async function _createLoggedinUser() {
         userName: 'admin',
         password: 'admin',
         imgUrl: 'https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png',
+        likedStations: [],
+        likedTracks: {  
+            name: 'Liked Songs',
+            tracks:[],
+            createdBy: 'admin',
+            images: [{url: 'src/assets/images/liked-songs.png'}],
+            id: 'liked-songs'},
     }
-
     saveLoggedinUser(user)
 }

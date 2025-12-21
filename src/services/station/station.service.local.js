@@ -14,15 +14,14 @@ export const stationService = {
 window.cs = stationService
 
 async function query(filterBy = '') {
-    console.log('filterBy query:', filterBy)
     var stations = await storageService.query(STORAGE_KEY)
     const { txt, likedStations } = filterBy
-    console.log('stations in query: ', stations)
     if (likedStations) {
+        console.log(likedStations, 'why are we here')
         stations = stations.filter(station =>
-            filterBy.likedStations.includes(station._id)
+            likedStations.includes(station.id)
         )
-        // console.log('stations after filter ',stations)
+        console.log('stations after filter ',stations)
     }
     // if (txt) {
     //     const regex = new RegExp(filterBy.txt, 'i')
