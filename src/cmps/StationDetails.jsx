@@ -45,6 +45,7 @@ export function StationDetails() {
         (sum, t) => sum + (t.duration_ms || 0),
         0
     )
+    console.log('station:', station)
 
     return (
         <section
@@ -64,11 +65,16 @@ export function StationDetails() {
                     <p>Album</p>
                     <h1>{station.name}</h1>
                     <div className="station-header-info">
-                        <h4>{`${station.artist} • ${station.year || 2002} • ${
-                            station.tracks.length
-                        } Songs, ${Math.floor(
-                            stationDuration / 60000
-                        )} min`}</h4>
+                        <h4>
+                            {[
+                                station.artist && station.artist,
+                                station.year || 2002, 
+                                `${station.tracks.length} Songs`, 
+                                `${Math.floor(stationDuration / 60000)} min`, 
+                            ]
+                                .filter(Boolean)
+                                .join(' • ')}
+                        </h4>
                     </div>
                 </div>
             </section>
