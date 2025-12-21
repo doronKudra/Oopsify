@@ -102,6 +102,10 @@
     }
 }
 
+.favorites-station-list{
+    margin: 0;
+}
+
 .sidebar-preview-station{
     display: flex;
     flex-direction: column;
@@ -117,12 +121,14 @@
 .sidebar-preview-station-title{
     font-size: 0.925rem;
     max-width: 80%;
+    font-weight: 500;
 }
 
 .sidebar-preview-station-info{
     font-size: 0.8rem;
     color: #b2b2b2;
     max-width: 80%;
+    font-weight: 600;
 }
 
 a.sidebar-station-preview-link{

@@ -77,8 +77,13 @@ function saveLoggedinUser(user) {
         userName: user.userName,
         password: user.password,
         imgUrl: user.imgUrl,
-        isAdmin: user.isAdmin,
-        stations: user.stations || [],
+        likedStations: user.likedStations || [],
+        likedTracks: {        
+            name: 'Liked Songs',
+            tracks:user.likedTracks.tracks || [],
+            createdBy: user.userName,
+            images: [{url: 'src/assets/images/liked-songs.png'}],
+            id: 'liked-songs'},
     }
     sessionStorage.setItem(STORAGE_KEY_LOGGEDIN_USER, JSON.stringify(user))
     return user
@@ -87,12 +92,19 @@ function saveLoggedinUser(user) {
 // To quickly create an admin user, uncomment the next line
 // _createAdmin()
 async function _createLoggedinUser() {
+    if(getLoggedinUser()) return
     const user = {
         fullName: 'Mustafa Adminsky',
         userName: 'admin',
         password: 'admin',
         imgUrl: 'https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png',
+        likedStations: [],
+        likedTracks: {  
+            name: 'Liked Songs',
+            tracks:[],
+            createdBy: 'admin',
+            images: [{url: 'src/assets/images/liked-songs.png'}],
+            id: 'liked-songs'},
     }
-
     saveLoggedinUser(user)
 }

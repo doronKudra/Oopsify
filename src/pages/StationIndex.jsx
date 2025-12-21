@@ -19,7 +19,7 @@ export function StationIndex() {
     const stations = useSelector(storeState => storeState.stationModule.stations)
 
     const [bgColor, setBgColor] = useState({ hex: '#3f3f3fff' })
-
+    // const user = useSelector(storeState => userService.userModule.user)
     useEffect(() => {
         dispatch(loadStations(filterBy))
     }, [filterBy, dispatch])

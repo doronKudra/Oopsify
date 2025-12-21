@@ -9,15 +9,25 @@ import { getDemoStation } from '../services/track/track.service.js'
 import { TrackList } from './TrackList.jsx'
 import { StationControls } from './StationControls.jsx'
 import { FastAverageColor } from 'fast-average-color'
+import { updateUserLikedTracks } from '../store/actions/user.actions.js'
 
 export function StationDetails() {
     const dispatch = useDispatch()
     const { stationId } = useParams()
 
-    const station = useSelector((store) => store.stationModule.station)
+    const user = useSelector((store) => store.userModule.user)
+    const likedTracks = user?.likedTracks?.tracks || []
+    console.log('user:', user)
+
+    const stationFromStore = useSelector((store) => store.stationModule.station)
+
+    const station =
+        stationId === 'liked-tracks' ? user.likedTracks : stationFromStore
 
     useEffect(() => {
-        dispatch(loadStation(stationId))
+        if (stationId !== 'liked-tracks') {
+            dispatch(loadStation(stationId))
+        }
     }, [stationId, dispatch])
 
     const [bgColor, setBgColor] = useState({ hex: '#121212' })
@@ -45,6 +55,23 @@ export function StationDetails() {
         (sum, t) => sum + (t.duration_ms || 0),
         0
     )
+    console.log('station:', station)
+
+    function onToggleLiked(clickedTrack) {
+        const isLiked = likedTracks.some(
+            (track) => track.id === clickedTrack.id
+        )
+        let updatedTracks
+
+        if (isLiked) {
+            updatedTracks = likedTracks.filter(
+                (track) => track.id !== clickedTrack.id
+            )
+        } else {
+            updatedTracks = [...likedTracks, clickedTrack]
+        }
+        dispatch(updateUserLikedTracks(updatedTracks))
+    }
 
     return (
         <section
@@ -64,27 +91,27 @@ export function StationDetails() {
                     <p>Album</p>
                     <h1>{station.name}</h1>
                     <div className="station-header-info">
-                        <h4>{`${station.artist} • ${station.year || 2002} • ${
-                            station.tracks.length
-                        } Songs, ${Math.floor(
-                            stationDuration / 60000
-                        )} min`}</h4>
+                        <h4>
+                            {[
+                                station.artist && station.artist,
+                                station.year || 2002,
+                                `${station.tracks.length} Songs`,
+                                `${Math.floor(stationDuration / 60000)} min`,
+                            ]
+                                .filter(Boolean)
+                                .join(' • ')}
+                        </h4>
                     </div>
                 </div>
             </section>
 
             <StationControls station={station} />
-            <TrackList station={station} durationMs={stationDuration} />
+            <TrackList
+                station={station}
+                durationMs={stationDuration}
+                user={user}
+                onToggleLiked={onToggleLiked}
+            />
         </section>
     )
-}
-
-{
-    /* <button
-                onClick={() => {
-                    onFavoriteStationMsg(station._id)
-                }}
-            >
-                ♡
-            </button> */
 }
