@@ -4,9 +4,10 @@ import { addStation } from '../../store/actions/station.actions.js'
 import { userService } from '../../services/user'
 
 export function SideBarHeader() {
-    
-    function onAddStation(){
-        addStation(userService.getLoggedinUser())
+    const navigate = useNavigate()
+    async function onAddStation(){
+        const savedStation = await addStation(userService.getLoggedinUser())
+        navigate(`/station/${savedStation.id}`)
     }
 
     return (

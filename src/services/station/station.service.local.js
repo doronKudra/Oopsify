@@ -46,14 +46,14 @@ async function save(station) {
     if (station.id) {
         const stationToSave = {
             id: station.id,
-            songs: station.songs,
+            tracks: station.tracks,
         }
         savedStation = await storageService.put(STORAGE_KEY,{...station, ...stationToSave})
     } else {
         const stationToSave = {
             description: station.description,
             id: makeId(),
-            images: [...station.images],
+            images: station.images.length ? [...station.images] : [{url:'/src/assets/images/default-img.png'}],
             name: station.name,
             tracks: station.tracks,
             owner: station.owner,

@@ -6,7 +6,7 @@ export function LikedTracks({ user, listType}){
         name: 'Liked Songs',
         tracks: likedTracks.tracks || [],
         createdBy: user.userName,
-        images: [{url: 'src/assets/images/liked-songs.png'}],
+        images: [{url: '/src/assets/images/liked-songs.png'}],
         id: 'liked-songs'
     }
     return <section>
