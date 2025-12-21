@@ -73,19 +73,17 @@ export function TrackList({ station, durationMs }) {
                             {/* RIGHT: like + duration + more */}
                             <div className="track-actions right">
                                 <button className="control-btn liked-btn">
-                                    <svg
-                                        viewBox="0 0 24 24"
-                                        className="icon-control"
-                                    >
+                                    <svg className="track-list-like-icon" ole="img" width="1em" height="1em" viewBox="0 0 16 16">
                                         <path
-                                            d="M11.999 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18m-11 9c0-6.075 4.925-11 11-11s11 4.925 11 11-4.925 11-11 11-11-4.925-11-11"
+                                            d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13zM0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8z"
                                             fill="currentColor"
                                         />
                                         <path
-                                            d="M17.999 12a1 1 0 0 1-1 1h-4v4a1 1 0 1 1-2 0v-4h-4a1 1 0 1 1 0-2h4V7a1 1 0 1 1 2 0v4h4a1 1 0 0 1 1 1"
+                                            d="M11.75 8a.75.75 0 0 1-.75.75H8.75V11a.75.75 0 0 1-1.5 0V8.75H5a.75.75 0 0 1 0-1.5h2.25V5a.75.75 0 0 1 1.5 0v2.25H11a.75.75 0 0 1 .75.75z"
                                             fill="currentColor"
                                         />
-                                    </svg>
+                                    </svg> 
+
                                 </button>
 
                                 <div className="track-duration-list">
@@ -96,6 +94,7 @@ export function TrackList({ station, durationMs }) {
                                     <svg
                                         viewBox="0 0 24 24"
                                         className="icon-control"
+                                        ole="img" width="1em" height="1em"
                                     >
                                         <path
                                             d="M4.5 13.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3m15 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3m-7.5 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3"

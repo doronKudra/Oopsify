@@ -1,11 +1,16 @@
 .track-container {
-    margin-top: .5em;
+    margin-top: 0.5em;
+}
+
+.track-list-container {
+    padding: 0;
+    font-weight: 550;
 }
 
 .track,
 .track-list-title {
     display: grid;
-    grid-template-columns: 2em 1fr minmax(10em, auto);
+    grid-template-columns: 2em 1fr 0.3fr;
     align-items: center;
     gap: 1rem;
     color: #b3b3b3;
@@ -16,9 +21,12 @@
     position: relative;
     overflow: hidden;
     border-radius: 5px;
+    height: 3.5em;
+    padding-inline: 1em;
 }
 
-.left, .right {
+.left,
+.right {
     text-align: center;
 }
 
@@ -94,7 +102,7 @@
 .track-actions {
     display: flex;
     align-items: center;
-    gap: 12px;
+    justify-content: end;
     color: #b3b3b3;
 }
 
@@ -115,4 +123,17 @@
 .track:hover .track-actions .icon-control {
     opacity: 1;
     color: white;
+}
+
+.track-duration-list {
+    margin-right: 0.75em;
+    width: 2.88em;
+    font-size: 0.85em;
+    font-weight: 450;
+    align-content: center;
+}
+
+.control-button {
+    display: flex;
+    align-items: center;
 }
