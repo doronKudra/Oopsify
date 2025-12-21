@@ -41,16 +41,21 @@ export function StationDetails() {
 
     if (!station) return <div>Loading...</div>
 
-const stationDuration = station.tracks.reduce(
-    (sum, t) => sum + (t.duration_ms || 0),
-    0
-)
+    const stationDuration = station.tracks.reduce(
+        (sum, t) => sum + (t.duration_ms || 0),
+        0
+    )
 
     return (
         <section
             className="station-details"
             style={{
-                background: `linear-gradient(to bottom, ${bgColor.hex}, #121212)`,
+                background: `linear-gradient(
+        to bottom,
+        ${bgColor.hex} 0%,
+        #121212 15%,
+        #121212 100%
+    )`,
             }}
         >
             <section className="station-header">
@@ -61,7 +66,9 @@ const stationDuration = station.tracks.reduce(
                     <div className="station-header-info">
                         <h4>{`${station.artist} • ${station.year || 2002} • ${
                             station.tracks.length
-                        } Songs, ${Math.floor(stationDuration/60000)} min`}</h4>
+                        } Songs, ${Math.floor(
+                            stationDuration / 60000
+                        )} min`}</h4>
                     </div>
                 </div>
             </section>
