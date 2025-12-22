@@ -16,6 +16,7 @@ import { makeId } from '../services/util.service.js'
 import {
     updateUserLikedTracks,
     updateUser,
+    toggleLiked,
 } from '../store/actions/user.actions.js'
 
 export function StationDetails() {
@@ -73,25 +74,8 @@ export function StationDetails() {
         0
     )
 
-    async function onToggleLiked(clickedTrack) {
-        const isLiked = likedTracks.some(
-            (track) => track.id === clickedTrack.id
-        )
-        let updatedTracks
-
-        if (isLiked) {
-            updatedTracks = likedTracks.filter(
-                (track) => track.id !== clickedTrack.id
-            )
-        } else {
-            updatedTracks = [...likedTracks, clickedTrack]
-        }
-        updateUserLikedTracks(updatedTracks)
-        const userToUpdate = {
-            ...user,
-            likedTracks: { ...user.likedTracks, tracks: updatedTracks },
-        }
-        await updateUser(userToUpdate)
+    async function onToggleLiked(track) {
+        await toggleLiked(track)
     }
 
     async function handleDragEnd(event) {
@@ -157,7 +141,6 @@ export function StationDetails() {
                     tracks={localTracks}
                     tempIdsRef={tempIdsRef}
                     durationMs={stationDuration}
-                    user={user}
                     onToggleLiked={onToggleLiked}
                 />
             </section>

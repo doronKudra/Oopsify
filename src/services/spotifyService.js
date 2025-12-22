@@ -50,7 +50,6 @@ function _clearObject(item, type) {
 async function search(txt, type = 'track', limit = 15) {
     const typeToSearch = type === 'station' ? 'playlist' : type
     const txtToSearch = encodeURIComponent(txt)
-    console.log('txt,typeToSearch:', txtToSearch, typeToSearch)
     const url = `https://api.spotify.com/v1/search?q=${txtToSearch}&type=${typeToSearch}&limit=${limit}`
     const res = await fetch(url, {
         headers: {
@@ -64,7 +63,6 @@ async function search(txt, type = 'track', limit = 15) {
     data = data[typeToSearch + 's'].items.filter(item => item)
 
     const dataToReturn = data.map(item => _clearObject(item))
-    console.log('dataToReturn:',dataToReturn)
     return dataToReturn
 }
 

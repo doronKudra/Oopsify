@@ -12,7 +12,6 @@ import { playerActions } from '../../store/actions/player.actions.js'
 export function AppFooter() {
 	const track = useSelector(state => state.playerModule.track)
 	const isPlaying = useSelector(state => state.playerModule.isPlaying)
-	console.log('currTrack:', track)
 
 	const playerRef = useRef(null)
 	const [currTime,setCurrTime] = useState(null)
@@ -21,7 +20,6 @@ export function AppFooter() {
 		playerRef.current = target
 		target.playVideo()
 		playerActions.onPlay()
-		// setCurrTime(target.)
 		console.log('target:',target)
 	}
 
