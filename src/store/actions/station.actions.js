@@ -73,6 +73,40 @@ export async function updateStation(station) {
     }
 }
 
+export async function addTrackToStation(station, track) {
+    try {
+        const updatedStation = {
+            ...station,
+            tracks: [...station.tracks, track],
+        }
+
+        const savedStation = await stationService.save(updatedStation)
+        store.dispatch({ type: UPDATE_STATION, station: savedStation })
+
+        return savedStation
+    } catch (err) {
+        console.error('Cannot add track to station', err)
+        throw err
+    }
+}
+
+export async function removeTrackFromStation(station, trackId) {
+    try {
+        const updatedStation = {
+            ...station,
+            tracks: station.tracks.filter(t => t.id !== trackId),
+        }
+
+        const savedStation = await stationService.save(updatedStation)
+        store.dispatch({ type: UPDATE_STATION, station: savedStation })
+
+        return savedStation
+    } catch (err) {
+        console.error('Cannot remove track from station', err)
+        throw err
+    }
+}
+
 // unitTestActions()
 async function unitTestActions() {
     await loadStations()
