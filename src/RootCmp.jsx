@@ -20,10 +20,12 @@ import { SearchGenres } from './pages/SearchGenres.jsx'
 import { YtPlayer } from './cmps/YtPlayer.jsx'
 import { EditStation } from './cmps/EditStation.jsx'
 import { SearchInDetails } from './cmps/SearchInDetails.jsx'
+import { OptionMenuProvider } from './cmps/OptionMenuProvider.jsx'
 
 export function RootCmp() {
     return (
         <DndContext>
+        <OptionMenuProvider>
             <div className="main-container">
                 <AppHeader />
                 <UserMsg />
@@ -58,6 +60,7 @@ export function RootCmp() {
 
                 <AppFooter />
             </div>
+        </OptionMenuProvider>
         </DndContext>
     )
 }

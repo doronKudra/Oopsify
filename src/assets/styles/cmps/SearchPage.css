@@ -1,7 +1,7 @@
 .search-page {
     background: var(--clr2);
     padding: 0 24px;
-    /* min-width: 200px; */
+    min-height: 100%;
 }
 
 .search-type {
@@ -24,15 +24,6 @@
     .type-active {
         background-color: #fff;
         color: var(--header1);
-    }
-}
-
-.search-track {
-    display: flex;
-    justify-content: space-between;
-
-    .search-name-img {
-        display: flex;
     }
 }
 
