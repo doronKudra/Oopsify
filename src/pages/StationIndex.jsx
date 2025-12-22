@@ -22,7 +22,6 @@ export function StationIndex() {
     const [bgColor, setBgColor] = useState({ hex: '#3f3f3fff' })
     const user = useSelector(storeState => storeState.userModule.user)
     const [menu, setMenu] = useState(null)
-    console.log(user, 'user')
     function openContextMenu({ x, y, context }) {
         setMenu({
             position: { x, y },
