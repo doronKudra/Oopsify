@@ -8,15 +8,15 @@ import { TrackPreview } from './TrackPreview.jsx'
 // get the user from store
 
 export function TrackList({ tracks, tempIdsRef, durationMs, onToggleLiked }) {
-    function msToTimeString(ms) {
-        const minutes = Math.floor(ms / 60000)
-        const seconds = Math.floor((ms % 60000) / 1000)
-        return `${minutes}:${seconds.toString().padStart(2, '0')}`
-    }
+    // function msToTimeString(ms) {
+    //     const minutes = Math.floor(ms / 60000)
+    //     const seconds = Math.floor((ms % 60000) / 1000)
+    //     return `${minutes}:${seconds.toString().padStart(2, '0')}`
+    // }
 
-    const likedTracks = useSelector(
-        (store) => store.userModule.user?.likedTracks?.tracks || []
-    )
+    // const likedTracks = useSelector(
+    //     (store) => store.userModule.user?.likedTracks?.tracks || []
+    // )
 
     return (
         <section>
@@ -47,14 +47,11 @@ export function TrackList({ tracks, tempIdsRef, durationMs, onToggleLiked }) {
                         strategy={verticalListSortingStrategy}
                     >
                         {tracks.map((track, idx) => {
-                            const isLiked = likedTracks.some(
-                                (t) => t.id === track.id
-                            )
                             const tempId = tempIdsRef.current[idx]
 
                             return (
                                 <SortableTrack id={tempId} key={tempId}>
-                                    <TrackPreview track={track} idx={idx} isLiked={isLiked} onToggleLiked={onToggleLiked} />
+                                    <TrackPreview track={track} idx={idx} onToggleLiked={onToggleLiked} />
                                 </SortableTrack>
                             )
                         })}

@@ -24,7 +24,6 @@ export function StationDetails() {
     const { stationId } = useParams()
 
     const user = useSelector((store) => store.userModule.user)
-    const likedTracks = user?.likedTracks?.tracks || []
 
     const stationFromStore = useSelector((store) => store.stationModule.station)
 
@@ -75,10 +74,6 @@ export function StationDetails() {
         0
     )
 
-    async function onToggleLiked(track) {
-        await toggleLiked(track)
-    }
-
     async function handleDragEnd(event) {
         const { active, over } = event
         if (!over || active.id === over.id) return
@@ -108,12 +103,12 @@ export function StationDetails() {
                     className="station-details"
                     style={{
                         background: `linear-gradient(
-        to bottom,
-        ${bgColor.hex} 0%,
-        ${bgColor.hex + '80'} 284px,
-        ${bgColor.hex + "50"} 284px,
-        #121212 500px
-    )`,
+                                    to bottom,
+                                    ${bgColor.hex} 0%,
+                                    ${bgColor.hex + '80'} 284px,
+                                    ${bgColor.hex + "50"} 284px,
+                                    #121212 500px
+                                    )`,
                     }}
                 >
                     <section className="station-header">
@@ -145,15 +140,10 @@ export function StationDetails() {
                         tempIdsRef={tempIdsRef}
                         durationMs={stationDuration}
                         user={user}
-                        onToggleLiked={onToggleLiked}
                     />
                 </section>
             </DndContext>
-            <SearchInDetails tracks={localTracks}
-                tempIdsRef={tempIdsRef}
-                durationMs={stationDuration}
-                user={user}
-                onToggleLiked={onToggleLiked} />
+            <SearchInDetails tracks={localTracks} />
         </>
     )
 }

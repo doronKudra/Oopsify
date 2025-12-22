@@ -1,10 +1,10 @@
 import { useSelector } from "react-redux"
-import { youtubeService } from "../services/youtubeService"
 import { playerActions } from "../store/actions/player.actions"
+import { toggleLiked } from "../store/actions/user.actions"
 
 
 
-export function TrackPreview({ track, idx, onToggleLiked, isLiked }) {
+export function TrackPreview({ track, idx, onToggleLiked }) {
 
     const likedTracks = useSelector(state => state.userModule.user.likedTracks?.tracks || [])
 
@@ -25,7 +25,11 @@ export function TrackPreview({ track, idx, onToggleLiked, isLiked }) {
             secs.toString().padStart(2, '0')
         )
     }
-    
+
+    async function onToggleLiked(track) {
+        await toggleLiked(track)
+    }
+
     function checkLiked(id) {
         const isLiked = likedTracks.find(likedTrack => likedTrack.id === id)
         if (isLiked) return true

@@ -1,10 +1,9 @@
 import { useState, useEffect, useRef } from "react"
 import { debounce } from "../services/util.service"
 import { spotifyService } from "../services/spotifyService.js"
-import { i } from "../services/youtubeService.js"
 import { TrackPreview } from "./TrackPreview.jsx"
 
-export function SearchInDetails() {
+export function SearchInDetails({isTracks}) {
     const [txt, setTxt] = useState('')
     const [tracks, setTracks] = useState([])
     const [isShown, setIsShown] = useState(false)
@@ -13,6 +12,10 @@ export function SearchInDetails() {
     useEffect(() => {
         debouncedSearchRef.current(txt)
     }, [txt])
+
+    useEffect(() => {
+        if (isTracks === false) setIsShown(true)
+    }, [isTracks])
 
     function handleSearch({ target }) {
         setTxt(target.value)
