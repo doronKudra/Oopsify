@@ -1,7 +1,8 @@
 .station-details {
-    border-radius: 8px;
     padding: 1em;
+    min-height: 100%;
 }
+
 .station-header {
     display: flex;
     flex-direction: row;
@@ -49,9 +50,6 @@
 .control-btn:hover .icon-control {
     color: #fff;
     transition: transform 0.2s ease, color 0.2s ease;
-}
-
-.control-btn:hover .icon-control:not(.list-btn) {
 }
 
 .play-icon {

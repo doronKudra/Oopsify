@@ -106,7 +106,7 @@ export function StationDetails() {
                                     to bottom,
                                     ${bgColor.hex} 0%,
                                     ${bgColor.hex + '80'} 284px,
-                                    ${bgColor.hex + "50"} 284px,
+                                    ${bgColor.hex + '50'} 284px,
                                     #121212 500px
                                     )`,
                     }}
@@ -141,9 +141,9 @@ export function StationDetails() {
                         durationMs={stationDuration}
                         user={user}
                     />
+                    <SearchInDetails tracks={localTracks} />
                 </section>
             </DndContext>
-            <SearchInDetails tracks={localTracks} />
         </>
     )
 }

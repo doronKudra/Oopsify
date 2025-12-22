@@ -1,11 +1,8 @@
 .app-footer {
-    position: fixed;
     bottom: 0;
-    height: 88px;
     width: 100%;
     gap: 10px;
     z-index: 1;
-
     display: grid;
     align-items: center;
     grid-template-columns: minmax(max-content, 1fr) 1.2fr minmax(max-content, 1fr);
