@@ -69,7 +69,7 @@ async function signup(user) {
             name: 'Liked Songs',
             tracks: user.likedTracks.tracks || [],
             createdBy: user.userName,
-            images: [{ url: 'src/assets/images/liked-songs.png' }],
+            images: [{ url: '/src/assets/images/liked-songs.png' }],
             id: 'liked-songs',
         },
     }
@@ -97,7 +97,7 @@ async function saveLoggedinUser(user) {
             name: 'Liked Songs',
             tracks: user.likedTracks.tracks,
             createdBy: 'admin',
-            images: [{ url: 'src/assets/images/liked-songs.png' }],
+            images: [{ url: '/src/assets/images/liked-songs.png' }],
             id: 'liked-songs',
         },
     }
@@ -125,7 +125,7 @@ async function _createLoggedinUser() {
             name: 'Liked Songs',
             tracks: [],
             createdBy: 'admin',
-            images: [{ url: 'src/assets/images/liked-songs.png' }],
+            images: [{ url: '/src/assets/images/liked-songs.png' }],
             id: 'liked-songs',
         },
     }
