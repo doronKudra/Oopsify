@@ -18,8 +18,7 @@ function getEmptyStation(owner) {
 
 function getDefaultFilter() {
     return {
-        txt: '',
-        sortDir: '',
+        likedStations: [],
     }
 }
 

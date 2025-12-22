@@ -18,11 +18,14 @@ export function StationIndex() {
     const stations = useSelector(storeState => storeState.stationModule.stations)
 
     const [bgColor, setBgColor] = useState({ hex: '#3f3f3fff' })
-    // const user = useSelector(storeState => userService.userModule.user)
+    const user = useSelector(storeState => storeState.userModule.user)
     useEffect(() => {
         loadStations(filterBy)
     }, [filterBy])
 
+    useEffect(() => {
+        setFilterBy(user.likedStations)
+    },[user])
     return (
         <main className="station-index" style={{
             background: `linear-gradient(to bottom, ${bgColor.hex}, #121212)`,

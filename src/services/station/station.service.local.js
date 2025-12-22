@@ -15,16 +15,12 @@ window.cs = stationService
 
 async function query(filterBy = '') {
     var stations = await storageService.query(STORAGE_KEY)
-    const { txt, likedStations } = filterBy
+    const { likedStations } = filterBy
     if (likedStations) {
         stations = stations.filter((station) =>
             likedStations.includes(station.id)
         )
     }
-    // if (txt) {
-    //     const regex = new RegExp(filterBy.txt, 'i')
-    //     stations = stations.filter((station) => regex.test(station.name))
-    // }
     return stations
 }
 

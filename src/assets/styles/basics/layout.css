@@ -1,7 +1,7 @@
 
 .main-container {
     display: grid;
-    grid-template-columns: 4.5rem 1fr 2rem; /* mobile */
+    grid-template-columns: 4.5rem 1fr; /* mobile */
     column-gap: 0.5rem;
     grid-template-rows: 4rem 1fr 4rem;
     >* {
@@ -12,7 +12,7 @@
         }
     }
     @media (min-width: 1048px){
-        grid-template-columns: 26.75rem 1fr 4rem;
+        grid-template-columns: 26.75rem 1fr;
     }
     
 }
