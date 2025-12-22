@@ -4,10 +4,8 @@ export const REMOVE_STATION = 'REMOVE_STATION'
 export const ADD_STATION = 'ADD_STATION'
 export const UPDATE_STATION = 'UPDATE_STATION'
 export const ADD_STATION_MSG = 'ADD_STATION_MSG'
-export const UPDATE_CURRENT_TRACK = 'UPDATE_CURRENT_TRACK'
 
 const initialState = {
-    currTrack: null,
     stations: [],
     station: null
 }
@@ -39,8 +37,6 @@ export function stationReducer(state = initialState, action) {
                 newState = { ...state, station: { ...state.station, msgs: [...state.station.msgs || [], action.msg] } }
                 break
             }
-        case UPDATE_CURRENT_TRACK:
-            newState = {...state, currTrack:action.track}
         default:
     }
     return newState

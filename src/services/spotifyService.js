@@ -64,6 +64,7 @@ async function search(txt, type = 'track', limit = 15) {
     data = data[typeToSearch + 's'].items.filter(item => item)
 
     const dataToReturn = data.map(item => _clearObject(item))
+    console.log('dataToReturn:',dataToReturn)
     return dataToReturn
 }
 

@@ -1,13 +1,18 @@
 import defaultImg from "../../assets/images/default-img.png"
+import { playerActions } from "../../store/actions/player.actions"
 
 
 export function SearchTrack({ items, onArtist }) {
+
+    function onPlayTrack(item) {
+        playerActions.onTrackToPlay(item)
+    }
 
 
     return (
         <ul className="search-track-list">
             {items.map(item => (
-                <li key={item.id} className="search-track">
+                <li onClick={() => onPlayTrack(item)} key={item.id} className="search-track">
                     <div className="search-name-img">
                         <img src={item?.images[2].url || defaultImg} alt="" />
                         <div className="search-name">
