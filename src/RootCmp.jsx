@@ -19,6 +19,7 @@ import { SearchPage } from './pages/SearchPage.jsx'
 import { SearchGenres } from './pages/SearchGenres.jsx'
 import { YtPlayer } from './cmps/YtPlayer.jsx'
 import { EditStation } from './cmps/EditStation.jsx'
+import { SearchInDetails } from './cmps/SearchInDetails.jsx'
 
 export function RootCmp() {
     return (
@@ -29,7 +30,7 @@ export function RootCmp() {
                 <SideBar />
                 <main>
                     <Routes>
-                        <Route path="test" element={<YtPlayer />} />
+                        <Route path="test" element={<SearchInDetails />} />
                         <Route path="about" element={<AboutUs />}>
                             <Route path="team" element={<AboutTeam />} />
                             <Route path="vision" element={<AboutVision />} />

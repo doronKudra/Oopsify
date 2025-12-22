@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react"
 import { useNavigate, useSearchParams } from "react-router-dom"
-import { spotifyService } from "../services/spotifyService"
-import { SearchTrack } from "../cmps/searchItems/SearchTrack"
-import { SearchStation } from "../cmps/searchItems/SearchStation"
+import { spotifyService } from "../services/spotifyService.js"
+import { SearchStation } from "../cmps/searchItems/SearchStation.jsx"
+import { TrackPreview } from "../cmps/TrackPreview.jsx"
 
 
 export function SearchPage() {
@@ -11,7 +11,7 @@ export function SearchPage() {
     const [isLoading, setIsLoading] = useState(false)
     const [currentType, setCurrentType] = useState(null)
     const navigate = useNavigate()
-    
+
     useEffect(() => {
         const filterBy = { txt: searchParams.get('txt'), type: searchParams.get('type') }
         if (filterBy.txt && filterBy.type) {
@@ -56,7 +56,14 @@ export function SearchPage() {
                 <button className={searchParams.get('type') === 'album' ? 'type-active' : ''} onClick={() => onType('album')}>Albums</button>
                 <button className={searchParams.get('type') === 'artist' ? 'type-active' : ''} onClick={() => onType('artist')}>Artists</button>
             </div>
-            {currentType === 'track' && <SearchTrack items={items} onArtist={onArtist} />}
+            <div className="track-container">
+                {items && items.length && currentType === 'track' ?
+                    items.map((track, idx) => (
+                        <TrackPreview key={track.id} track={track} isLiked={true} idx={idx} />
+                    ))
+                    : <div> No Results </div>
+                }
+            </div>
             {currentType === 'station' && <SearchStation items={items} />}
         </section>
     )
