@@ -35,7 +35,7 @@ export function RootCmp() {
                             <Route path="vision" element={<AboutVision />} />
                         </Route>
                         <Route path="/" element={<StationIndex />} />
-                            <Route path="genres" element={<SearchGenres />} />
+                        <Route path="genres" element={<SearchGenres />} />
                         <Route path="search" element={<SearchPage />} />
                         <Route
                             path="station/:stationId"

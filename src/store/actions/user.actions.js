@@ -100,6 +100,15 @@ export async function updateUser(user) {
     }
 }
 
+export function updateUserLikedStations(stations) {
+    return (dispatch) => {
+        dispatch({
+            type: SET_LIKED_STATIONS,
+            likedStations: [...stations],
+        })
+    }
+}
+
 export function updateUserLikedTracks(tracks) {
     return (dispatch) => {
         dispatch({
@@ -108,6 +117,28 @@ export function updateUserLikedTracks(tracks) {
         })
     }
 }
+
+export async function toggleLikedStation(clickedStationId) {
+    const user = store.getState().userModule.user
+    const likedStations = user?.likedStations || []
+    const isLiked = likedStations.some((stationId) => stationId === clickedStationId)
+    let updatedStations
+    console.log('likedStations', likedStations)
+    if (isLiked) {
+        updatedStations = likedStations.filter(
+            (stationId) => stationId !== clickedStationId
+        )
+    } else {
+        updatedStations = [...likedStations, clickedStationId]
+    }
+    // updateUserLikedStations(updatedStations)
+    const userToUpdate = {
+        ...user,
+        likedStations: [ ...updatedStations ],
+    }
+    await updateUser(userToUpdate)
+}
+
 
 export async function toggleLiked(clickedTrack) {
     const user = store.getState().userModule.user

@@ -13,10 +13,13 @@ export const stationService = {
 }
 window.cs = stationService
 
-async function query(filterBy = '') {
+async function query(filterBy = {}) {
     var stations = await storageService.query(STORAGE_KEY)
-    const { likedStations } = filterBy
-    if (likedStations) {
+    // const likedStationIds = !Array.isArray(filterBy.likedStations) ? Object.values(filterBy.likedStations) : filterBy.likedStations
+    if (filterBy?.likedStations) {
+        let likedStations = filterBy.likedStations
+        // if(typeof likedStations === 'object') likedStations = Object.keys(filterBy.likedStations)
+        console.log('stations',stations)
         stations = stations.filter((station) =>
             likedStations.includes(station.id)
         )

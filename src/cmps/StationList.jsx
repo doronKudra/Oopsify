@@ -1,39 +1,12 @@
-import { userService } from '../services/user'
 import { useState } from 'react'
 import { StationPreview } from './StationPreview'
-import { ContextMenu } from './ContextMenu'
+
 import { makeId } from '../services/util.service'
+import { removeStation, addStation } from '../store/actions/station.actions.js'
+import { updateUserLikedStations } from '../store/actions/user.actions.js'
+import { useSelector } from 'react-redux'
 
-export function StationList({ stations, listType }) {
-    const [menu, setMenu] = useState(null)
-
-    function openContextMenu({ x, y, context }) {
-        setMenu({
-            position: { x, y },
-            context,
-            actions: [
-                {id:makeId(),name:'Pin',callback: ({ station }) => onPinStation(station)},
-                {id:makeId(),name:'Remove from Your Library',callback: ({ station }) => onRemoveStation(station)},
-                {id:makeId(),name:'Add to Your Library',callback: ({ station }) => onAddStation(station)},
-            ]
-        })
-    }
-
-    function onPinStation(station){
-        console.log('pinned')
-    }
-
-    function onRemoveStation(station){
-        
-    }
-
-    function onAddStation(station){
-        console.log('added')
-    }
-
-    function closeContextMenu() {
-        setMenu(null)
-    }
+export function StationList({ openContextMenu,stations, listType }) {
     if (!stations?.length) return
     return (<section>
         <ul className={listType + "-station-list"}>
@@ -43,13 +16,5 @@ export function StationList({ stations, listType }) {
                 </li>)
             }
         </ul>
-        {menu && (
-            <ContextMenu
-                actions={menu.actions}
-                context={menu.context}
-                position={menu.position}
-                onClose={closeContextMenu}
-            />
-        )}
     </section>)
 }
