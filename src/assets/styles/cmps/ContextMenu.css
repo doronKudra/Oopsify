@@ -1,0 +1,40 @@
+.context-menu {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+
+    ul {
+        display: flex;
+        flex-direction: column;
+        width: 280px;
+        padding: 0.25rem;
+        background-color: #282828;
+        margin: 0;
+        border-radius: 0.25rem;
+    }
+
+    li button {
+        text-align: start;
+        font-weight: 500;
+        width: 100%;
+        background-color: #282828;
+        padding: 0.5rem 0.5rem 0.5rem 0.75rem;
+        border-radius: 0.125rem;
+
+        &:hover {
+            cursor: pointer;
+            background-color: #626262;
+        }
+    }
+}
+
+.context-menu-backdrop {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+}
+
+.context-menu-content {
+    position: fixed;
+    z-index: 1;
+}

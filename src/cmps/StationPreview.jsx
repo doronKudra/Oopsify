@@ -1,14 +1,25 @@
 import { Link } from 'react-router-dom'
 
-export function StationPreview({ station, listType }) {
-    return (<DynamicCmp station={station} listType={listType} />)
+
+export function StationPreview({openContextMenu, station, listType }) {
+    function onStationRightClick(ev, station) {
+    ev.preventDefault()
+    ev.stopPropagation()
+
+    openContextMenu({
+        x: ev.clientX,
+        y: ev.clientY,
+        context: { station }
+    })
+}
+    return (<DynamicCmp onStationRightClick={onStationRightClick} station={station} listType={listType} />)
 }
 
-function DynamicCmp({ station, listType }) {
+function DynamicCmp({onStationRightClick ,station, listType }) {
     switch (listType) {
         case 'favorites': // small image, pinned, type, creator (for liked tracks show number of tracks)
             return <Link className='sidebar-station-preview-link' to={`/station/${station?.id}`}>
-                <article className="sidebar-station-preview-container">
+                <article onContextMenu={(ev) => onStationRightClick(ev, station)} className="sidebar-station-preview-container">
                     <div className="small-img-container">
                         <img className="small-img" src={station?.images?.at(-1)?.url}></img>
                     </div>
@@ -29,7 +40,7 @@ function DynamicCmp({ station, listType }) {
 
         case 'index': // bigger image, title -> description -> name of artists (if no title show desc, if no desc show artists names)
                 return <Link className='index-station-preview-link' to={`/station/${station?.id}`}>
-                <article className="index-station-preview-container">
+                <article onContextMenu={(ev) => onStationRightClick(ev, station)} className="index-station-preview-container">
                     <div className="medium-img-container">
                         <img className="medium-img" src={station?.images?.at(0)?.url}></img>
                     </div>
@@ -47,7 +58,7 @@ function DynamicCmp({ station, listType }) {
             </Link>
         case 'recent': // small image, title
             return <Link className='recent-station-preview-link' to={`/station/${station?.id}`}>
-                <article className="recent-station-preview-container">
+                <article onContextMenu={(ev) => onStationRightClick(ev, station)} className="recent-station-preview-container">
                     <img className="recent-small-img small-img" src={station?.images?.at(-1)?.url}></img>
                     <div className="recent-preview-station">
                         <span className="recent-preview-station-title">
