@@ -51,8 +51,8 @@ export function SearchGenres() {
             <div className="search-genres-header" >
                 <h1>Browse all</h1>
             </div>
-            {genres.map(genre => (
-                <section key={genre.name} className="genre-preview" style={{ backgroundColor: genre.bgc }}>
+            {genres.map((genre, idx) => (
+                <section key={genre.name + idx} className="genre-preview" style={{ backgroundColor: genre.bgc }}>
                     <h2>{genre.name}</h2>
                     <img src={genre.url} alt="" />
                 </section>

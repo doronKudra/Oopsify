@@ -7,7 +7,6 @@ export function FooterTrackPreview({ track, onAdd, onTilte, onArtist }) {
 
 
     if (!track) return (<section className="footer-track-preview"></section>)
-        console.log('track:',track)
     return (
         <section className="footer-track-preview">
             <img src={track.images[0].url || defaultImg} alt="" width={'56px'} height={'56px'} />
