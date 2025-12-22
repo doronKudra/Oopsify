@@ -2,18 +2,13 @@ import YouTube from "react-youtube";
 
 export function YtPlayer({ videoId, onReady, onPause, onPlay }) {
     const opts = {
-        height: '300px',
-        width: '300px',
+        height: '0',
+        width: '0',
         playerVars: {
             autoplay: 1,
             controls: 0
         }
     }
-
-    // function handleReady({target}) {
-    //     onReady(target)
-    // }
-
 
     return (
         <YouTube

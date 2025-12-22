@@ -1,9 +1,9 @@
 .SearchInDetails {
-    min-height: 200px;
+    min-height: 300px;
     position: relative;
     background-color: var(--clr2);
     padding: 24px 16px 40px;
-    border-top: 1px solid rgba(128, 128, 128);
+    border-top: 1px solid rgb(128, 128, 128, 0.5);
 
     .details-find-more {
         position: absolute;
@@ -20,7 +20,7 @@
 }
 
 .search-details-header {
-    
+    padding-bottom: 24px;
     display: flex;
     justify-content: space-between;
     

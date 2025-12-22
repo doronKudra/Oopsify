@@ -1,14 +1,13 @@
+import { utilService } from "../../services/util.service"
 
 export function PlayerControls({ currTime, duration, onPause, onPlay,isPlaying }) {
-
-
 
     function getCurrTime(time) {
         const totalSec = Math.floor(time / 1000)
         const hours = Math.floor(totalSec / 3600)
         const mins = Math.floor((totalSec % 3600) / 60)
         const secs = totalSec % 60
-
+    
         if (duration >= 60000 * 60) {
             return (hours + ':' +
                 mins.toString().padStart(2, 0) + ':' +
@@ -19,8 +18,8 @@ export function PlayerControls({ currTime, duration, onPause, onPlay,isPlaying }
             mins.toString().padStart(2, '0') + ':' +
             secs.toString().padStart(2, '0')
         )
-        // return timeStr
     }
+    
     return (
         <section className="player-controls">
             <div className="controls">

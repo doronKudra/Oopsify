@@ -12,6 +12,7 @@ import { FastAverageColor } from 'fast-average-color'
 import { DndContext } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
 import { makeId } from '../services/util.service.js'
+import { SearchInDetails } from './SearchInDetails.jsx'
 
 import {
     updateUserLikedTracks,
@@ -23,7 +24,6 @@ export function StationDetails() {
     const { stationId } = useParams()
 
     const user = useSelector((store) => store.userModule.user)
-    const likedTracks = user?.likedTracks?.tracks || []
 
     const stationFromStore = useSelector((store) => store.stationModule.station)
 
@@ -74,10 +74,6 @@ export function StationDetails() {
         0
     )
 
-    async function onToggleLiked(track) {
-        await toggleLiked(track)
-    }
-
     async function handleDragEnd(event) {
         const { active, over } = event
         if (!over || active.id === over.id) return
@@ -101,49 +97,53 @@ export function StationDetails() {
     }
 
     return (
-        <DndContext onDragEnd={handleDragEnd}>
-            <section
-                className="station-details"
-                style={{
-                    background: `linear-gradient(
-        to bottom,
-        ${bgColor.hex} 0%,
-        #121212 15%,
-        #121212 100%
-    )`,
-                }}
-            >
-                <section className="station-header">
-                    <img src={albumCoverArt} alt="Cover" />
-                    <div className="station-header-title">
-                        <p>Album</p>
-                        <h1>{station.name}</h1>
-                        <div className="station-header-info">
-                            <h4>
-                                {[
-                                    station.artist && station.artist,
-                                    station.year || 2002,
-                                    `${localTracks.length} Songs`,
+        <>
+            <DndContext onDragEnd={handleDragEnd}>
+                <section
+                    className="station-details"
+                    style={{
+                        background: `linear-gradient(
+                                    to bottom,
+                                    ${bgColor.hex} 0%,
+                                    ${bgColor.hex + '80'} 284px,
+                                    ${bgColor.hex + "50"} 284px,
+                                    #121212 500px
+                                    )`,
+                    }}
+                >
+                    <section className="station-header">
+                        <img src={albumCoverArt} alt="Cover" />
+                        <div className="station-header-title">
+                            <p>Album</p>
+                            <h1>{station.name}</h1>
+                            <div className="station-header-info">
+                                <h4>
+                                    {[
+                                        station.artist && station.artist,
+                                        station.year || 2002,
+                                        `${localTracks.length} Songs`,
 
-                                    `${Math.floor(
-                                        stationDuration / 60000
-                                    )} min`,
-                                ]
-                                    .filter(Boolean)
-                                    .join(' • ')}
-                            </h4>
+                                        `${Math.floor(
+                                            stationDuration / 60000
+                                        )} min`,
+                                    ]
+                                        .filter(Boolean)
+                                        .join(' • ')}
+                                </h4>
+                            </div>
                         </div>
-                    </div>
-                </section>
+                    </section>
 
-                <StationControls station={station} />
-                <TrackList
-                    tracks={localTracks}
-                    tempIdsRef={tempIdsRef}
-                    durationMs={stationDuration}
-                    onToggleLiked={onToggleLiked}
-                />
-            </section>
-        </DndContext>
+                    <StationControls station={station} />
+                    <TrackList
+                        tracks={localTracks}
+                        tempIdsRef={tempIdsRef}
+                        durationMs={stationDuration}
+                        user={user}
+                    />
+                </section>
+            </DndContext>
+            <SearchInDetails tracks={localTracks} />
+        </>
     )
 }

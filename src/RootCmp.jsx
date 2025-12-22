@@ -19,6 +19,7 @@ import { SearchPage } from './pages/SearchPage.jsx'
 import { SearchGenres } from './pages/SearchGenres.jsx'
 import { YtPlayer } from './cmps/YtPlayer.jsx'
 import { EditStation } from './cmps/EditStation.jsx'
+import { SearchInDetails } from './cmps/SearchInDetails.jsx'
 
 export function RootCmp() {
     return (
@@ -26,29 +27,38 @@ export function RootCmp() {
             <div className="main-container">
                 <AppHeader />
                 <UserMsg />
-                <SideBar />
-                <main>
-                    <Routes>
-                        <Route path="test" element={<YtPlayer />} />
-                        <Route path="about" element={<AboutUs />}>
-                            <Route path="team" element={<AboutTeam />} />
-                            <Route path="vision" element={<AboutVision />} />
-                        </Route>
-                        <Route path="/" element={<StationIndex />} />
-                        <Route path="genres" element={<SearchGenres />} />
-                        <Route path="search" element={<SearchPage />} />
-                        <Route
-                            path="station/:stationId"
-                            element={<StationDetails />}
-                        />
-                        <Route path="user/:id" element={<UserDetails />} />
-                        <Route path="login" element={<LoginSignup />}>
-                            <Route element={<Login />} />
-                            <Route path="signup" element={<Signup />} />
-                        </Route>
-                    </Routes>
+
+                <div className="content-area">
+                    <SideBar />
+                </div>
+                <main className="main-content">
+                    <div className="route-scroll">
+                        <Routes>
+                            <Route path="test" element={<YtPlayer />} />
+                            <Route path="about" element={<AboutUs />}>
+                                <Route path="team" element={<AboutTeam />} />
+                                <Route
+                                    path="vision"
+                                    element={<AboutVision />}
+                                />
+                            </Route>
+                            <Route path="/" element={<StationIndex />} />
+                            <Route path="genres" element={<SearchGenres />} />
+                            <Route path="search" element={<SearchPage />} />
+                            <Route
+                                path="station/:stationId"
+                                element={<StationDetails />}
+                            />
+                            <Route path="user/:id" element={<UserDetails />} />
+                            <Route path="login" element={<LoginSignup />}>
+                                <Route element={<Login />} />
+                                <Route path="signup" element={<Signup />} />
+                            </Route>
+                        </Routes>
+                    </div>
                     {/* <EditStation/> */}
                 </main>
+
                 <AppFooter />
             </div>
         </DndContext>
