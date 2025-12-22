@@ -3,7 +3,8 @@ import { debounce } from "../services/util.service"
 import { spotifyService } from "../services/spotifyService.js"
 import { TrackPreview } from "./TrackPreview.jsx"
 
-export function SearchInDetails({isTracks}) {
+export function SearchInDetails({ localTracks }) {
+
     const [txt, setTxt] = useState('')
     const [tracks, setTracks] = useState([])
     const [isShown, setIsShown] = useState(false)
@@ -14,8 +15,10 @@ export function SearchInDetails({isTracks}) {
     }, [txt])
 
     useEffect(() => {
-        if (isTracks === false) setIsShown(true)
-    }, [isTracks])
+        console.log('localTracks:', localTracks)
+        if (!localTracks || !localTracks.length) setIsShown(true)
+        else setIsShown(false)
+    }, [localTracks])
 
     function handleSearch({ target }) {
         setTxt(target.value)
@@ -60,7 +63,7 @@ export function SearchInDetails({isTracks}) {
                     </button>
                 </div>
                 <div className="track-container">
-                    
+
                     {tracks && tracks.length ?
                         tracks.map((track, idx) => (
                             <TrackPreview key={track.id} track={track} isLiked={true} idx={idx} />
