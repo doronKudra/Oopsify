@@ -113,7 +113,6 @@ export function StationDetails() {
             ...station,
             tracks: newTrackOrder,
         }
-        console.log('updatedStation:', updatedStation)
         await updateStation(updatedStation)
     }
 

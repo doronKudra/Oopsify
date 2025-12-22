@@ -12,17 +12,16 @@ import { store } from '../../store/store.js'
 
 export function SideBar() {
     const user = useSelector(storeState => storeState.userModule.user)
-    const [filterBy, setFilterBy] = useState({...stationService.getDefaultFilter(), likedStations:user.likedStations})
-    const allStations = useSelector(storeState => storeState.stationModule.stations)
-    var stations = {...allStations}
-    
+    const [filterBy, setFilterBy] = useState(stationService.getDefaultFilter())
+    const stations = useSelector(storeState => storeState.stationModule.stations)
+
     useEffect(() => {
         loadStations(filterBy)
     }, [filterBy])
 
-    // useEffect(() => {
-
-    // })
+    useEffect(() => {
+        setFilterBy({likedStations: user.likedStations})
+    },[user])
     return (
         <aside className='sidebar-container'>
             <header className='sidebar-actions'>
