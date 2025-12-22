@@ -1,24 +1,22 @@
 import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { useRef } from 'react'
+import { useSelector } from 'react-redux'
 import { userService } from '../services/user'
 import { StationPreview } from './StationPreview'
 import { SortableTrack } from './SortableTracks.jsx'
 import { TrackPreview } from './TrackPreview.jsx'
 // get the user from store
 
-export function TrackList({
-    tracks,
-    tempIdsRef,
-    durationMs,
-    user,
-    onToggleLiked,
-}) {
+export function TrackList({ tracks, tempIdsRef, durationMs, onToggleLiked }) {
     function msToTimeString(ms) {
         const minutes = Math.floor(ms / 60000)
         const seconds = Math.floor((ms % 60000) / 1000)
         return `${minutes}:${seconds.toString().padStart(2, '0')}`
     }
-    const likedTracks = user?.likedTracks?.tracks || []
+
+    const likedTracks = useSelector(
+        (store) => store.userModule.user?.likedTracks?.tracks || []
+    )
 
     return (
         <section>
