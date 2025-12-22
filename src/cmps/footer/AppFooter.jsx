@@ -57,7 +57,7 @@ export function AppFooter() {
 			{track && <YtPlayer videoId={track.videoId} onReady={onReady} />}
 			<footer className="app-footer">
 				<FooterTrackPreview track={track} onAdd={onAdd} onTilte={onTilte} onArtist={onArtist} />
-				<PlayerControls  currTime={60000} duration={track?.duration} onPause={onPause} onPlay={onPlay} isPlaying={isPlaying}  />
+				<PlayerControls  currTime={0} duration={track?.duration} onPause={onPause} onPlay={onPlay} isPlaying={isPlaying}  />
 				<VolumeControl />
 			</footer>
 		</>
