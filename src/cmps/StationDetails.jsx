@@ -1,34 +1,51 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { tracks } from '../services/track/track.service.js'
 import { showSuccessMsg, showErrorMsg } from '../services/event-bus.service'
-import { loadStation, addStationMsg } from '../store/actions/station.actions'
+import { loadStation, updateStation } from '../store/actions/station.actions'
 import { getDemoStation } from '../services/track/track.service.js'
 import { TrackList } from './TrackList.jsx'
 import { StationControls } from './StationControls.jsx'
 import { FastAverageColor } from 'fast-average-color'
-import { updateUserLikedTracks } from '../store/actions/user.actions.js'
+import { DndContext } from '@dnd-kit/core'
+import { arrayMove } from '@dnd-kit/sortable'
+import { makeId } from '../services/util.service.js'
+
+import {
+    updateUserLikedTracks,
+    updateUser,
+} from '../store/actions/user.actions.js'
 
 export function StationDetails() {
-    const dispatch = useDispatch()
     const { stationId } = useParams()
 
     const user = useSelector((store) => store.userModule.user)
     const likedTracks = user?.likedTracks?.tracks || []
-    console.log('user:', user)
 
     const stationFromStore = useSelector((store) => store.stationModule.station)
 
     const station =
-        stationId === 'liked-tracks' ? user.likedTracks : stationFromStore
+        stationId === 'liked-songs' ? user.likedTracks : stationFromStore
 
     useEffect(() => {
-        if (stationId !== 'liked-tracks') {
-            dispatch(loadStation(stationId))
+        if (stationId !== 'liked-songs') {
+            loadStation(stationId)
         }
-    }, [stationId, dispatch])
+    }, [stationId])
+
+    const [localTracks, setLocalTracks] = useState([])
+    useEffect(() => {
+        if (station?.tracks) {
+            setLocalTracks(station.tracks)
+        }
+    }, [station])
+
+    const tempIdsRef = useRef([])
+    if (tempIdsRef.current.length !== localTracks.length) {
+        tempIdsRef.current = localTracks.map(() => makeId())
+    }
 
     const [bgColor, setBgColor] = useState({ hex: '#121212' })
 
@@ -55,9 +72,8 @@ export function StationDetails() {
         (sum, t) => sum + (t.duration_ms || 0),
         0
     )
-    console.log('station:', station)
 
-    function onToggleLiked(clickedTrack) {
+    async function onToggleLiked(clickedTrack) {
         const isLiked = likedTracks.some(
             (track) => track.id === clickedTrack.id
         )
@@ -70,48 +86,82 @@ export function StationDetails() {
         } else {
             updatedTracks = [...likedTracks, clickedTrack]
         }
-        dispatch(updateUserLikedTracks(updatedTracks))
+        updateUserLikedTracks(updatedTracks)
+        const userToUpdate = {
+            ...user,
+            likedTracks: { ...user.likedTracks, tracks: updatedTracks },
+        }
+        await updateUser(userToUpdate)
+    }
+
+    async function handleDragEnd(event) {
+        const { active, over } = event
+        if (!over || active.id === over.id) return
+
+        const oldIndex = tempIdsRef.current.indexOf(active.id)
+        const newIndex = tempIdsRef.current.indexOf(over.id)
+
+        const newTrackOrder = arrayMove(localTracks, oldIndex, newIndex)
+        // 1. Update UI immediately
+        setLocalTracks(newTrackOrder)
+
+        // 2. Update temp IDs
+        tempIdsRef.current = arrayMove(tempIdsRef.current, oldIndex, newIndex)
+
+        // 3. Persist to backend + Redux
+        const updatedStation = {
+            ...station,
+            tracks: newTrackOrder,
+        }
+        console.log('updatedStation:', updatedStation)
+        await updateStation(updatedStation)
     }
 
     return (
-        <section
-            className="station-details"
-            style={{
-                background: `linear-gradient(
+        <DndContext onDragEnd={handleDragEnd}>
+            <section
+                className="station-details"
+                style={{
+                    background: `linear-gradient(
         to bottom,
         ${bgColor.hex} 0%,
         #121212 15%,
         #121212 100%
     )`,
-            }}
-        >
-            <section className="station-header">
-                <img src={albumCoverArt} alt="Cover" />
-                <div className="station-header-title">
-                    <p>Album</p>
-                    <h1>{station.name}</h1>
-                    <div className="station-header-info">
-                        <h4>
-                            {[
-                                station.artist && station.artist,
-                                station.year || 2002,
-                                `${station.tracks.length} Songs`,
-                                `${Math.floor(stationDuration / 60000)} min`,
-                            ]
-                                .filter(Boolean)
-                                .join(' • ')}
-                        </h4>
-                    </div>
-                </div>
-            </section>
+                }}
+            >
+                <section className="station-header">
+                    <img src={albumCoverArt} alt="Cover" />
+                    <div className="station-header-title">
+                        <p>Album</p>
+                        <h1>{station.name}</h1>
+                        <div className="station-header-info">
+                            <h4>
+                                {[
+                                    station.artist && station.artist,
+                                    station.year || 2002,
+                                    `${localTracks.length} Songs`,
 
-            <StationControls station={station} />
-            <TrackList
-                station={station}
-                durationMs={stationDuration}
-                user={user}
-                onToggleLiked={onToggleLiked}
-            />
-        </section>
+                                    `${Math.floor(
+                                        stationDuration / 60000
+                                    )} min`,
+                                ]
+                                    .filter(Boolean)
+                                    .join(' • ')}
+                            </h4>
+                        </div>
+                    </div>
+                </section>
+
+                <StationControls station={station} />
+                <TrackList
+                    tracks={localTracks}
+                    tempIdsRef={tempIdsRef}
+                    durationMs={stationDuration}
+                    user={user}
+                    onToggleLiked={onToggleLiked}
+                />
+            </section>
+        </DndContext>
     )
 }

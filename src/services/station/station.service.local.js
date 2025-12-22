@@ -17,18 +17,14 @@ async function query(filterBy = '') {
     var stations = await storageService.query(STORAGE_KEY)
     const { txt, likedStations } = filterBy
     if (likedStations) {
-        console.log(likedStations, 'why are we here')
-        stations = stations.filter(station =>
+        stations = stations.filter((station) =>
             likedStations.includes(station.id)
         )
-        console.log('stations after filter ',stations)
     }
     // if (txt) {
     //     const regex = new RegExp(filterBy.txt, 'i')
-    //     console.log(stations)
     //     stations = stations.filter((station) => regex.test(station.name))
     // }
-    console.log('stations after filter', stations)
     return stations
 }
 
@@ -43,20 +39,20 @@ async function remove(stationId) {
 
 async function save(station) {
     var savedStation
-    if (station._id) {
+    if (station.id) {
         const stationToSave = {
-            _id: station._id,
-            songs: station.songs,
+            id: station.id,
+            tracks: station.tracks,
         }
-        savedStation = await storageService.put(STORAGE_KEY, stationToSave)
+        savedStation = await storageService.put(STORAGE_KEY,{...station, ...stationToSave})
     } else {
         const stationToSave = {
+            description: station.description,
+            id: makeId(),
+            images: station.images.length ? [...station.images] : [{url:'/src/assets/images/default-img.png'}],
             name: station.name,
-            songs: station.songs,
-            // Later, owner is set by the backend
-            createdBy: userService.getLoggedinUser(),
-            likedByUsers: station.likedByUsers,
-            tags: station.tags
+            tracks: station.tracks,
+            owner: station.owner,
         }
         savedStation = await storageService.post(STORAGE_KEY, stationToSave)
     }

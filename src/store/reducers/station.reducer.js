@@ -11,8 +11,8 @@ const initialState = {
 }
 
 export function stationReducer(state = initialState, action) {
-    var newState = state
-    var stations
+    let newState = state
+    let stations
     switch (action.type) {
         case SET_STATIONS:
             newState = { ...state, stations: action.stations }
@@ -21,15 +21,15 @@ export function stationReducer(state = initialState, action) {
             newState = { ...state, station: action.station }
             break
         case REMOVE_STATION:
-            const lastRemovedStation = state.stations.find(station => station._id === action.stationId)
-            stations = state.stations.filter(station => station._id !== action.stationId)
+            const lastRemovedStation = state.stations.find(station => station.id === action.stationId)
+            stations = state.stations.filter(station => station.id !== action.stationId)
             newState = { ...state, stations, lastRemovedStation }
             break
         case ADD_STATION:
             newState = { ...state, stations: [...state.stations, action.station] }
             break
         case UPDATE_STATION:
-            stations = state.stations.map(station => (station._id === action.station._id) ? action.station : station)
+            stations = state.stations.map(station => (station.id === action.station.id) ? action.station : station)
             newState = { ...state, stations }
             break
         case ADD_STATION_MSG:
@@ -44,28 +44,28 @@ export function stationReducer(state = initialState, action) {
 
 // unitTestReducer()
 
-function unitTestReducer() {
-    var state = initialState
-    const station1 = { _id: 'b101', name: 'Station 1' }
-    const station2 = { _id: 'b102', name: 'Station 2' }
+// function unitTestReducer() {
+//     var state = initialState
+//     const station1 = { id: 'b101', name: 'Station 1' }
+//     const station2 = { id: 'b102', name: 'Station 2' }
 
-    state = stationReducer(state, { type: SET_STATIONS, stations: [station1] })
-    console.log('After SET_STATIONS:', state)
+//     state = stationReducer(state, { type: SET_STATIONS, stations: [station1] })
+//     console.log('After SET_STATIONS:', state)
 
-    state = stationReducer(state, { type: ADD_STATION, station: station2 })
-    console.log('After ADD_STATION:', state)
+//     state = stationReducer(state, { type: ADD_STATION, station: station2 })
+//     console.log('After ADD_STATION:', state)
 
-    state = stationReducer(state, { type: UPDATE_STATION, station: { ...station2, vendor: 'Good' } })
-    console.log('After UPDATE_STATION:', state)
+//     state = stationReducer(state, { type: UPDATE_STATION, station: { ...station2, vendor: 'Good' } })
+//     console.log('After UPDATE_STATION:', state)
 
-    state = stationReducer(state, { type: REMOVE_STATION, stationId: station2._id })
-    console.log('After REMOVE_STATION:', state)
+//     state = stationReducer(state, { type: REMOVE_STATION, stationId: station2.id })
+//     console.log('After REMOVE_STATION:', state)
 
-    state = stationReducer(state, { type: SET_STATION, station: station1 })
-    console.log('After SET_STATION:', state)
+//     state = stationReducer(state, { type: SET_STATION, station: station1 })
+//     console.log('After SET_STATION:', state)
 
-    const msg = { id: 'm' + parseInt('' + Math.random() * 100), txt: 'Some msg', by: { _id: 'u123', fullname: 'test' } }
-    state = stationReducer(state, { type: ADD_STATION_MSG, stationId: station1._id, msg })
-    console.log('After ADD_STATION_MSG:', state)
-}
+//     const msg = { id: 'm' + parseInt('' + Math.random() * 100), txt: 'Some msg', by: { id: 'u123', fullname: 'test' } }
+//     state = stationReducer(state, { type: ADD_STATION_MSG, stationId: station1.id, msg })
+//     console.log('After ADD_STATION_MSG:', state)
+// }
 

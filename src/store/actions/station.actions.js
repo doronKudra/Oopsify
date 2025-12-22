@@ -1,131 +1,64 @@
+import { store } from '../store'
+import { stationService } from '../../services/station'
 import {
     ADD_STATION,
     REMOVE_STATION,
     SET_STATIONS,
     SET_STATION,
     UPDATE_STATION,
-    ADD_STATION_MSG
 } from '../reducers/station.reducer'
 
-import { stationService } from '../../services/station'
-
-// 🔹 LOAD LIST
-export function loadStations(filterBy) {
-    //console.log('filterBy load station:',filterBy)
-    return async dispatch => {
-        try {
-            const stations = await stationService.query(filterBy)
-            dispatch({ type: SET_STATIONS, stations })
-        } catch (err) {
-            console.error('Cannot load stations', err)
-            throw err
-        }
+export async function loadStations(filterBy) {
+    try {
+        const stations = await stationService.query(filterBy)
+        store.dispatch({ type: SET_STATIONS, stations })
+    } catch (err) {
+        console.error('Cannot load stations', err)
+        throw err
     }
 }
 
-// 🔹 LOAD SINGLE
-export function loadStation(stationId) {
-    return async dispatch => {
-        try {
-            const station = await stationService.getById(stationId)
-            dispatch({ type: SET_STATION, station })
-        } catch (err) {
-            console.error('Cannot load station', err)
-            throw err
-        }
+export async function loadStation(stationId) {
+    try {
+        const station = await stationService.getById(stationId)
+        store.dispatch({ type: SET_STATION, station })
+    } catch (err) {
+        console.error('Cannot load station', err)
+        throw err
     }
 }
 
-// 🔹 REMOVE
-export function removeStation(stationId) {
-    return async dispatch => {
-        try {
-            await stationService.remove(stationId)
-            dispatch({ type: REMOVE_STATION, stationId })
-        } catch (err) {
-            console.error('Cannot remove station', err)
-            throw err
-        }
+export async function removeStation(stationId) {
+    try {
+        await stationService.remove(stationId)
+        store.dispatch({ type: REMOVE_STATION, stationId })
+    } catch (err) {
+        console.error('Cannot remove station', err)
+        throw err
     }
 }
 
-// 🔹 ADD
-export function addStation(station) {
-    return async dispatch => {
-        try {
-            const savedStation = await stationService.save(station)
-            dispatch({ type: ADD_STATION, station: savedStation })
-            return savedStation
-        } catch (err) {
-            console.error('Cannot add station', err)
-            throw err
-        }
+export async function addStation({userName,id}) {
+    try {
+        const station = stationService.getEmptyStation({userName,id})
+        console.log('we got here ',station)
+        const savedStation = await stationService.save(station).then(store.dispatch({ type: ADD_STATION, station }))
+        
+        return savedStation
+    } catch (err) {
+        console.error('Cannot add station', err)
+        throw err
     }
 }
 
-// 🔹 UPDATE
-export function updateStation(station) {
-    return async dispatch => {
-        try {
-            const savedStation = await stationService.save(station)
-            dispatch({ type: UPDATE_STATION, station: savedStation })
-            return savedStation
-        } catch (err) {
-            console.error('Cannot update station', err)
-            throw err
-        }
-    }
-}
-
-// 🔹 ADD MESSAGE
-export function addStationMsg(stationId, txt) {
-    return async dispatch => {
-        try {
-            const msg = await stationService.addStationMsg(stationId, txt)
-            dispatch({ type: ADD_STATION_MSG, msg })
-            return msg
-        } catch (err) {
-            console.error('Cannot add station msg', err)
-            throw err
-        }
-    }
-}
-
-// Command Creators:
-function getCmdSetStations(stations) {
-    return {
-        type: SET_STATIONS,
-        stations
-    }
-}
-function getCmdSetStation(station) {
-    return {
-        type: SET_STATION,
-        station
-    }
-}
-function getCmdRemoveStation(stationId) {
-    return {
-        type: REMOVE_STATION,
-        stationId
-    }
-}
-function getCmdAddStation(station) {
-    return {
-        type: ADD_STATION,
-        station
-    }
-}
-function getCmdUpdateStation(station) {
-    return {
-        type: UPDATE_STATION,
-        station
-    }
-}
-function getCmdAddStationMsg(msg) {
-    return {
-        type: ADD_STATION_MSG,
-        msg
+export async function updateStation(station) {
+    try {
+        const savedStation = await stationService.save(station)
+        store.dispatch({ type: UPDATE_STATION, station: savedStation })
+        return savedStation
+    } catch (err) {
+        console.error('Cannot update station', err)
+        throw err
     }
 }
 

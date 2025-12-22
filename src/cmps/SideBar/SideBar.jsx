@@ -6,19 +6,19 @@ import { SideBarHeader } from './SideBarHeader.jsx';
 import { SideBarFilter } from './SideBarFilter.jsx';
 import { StationList } from '../StationList.jsx';
 import { stationService } from '../../services/station/index.js'
-import { loadStations, addStation, updateStation, removeStation, addStationMsg } from '../../store/actions/station.actions.js'
+import { loadStations, addStation, updateStation, removeStation } from '../../store/actions/station.actions.js'
 import { LikedTracks} from '../LikedTracks.jsx'
+import { store } from '../../store/store.js'
 
 export function SideBar() {
-    const dispatch = useDispatch()
     const user = useSelector(storeState => storeState.userModule.user)
     const [filterBy, setFilterBy] = useState({...stationService.getDefaultFilter(), likedStations:user.likedStations})
     const allStations = useSelector(storeState => storeState.stationModule.stations)
     var stations = {...allStations}
     
     useEffect(() => {
-        dispatch(loadStations(filterBy))
-    }, [filterBy, dispatch])
+        loadStations(filterBy)
+    }, [filterBy])
 
     // useEffect(() => {
 
