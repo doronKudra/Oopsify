@@ -27,10 +27,7 @@ export function RootCmp() {
             <div className="main-container">
                 <AppHeader />
                 <UserMsg />
-
-                <div className="content-area">
-                    <SideBar />
-                </div>
+                <SideBar />
                 <main className="main-content">
                     <div className="route-scroll">
                         <Routes>

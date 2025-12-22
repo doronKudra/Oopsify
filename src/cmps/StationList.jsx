@@ -1,14 +1,20 @@
-import { userService } from '../services/user'
+import { useState } from 'react'
 import { StationPreview } from './StationPreview'
 
-export function StationList({ stations, listType}) {
-    return <section>
+import { makeId } from '../services/util.service'
+import { removeStation, addStation } from '../store/actions/station.actions.js'
+import { updateUserLikedStations } from '../store/actions/user.actions.js'
+import { useSelector } from 'react-redux'
+
+export function StationList({ openContextMenu,stations, listType }) {
+    if (!stations?.length) return
+    return (<section>
         <ul className={listType + "-station-list"}>
-            {stations.length && stations.map(station =>
+            {stations.map(station =>
                 <li key={station.id}>
-                    <StationPreview station={station} listType={listType}/>
+                    <StationPreview openContextMenu={openContextMenu} station={station} listType={listType} />
                 </li>)
             }
         </ul>
-    </section>
+    </section>)
 }

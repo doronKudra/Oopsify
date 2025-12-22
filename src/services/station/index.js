@@ -18,7 +18,7 @@ function getEmptyStation(owner) {
 
 function getDefaultFilter() {
     return {
-        likedStations: [],
+        
     }
 }
 
