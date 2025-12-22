@@ -42,13 +42,9 @@ export function TrackList({ tracks, tempIdsRef, durationMs, onToggleLiked }) {
                 </div>
 
                 <div className="track-container">
-                    <SortableContext
-                        items={tempIdsRef.current}
-                        strategy={verticalListSortingStrategy}
-                    >
+                    <SortableContext items={tempIdsRef.current} strategy={verticalListSortingStrategy}>
                         {tracks.map((track, idx) => {
                             const tempId = tempIdsRef.current[idx]
-
                             return (
                                 <SortableTrack id={tempId} key={tempId}>
                                     <TrackPreview track={track} idx={idx} onToggleLiked={onToggleLiked} />

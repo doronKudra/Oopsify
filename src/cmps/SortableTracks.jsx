@@ -12,13 +12,9 @@ export function SortableTrack({ id, children }) {
 
     return (
         <div ref={setNodeRef} style={style} {...attributes}>
-            {/* Drag handle wrapper */}
             <div className="drag-handle" {...listeners}>
-                {/* You will place ONLY the drag icon here */}
-            </div>
-
-            {/* Everything else (including your like button) goes here */}
             <div className="track-content">{children}</div>
+            </div>
         </div>
     )
 }

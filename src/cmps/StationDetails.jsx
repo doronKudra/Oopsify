@@ -143,7 +143,7 @@ export function StationDetails() {
                     />
                 </section>
             </DndContext>
-            <SearchInDetails tracks={localTracks} />
+            <SearchInDetails localTracks={localTracks} />
         </>
     )
 }
