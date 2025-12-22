@@ -10,6 +10,7 @@ export const SET_USERS = 'SET_USERS'
 export const SET_SCORE = 'SET_SCORE'
 export const SET_LIKED_TRACKS = 'SET_LIKED_TRACKS'
 export const UPDATE_USER = 'UPDATE_USER'
+export const SET_LIKED_STATIONS = 'SET_LIKED_STATIONS'
 
 const initialState = {
     user: userService.getLoggedinUser(),
@@ -44,6 +45,18 @@ export function userReducer(state = initialState, action) {
                         ...state.user.likedTracks,
                         tracks: action.tracks,
                     },
+                },
+            }
+            break
+        case SET_LIKED_STATIONS:
+            newState = {
+                ...state,
+                user: {
+                    ...state.user,
+                    likedStations: [
+                        ...state.user.likedStations,
+                        ...action.id
+                    ],
                 },
             }
             break

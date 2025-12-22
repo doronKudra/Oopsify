@@ -1,16 +1,16 @@
 import { makeId } from '../services/util.service'
 
-export function ContextMenu({ actions, context, onClose }) { // dynamic in the future actions: [{id,name,callback}]
-    
-    function onSelectMenuItem(cb){
+export function ContextMenu({ actions, context, position, onClose }) { // dynamic in the future actions: [{id,name,callback},context?,onClose]
+
+    function onSelectMenuItem(cb) {
         cb(context)
         onClose()
     }
 
-    if(!actions?.length) return
-    return (<div  className="context-menu">
+    if (!actions?.length) return
+    return (<div className="context-menu">
         <div onClick={onClose} className="context-menu-backdrop"></div>
-        <div onClick={ev => ev.stopPropagation()} className="context-menu-content">
+        <div onClick={ev => ev.stopPropagation()} style={{ position: 'fixed', top: position.y, left: position.x}} className="context-menu-content">
             <ul>
                 {actions.map(action =>
                     <li key={action.id}>

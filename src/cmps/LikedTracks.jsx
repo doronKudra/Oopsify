@@ -1,4 +1,4 @@
-import { StationPreview } from './StationPreview'
+import { StationList } from './StationList'
 
 export function LikedTracks({ user, listType}){
     const likedTracks = user ? user.likedTracks : {}
@@ -9,13 +9,19 @@ export function LikedTracks({ user, listType}){
         images: [{url: '/src/assets/images/liked-songs.png'}],
         id: 'liked-songs'
     }
-    return <section>
-            <ul className={listType + "-station-list"}>
-                {station && 
-                    <li key={station.id}>
-                        <StationPreview station={station} listType={listType}/>
-                    </li>
-                }
-            </ul>
-    </section>
+    return (
+        <StationList
+            stations={[station]}
+            listType={listType}
+        />
+    )
+    // return <section>
+    //         <ul className={listType + "-station-list"}>
+    //             {station && 
+    //                 <li key={station.id}>
+    //                     <StationPreview station={station} listType={listType}/>
+    //                 </li>
+    //             }
+    //         </ul>
+    // </section>
 }
