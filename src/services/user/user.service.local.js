@@ -35,9 +35,6 @@ function remove(userId) {
 }
 
 async function update(userToUpdate) {
-    // const user = await storageService.query(STORAGE_KEY_LOGGEDIN_USER)
-    // console.log('user:', user)
-    // user.likedTracks.tracks = userToUpdate.likedTracks.tracks
     const user = await storageService.put(STORAGE_KEY_USER, userToUpdate)
     
     // When admin updates other user's details, do not update loggedinUser
@@ -113,14 +110,13 @@ async function saveLoggedinUser(user) {
 async function _createLoggedinUser() {
     if (getLoggedinUser()) return
     const users = []
-    console.log('hi')
     const user = {
         id: makeId(),
         fullName: 'Mustafa Adminsky',
         userName: 'admin',
         password: 'admin',
         imgUrl: 'https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png',
-        likedStations: [],
+        likedStations: ['3xqcAMgjHGrv3ElA51zZRj','7gb4GZz7iIHGilXxD7638E','4DJztJkufdlND0Hvg4nGkK','3E0RgJpQug1ibE2jTGI0Hk','2O3jLuM3inA4vw5fZdGz9W'],
         likedTracks: {
             name: 'Liked Songs',
             tracks: [],

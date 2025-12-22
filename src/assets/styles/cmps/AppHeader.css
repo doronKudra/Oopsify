@@ -4,7 +4,7 @@
     height: 64px;
     align-items: center;
     justify-content: space-between;
-    grid-column: 1 / 6;
+    grid-column: 1 / -1;
     padding: 8px 6px 8px 28px;
     gap: 12px;
 
