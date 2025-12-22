@@ -19,6 +19,7 @@ import { SearchPage } from './pages/SearchPage.jsx'
 import { SearchGenres } from './pages/SearchGenres.jsx'
 import { YtPlayer } from './cmps/YtPlayer.jsx'
 import { EditStation } from './cmps/EditStation.jsx'
+import { SearchInDetails } from './cmps/SearchInDetails.jsx'
 
 export function RootCmp() {
     return (
