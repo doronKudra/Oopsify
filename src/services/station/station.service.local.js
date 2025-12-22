@@ -16,6 +16,7 @@ window.cs = stationService
 async function query(filterBy = {}) {
     var stations = await storageService.query(STORAGE_KEY)
     // const likedStationIds = !Array.isArray(filterBy.likedStations) ? Object.values(filterBy.likedStations) : filterBy.likedStations
+    console.log('filterBy',filterBy)
     if (filterBy?.likedStations) {
         let likedStations = filterBy.likedStations
         // if(typeof likedStations === 'object') likedStations = Object.keys(filterBy.likedStations)
