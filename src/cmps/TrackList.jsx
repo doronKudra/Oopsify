@@ -61,12 +61,15 @@ export function TrackList({
                                                 {idx + 1}
                                             </span>
                                             <svg
+                                                role="img"
+                                                height="24"
+                                                width="24"
                                                 viewBox="0 0 24 24"
                                                 className="track-num-icon"
                                             >
                                                 <path
+                                                    d="M7 4v16l13-8z"
                                                     fill="currentColor"
-                                                    d="M7 5a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4zm10-12a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4zm0 6a2 2 0 110-4 2 2 0 010 4z"
                                                 />
                                             </svg>
                                         </div>
