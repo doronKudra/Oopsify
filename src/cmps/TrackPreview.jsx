@@ -44,21 +44,25 @@ export function TrackPreview({ track, idx, onToggleLiked, caller }) {
     return (
         <div className="track">
             {/* LEFT */}
-            <div onClick={() => onPlay(track)} className="track-num left">
+            <div onClick={() => onPlay(track)} onPointerDown={ev => ev.stopPropagation()} className="track-num left">
                 <span className="track-num-text">{idx + 1}</span>
                 <svg role="img" height="24" width="24" viewBox="0 0 24 24" className="track-num-icon"><path d="M7 4v16l13-8z" fill="currentColor" /></svg>
             </div>
 
+
             {/* MIDDLE */}
             <div className="track-details center">
-                {/* <img src={track.images[0]?.url} alt="" style={{height:'100%',width:'100px', aspectRatio:'1/1'}} /> */}
-                <div className="track-name">{track.name}</div>
-                <div>{track.artists.map((a) => a.name).join(', ')}</div>
+                <div></div>
+                <img className="track-list-img" src={track.images[0]?.url} alt="" />
+                <div>
+                    <div className="track-name">{track.name}</div>
+                    <div className="track-artist" >{track.artists.map((a) => a.name).join(', ')}</div>
+                </div>
             </div>
 
             {/* RIGHT */}
             <div className="track-actions right">
-                <button className="control-btn liked-btn" onClick={() => onToggleLiked(track)}>
+                <button className="control-btn liked-btn" onClick={() => onToggleLiked(track)} onPointerDown={ev => ev.stopPropagation()}>
                     {checkLiked(track.id) ?
                         // GREEN CHECK ICON
                         <svg className="track-list-like-icon" width="1em" height="1em" viewBox="0 0 16 16">
@@ -79,21 +83,21 @@ export function TrackPreview({ track, idx, onToggleLiked, caller }) {
                     )}
                 </div>
 
-                <button className="control-btn more-btn">
-                    <svg
-                        viewBox="0 0 24 24"
-                        className="icon-control"
-                        ole="img"
-                        width="1em"
-                        height="1em"
-                    >
-                        <path
-                            d="M4.5 13.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3m15 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3m-7.5 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3"
-                            fill="currentColor"
-                        />
-                    </svg>
-                </button>
-            </div>
+                <button onPointerDown={ev => ev.stopPropagation()} className="control-btn more-btn">
+                <svg
+                    viewBox="0 0 24 24"
+                    className="icon-control"
+                    ole="img"
+                    width="1em"
+                    height="1em"
+                >
+                    <path
+                        d="M4.5 13.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3m15 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3m-7.5 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3"
+                        fill="currentColor"
+                    />
+                </svg>
+            </button>
         </div>
+        </div >
     )
 }
