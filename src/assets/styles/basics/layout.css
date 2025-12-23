@@ -2,12 +2,9 @@
     display: grid;
     height: 100vh;
     overflow: hidden;
-    grid-template-columns: 4.5rem 1fr; /* mobile */
+    grid-template-columns: 5rem 1fr; /* mobile */
     column-gap: 0.5rem;
     grid-template-rows: 64px minmax(0, 1fr) 88px;
-    @media (min-width: 1048px) {
-        grid-template-columns: 26.75rem 1fr;
-    }
 }
 
 .main-container > .app-header {
@@ -41,6 +38,7 @@
 .route-scroll {
     flex: 1;
     overflow: auto;
+    margin-right: 8px;
     min-height: 0;
 }
 
