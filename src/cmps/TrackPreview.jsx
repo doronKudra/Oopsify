@@ -5,7 +5,7 @@ import { useLocation } from "react-router"
 
 
 
-export function TrackPreview({ track, idx, onToggleLiked, inDetails }) {
+export function TrackPreview({openContextMenu, track, idx, onToggleLiked, inDetails }) {
     
     const likedTracks = useSelector(state => state.userModule.user.likedTracks?.tracks || [])
 
@@ -41,8 +41,18 @@ export function TrackPreview({ track, idx, onToggleLiked, inDetails }) {
         playerActions.onTrackToPlay(track)
     }
 
+    function onTrackDetails(ev, track){
+        ev.preventDefault()
+        ev.stopPropagation()
+
+        openContextMenu({
+            x: ev.clientX,
+            y: ev.clientY,
+            context: { track }
+        })
+    }
     return (
-        <div className="track">
+        <div onContextMenu={(ev) => onTrackDetails(ev, track)} className="track">
             {/* LEFT */}
             <div onClick={() => onPlay(track)} onPointerDown={ev => ev.stopPropagation()} className="track-num left">
                 <span className="track-num-text">{idx + 1}</span>
@@ -84,7 +94,7 @@ export function TrackPreview({ track, idx, onToggleLiked, inDetails }) {
                         )}
                     </div>
 
-                    <button onPointerDown={ev => ev.stopPropagation()} className="control-btn more-btn">
+                    <button onPointerDown={(ev) => onTrackDetails(ev, track)}  className="control-btn more-btn">
                         <svg
                             viewBox="0 0 24 24"
                             className="icon-control"

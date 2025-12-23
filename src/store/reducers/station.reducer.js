@@ -4,10 +4,12 @@ export const REMOVE_STATION = 'REMOVE_STATION'
 export const ADD_STATION = 'ADD_STATION'
 export const UPDATE_STATION = 'UPDATE_STATION'
 export const ADD_STATION_MSG = 'ADD_STATION_MSG'
+export const SET_SIDEBAR_STATIONS = 'SET_SIDEBAR_STATIONS'
 
 const initialState = {
     stations: [],
-    station: null
+    sidebarStations: [],
+    station: null,
 }
 
 export function stationReducer(state = initialState, action) {
@@ -16,6 +18,9 @@ export function stationReducer(state = initialState, action) {
     switch (action.type) {
         case SET_STATIONS:
             newState = { ...state, stations: action.stations }
+            break
+        case SET_SIDEBAR_STATIONS:
+            newState = { ...state, sidebarStations: action.stations }
             break
         case SET_STATION:
             newState = { ...state, station: action.station }

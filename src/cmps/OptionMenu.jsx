@@ -1,6 +1,12 @@
-import { makeId } from '../services/util.service'
+import { useLayoutEffect, useRef } from 'react'
 
 export function ContextMenu({ actions, context, position, onClose }) { // dynamic in the future actions: [{id,name,callback},context?,onClose]
+
+    const menuRef = useRef(null)
+
+    useLayoutEffect(() => {
+        if (!menuRef.current) return
+    }, [])
 
     function onSelectMenuItem(cb) {
         cb(context)

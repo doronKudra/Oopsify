@@ -6,12 +6,23 @@ import {
     SET_STATIONS,
     SET_STATION,
     UPDATE_STATION,
+    SET_SIDEBAR_STATIONS,
 } from '../reducers/station.reducer'
 
 export async function loadStations(filterBy) {
     try {
         const stations = await stationService.query(filterBy)
         store.dispatch({ type: SET_STATIONS, stations })
+    } catch (err) {
+        console.error('Cannot load stations', err)
+        throw err
+    }
+}
+
+export async function loadSidebarStations(filterBy) {
+    try {
+        const stations = await stationService.query(filterBy)
+        store.dispatch({ type: SET_SIDEBAR_STATIONS, stations })
     } catch (err) {
         console.error('Cannot load stations', err)
         throw err
@@ -38,12 +49,12 @@ export async function removeStation(stationId) {
     }
 }
 
-export async function addStation({userName,id}) {
+export async function addStation({ userName, id }) {
     try {
-        const station = stationService.getEmptyStation({userName,id})
-        console.log('we got here ',station)
+        const station = stationService.getEmptyStation({ userName, id })
+        console.log('we got here ', station)
         const savedStation = await stationService.save(station).then(store.dispatch({ type: ADD_STATION, station }))
-        
+
         return savedStation
     } catch (err) {
         console.error('Cannot add station', err)
@@ -58,6 +69,40 @@ export async function updateStation(station) {
         return savedStation
     } catch (err) {
         console.error('Cannot update station', err)
+        throw err
+    }
+}
+
+export async function addTrackToStation(station, track) {
+    try {
+        const updatedStation = {
+            ...station,
+            tracks: [...station.tracks, track],
+        }
+
+        const savedStation = await stationService.save(updatedStation)
+        store.dispatch({ type: UPDATE_STATION, station: savedStation })
+
+        return savedStation
+    } catch (err) {
+        console.error('Cannot add track to station', err)
+        throw err
+    }
+}
+
+export async function removeTrackFromStation(station, trackId) {
+    try {
+        const updatedStation = {
+            ...station,
+            tracks: station.tracks.filter(t => t.id !== trackId),
+        }
+
+        const savedStation = await stationService.save(updatedStation)
+        store.dispatch({ type: UPDATE_STATION, station: savedStation })
+
+        return savedStation
+    } catch (err) {
+        console.error('Cannot remove track from station', err)
         throw err
     }
 }
