@@ -1,6 +1,6 @@
 import YouTube from "react-youtube";
 
-export function YtPlayer({ videoId, onReady, onPause, onPlay }) {
+export function YtPlayer({ videoId, onReady}) {
     const opts = {
         height: '0',
         width: '0',

@@ -11,28 +11,40 @@ import { playerActions } from '../../store/actions/player.actions.js'
 
 export function AppFooter() {
 	const track = useSelector(state => state.playerModule.track)
-	const isPlaying = useSelector(state => state.playerModule.isPlaying)
+	const [isPlaying, setIsPlaying] = useState(false)
+	const [duration, setDuration] = useState(null)
+	const [currTime, setCurrTime] = useState(null)
 
+	// const currTime = playerRef.current.getCurrentTime()
+// getDuration() will return 0 until the video's metadata is loaded, which normally happens just after the video starts playing.
 	const playerRef = useRef(null)
-	const [currTime,setCurrTime] = useState(null)
 
 	function onReady({ target }) {
 		playerRef.current = target
 		target.playVideo()
-		playerActions.onPlay()
-		console.log('target:',target)
+		setIsPlaying(true)
+		const trackDuration = playerRef.current.getDuration()
+		console.log('duration:',duration)
+		setDuration(trackDuration)
+		console.log('target:', target)
 	}
 
 	function onPause() {
 		if (!playerRef.current) return
 		playerRef.current.pauseVideo()
-		playerActions.onPause()
+		setIsPlaying(false)
 	}
-	
+
 	function onPlay() {
 		if (!playerRef.current) return
 		playerRef.current.playVideo()
-		playerActions.onPlay()
+		setIsPlaying(true)
+	}
+
+	function onProgressBar(time, isMouseUp) {
+		console.log('time:', time)
+		if (!playerRef.current) return
+		playerRef.current.seekTo(time, isMouseUp)
 	}
 
 	function onVolume() {
@@ -55,9 +67,19 @@ export function AppFooter() {
 			{track && <YtPlayer videoId={track.videoId} onReady={onReady} />}
 			<footer className="app-footer">
 				<FooterTrackPreview track={track} onAdd={onAdd} onTilte={onTilte} onArtist={onArtist} />
-				<PlayerControls  currTime={0} duration={track?.duration} onPause={onPause} onPlay={onPlay} isPlaying={isPlaying}  />
+				<PlayerControls onProgressBar={onProgressBar} currTime={currTime} duration={duration} onPause={onPause} onPlay={onPlay} isPlaying={isPlaying} />
 				<VolumeControl />
 			</footer>
 		</>
 	)
 }
+
+// 1. player.playVideo():Void   //player state after this function executes - playing (1)
+// 2. player.pauseVideo():Void  //player state after this function executes will be paused (2) -
+//     unless the player is in the ended (0) state when the function is called, in which case the player state will not change.
+// 3. player.stopVideo():Void Stops and cancels loading of the current video.(for rare cases)
+// !4. player.seekTo(seconds:Number, allowSeekAhead:Boolean):Void // set to false when draging the video progress and when mouse up set to true.
+//
+// 
+
+

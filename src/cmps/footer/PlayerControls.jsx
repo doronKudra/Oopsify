@@ -1,13 +1,16 @@
+import { useRef } from "react"
 import { utilService } from "../../services/util.service"
 
-export function PlayerControls({ currTime, duration, onPause, onPlay,isPlaying }) {
+export function PlayerControls({ currTime, duration, onPause, onPlay, isPlaying, onProgressBar }) {
+
+    const isChanged = useRef(false)
 
     function getCurrTime(time) {
         const totalSec = Math.floor(time / 1000)
         const hours = Math.floor(totalSec / 3600)
         const mins = Math.floor((totalSec % 3600) / 60)
         const secs = totalSec % 60
-    
+
         if (duration >= 60000 * 60) {
             return (hours + ':' +
                 mins.toString().padStart(2, 0) + ':' +
@@ -19,7 +22,20 @@ export function PlayerControls({ currTime, duration, onPause, onPlay,isPlaying }
             secs.toString().padStart(2, '0')
         )
     }
-    
+
+    function onMouseUpProg({ target }) {
+        isChanged.current = false
+        const value = target.value
+        onProgressBar(value, true)
+        console.log('value:',value)
+    }
+
+    function onChangeProgress({ target }) {
+        isChanged.current = true
+        const value = target.value
+        onProgressBar(value, false)
+    }
+
     return (
         <section className="player-controls">
             <div className="controls">
@@ -32,14 +48,14 @@ export function PlayerControls({ currTime, duration, onPause, onPlay,isPlaying }
                 <button>
                     <svg data-encore-id="icon" role="img" aria-hidden="true" viewBox="0 0 16 16" ><path d="M3.3 1a.7.7 0 0 1 .7.7v5.15l9.95-5.744a.7.7 0 0 1 1.05.606v12.575a.7.7 0 0 1-1.05.607L4 9.149V14.3a.7.7 0 0 1-.7.7H1.7a.7.7 0 0 1-.7-.7V1.7a.7.7 0 0 1 .7-.7z"></path></svg>
                 </button>
-                {isPlaying?
-                <button onClick={onPause} className="control-play-btn">
-                    <svg data-encore-id="icon" role="img" aria-hidden="true" viewBox="0 0 16 16"><path d="M2.7 1a.7.7 0 0 0-.7.7v12.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V1.7a.7.7 0 0 0-.7-.7zm8 0a.7.7 0 0 0-.7.7v12.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V1.7a.7.7 0 0 0-.7-.7z"></path></svg>
-                </button>
-                :
-                <button onClick={onPlay} className="control-play-btn">
-                    <svg data-encore-id="icon" role="img" aria-hidden="true" viewBox="0 0 16 16" ><path d="M3 1.713a.7.7 0 0 1 1.05-.607l10.89 6.288a.7.7 0 0 1 0 1.212L4.05 14.894A.7.7 0 0 1 3 14.288z"></path></svg>
-                </button>
+                {isPlaying ?
+                    <button onClick={onPause} className="control-play-btn">
+                        <svg data-encore-id="icon" role="img" aria-hidden="true" viewBox="0 0 16 16"><path d="M2.7 1a.7.7 0 0 0-.7.7v12.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V1.7a.7.7 0 0 0-.7-.7zm8 0a.7.7 0 0 0-.7.7v12.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V1.7a.7.7 0 0 0-.7-.7z"></path></svg>
+                    </button>
+                    :
+                    <button onClick={onPlay} className="control-play-btn">
+                        <svg data-encore-id="icon" role="img" aria-hidden="true" viewBox="0 0 16 16" ><path d="M3 1.713a.7.7 0 0 1 1.05-.607l10.89 6.288a.7.7 0 0 1 0 1.212L4.05 14.894A.7.7 0 0 1 3 14.288z"></path></svg>
+                    </button>
                 }
                 <button>
                     <svg data-encore-id="icon" role="img" aria-hidden="true" viewBox="0 0 16 16" ><path d="M12.7 1a.7.7 0 0 0-.7.7v5.15L2.05 1.107A.7.7 0 0 0 1 1.712v12.575a.7.7 0 0 0 1.05.607L12 9.149V14.3a.7.7 0 0 0 .7.7h1.6a.7.7 0 0 0 .7-.7V1.7a.7.7 0 0 0-.7-.7z"></path></svg>
@@ -50,7 +66,11 @@ export function PlayerControls({ currTime, duration, onPause, onPlay,isPlaying }
             </div>
             <div className="time-display">
                 <span>{duration ? getCurrTime(currTime) : '-:--'}</span>
-                <div className="track-duration-footer"><div className="duration-bar" style={{ width: `${(currTime / duration) * 100}%` }}></div></div>
+                <input
+                    className="track-duration-footer" type="range" name="range" min="0" max="500"
+                    onChange={onChangeProgress}
+                    onMouseUp={onMouseUpProg}
+                />
                 <span>{duration ? getCurrTime(duration) : '-:--'}</span>
             </div>
         </section>

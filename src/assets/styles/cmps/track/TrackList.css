@@ -25,19 +25,36 @@
     /* padding-inline: 1em; */
 }
 
-.track-details{
+.track-details {
     display: flex;
     min-width: 40px;
-    >div{
+
+    >div {
         overflow: hidden;
     }
 }
 
-.track-list-img{
+.track-list-img {
     height: 40px;
     width: 40px;
     margin-right: 12px;
     border-radius: 4px;
+}
+
+.details-add-btn {
+    height: 32px;
+    width: 61px;
+    border-radius: 300px;
+    background-color: var(--clr2);
+    box-shadow: 0px 0px 1px 1px rgba(255, 255, 255, 0.40);
+    font-weight: 500;
+
+    will-change: transform;
+
+    &:hover {
+        transform: scale(1.04);
+        box-shadow: 0px 0px 1px 1px rgba(255, 255, 255);
+    }
 }
 
 .left,
@@ -63,8 +80,8 @@
     opacity: 1;
 }
 
-.track > .center,
-.track-list-title > .center {
+.track>.center,
+.track-list-title>.center {
     text-align: start;
 }
 
@@ -72,11 +89,12 @@
     font-size: 0.875em;
 }
 
-.track-name{
+.track-name {
     color: white;
 }
 
-.track-name, .track-artist {
+.track-name,
+.track-artist {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
