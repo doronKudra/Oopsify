@@ -17,10 +17,9 @@ import { Signup } from './pages/Signup.jsx'
 import { SideBar } from './cmps/SideBar/SideBar.jsx'
 import { SearchPage } from './pages/SearchPage.jsx'
 import { SearchGenres } from './pages/SearchGenres.jsx'
-import { YtPlayer } from './cmps/YtPlayer.jsx'
 import { EditStation } from './cmps/EditStation.jsx'
-import { SearchInDetails } from './cmps/SearchInDetails.jsx'
 import { OptionMenuProvider } from './cmps/OptionMenuProvider.jsx'
+import { ZoharTest } from './cmps/footer/ZoharTest.jsx'
 
 export function RootCmp() {
     return (
@@ -33,7 +32,7 @@ export function RootCmp() {
                 <main className="main-content">
                     <div className="route-scroll">
                         <Routes>
-                            <Route path="test" element={<YtPlayer />} />
+                            <Route path="test" element={<ZoharTest />} />
                             <Route path="about" element={<AboutUs />}>
                                 <Route path="team" element={<AboutTeam />} />
                                 <Route
