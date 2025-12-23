@@ -16,6 +16,7 @@ import { SearchInDetails } from './SearchInDetails.jsx'
 import { useContextMenu } from './OptionMenuProvider.jsx'
 
 import {
+    toggleLikedStation,
     updateUserLikedTracks,
     updateUser,
     toggleLiked,
@@ -32,15 +33,41 @@ export function StationDetails() {
         stationId === 'liked-songs' ? user.likedTracks : stationFromStore
     const { openContextMenu } = useContextMenu()
 
-    
+
     function handleOpenMenu({ x, y, context }) {
         const { track } = context
         const isInStation = station.tracks.some(({ id }) => id === track.id)
-        const actions = [
-            (isInStation ?
-                { id: makeId(), name: 'Remove from Playlist', callback: () => onRemoveFromStation(track) }
-                : { id: makeId(), name: 'Add to Playlist', callback: () => onAddToStation(track) })
-        ]
+        const isLiked = true // TODO check if track is in liked
+        let actions
+        if ((station.owner.id === user.id)) {
+            actions = [
+                { id: makeId(), icon: 'add', name: 'Add to playlist', callback: () => { onAddToStation(track) } }, // TODO (add to a different playlist) dropdown
+                (isInStation && { id: makeId(), icon: 'remove', name: 'Remove from This Playlist', callback: () => onRemoveFromStation(track) }),
+                (isLiked ?
+                    { id: makeId(), icon: 'remove', name: 'Remove from your Liked Songs', callback: () => { } } // TODO
+                    : { id: makeId(), icon: 'save', name: 'Save to your Liked Songs', callback: () => { } }), // TODO
+                { id: makeId(), icon: 'queue', name: 'Add to queue', callback: () => { } }, // TODO
+                { id: makeId(), icon: 'radio', name: 'Go to song radio', callback: () => { } }, // TODO
+                { id: makeId(), icon: 'artist', name: 'Go to artist', callback: () => { } }, // TODO 
+                { id: makeId(), icon: 'album', name: 'Go to album', callback: () => { } }, // TODO - make a dropdown cmp
+                { id: makeId(), icon: 'share', name: 'Share', callback: () => { } },// TODO
+            ]
+        }
+        else {
+            if (station.type === 'station') {
+                actions = [
+                    { id: makeId(), icon: 'add', name: 'Add to playlist', callback: () => onAddToStation(track) }, // TODO (add to a different playlist) dropdown
+                    (isLiked ?
+                        { id: makeId(), icon: 'remove', name: 'Remove from your Liked Songs', callback: () => { } } // TODO
+                        : { id: makeId(), icon: 'save', name: 'Save to your Liked Songs', callback: () => { } }), // TODO
+                    { id: makeId(), icon: 'queue', name: 'Add to queue', callback: () => { } }, // TODO
+                    { id: makeId(), icon: 'radio', name: 'Go to song radio', callback: () => { } }, // TODO
+                    { id: makeId(), icon: 'artist', name: 'Go to artist', callback: () => { } }, // TODO 
+                    { id: makeId(), icon: 'album', name: 'Go to album', callback: () => { } }, // TODO - make a dropdown cmp
+                    { id: makeId(), icon: 'share', name: 'Share', callback: () => { } },// TODO
+                ]
+            }
+        }
         openContextMenu({
             x,
             y,
@@ -49,10 +76,65 @@ export function StationDetails() {
         })
     }
 
+    function onStationRightClick(ev, station) {
+        ev.preventDefault()
+        ev.stopPropagation()
+
+        handleOpenMenuStation({
+            x: ev.clientX,
+            y: ev.clientY,
+            context: { station }
+        })
+    }
+
+    function handleOpenMenuStation({ x, y, context }) {
+        const { station } = context
+        let actions
+        if ((station.owner.id === user.id)) {
+            actions = [
+                { id: makeId(), icon: 'queue', name: 'Add to queue', callback: () => { } }, // TODO
+                { id: makeId(), icon: 'profile', name: 'Add to profile', callback: () => { } },
+                { id: makeId(), icon: 'edit', name: 'Edit details', callback: () => { } }, // TODO
+                { id: makeId(), icon: 'delete', name: 'Delete', callback: () => { } }, // TODO
+                { id: makeId(), icon: 'private', name: 'Make private', callback: () => { } }, // TODO 
+                { id: makeId(), icon: 'folder', name: 'Move to folder', callback: () => { } }, // TODO - make a dropdown cmp
+                { id: makeId(), icon: 'share', name: 'Share', callback: () => { } },// TODO
+            ]
+        }
+        else {
+            const isLiked = user.likedStations.includes(station.id)
+            if (station.type === 'station') {
+                actions = [
+                    (isLiked ?
+                        { id: makeId(), icon: 'remove', name: 'Remove from Your Library', callback: () => onRemoveStation(station) }
+                        : { id: makeId(), icon: 'save', name: 'Add to Your Library', callback: () => onAddStation(station) }),
+                    { id: makeId(), icon: 'queue', name: 'Add to queue', callback: () => { } }, // TODO
+                    (isLiked && { id: makeId(), icon: 'profile', name: 'Add to profile', callback: () => { } }),// TODO
+                    { id: makeId(), icon: 'folder', name: (isLiked ? 'Move to folder' : 'Add to folder'), callback: () => { } },// TODO
+                    { id: makeId(), icon: 'share', name: 'Share', callback: () => { } },// TODO
+                ]
+            }
+        }
+        openContextMenu({
+            x,
+            y,
+            context,
+            actions
+        })
+    }
+
+    function onAddStation(station) {
+        toggleLikedStation(station.id)
+    }
+
+    function onRemoveStation(station) {
+        toggleLikedStation(station.id)
+    }
+
     async function onAddToStation(track) {
         const updatedTracks = [...localTracks, track]
         setLocalTracks(updatedTracks)
-        await addTrackToStation(station, track) 
+        await addTrackToStation(station, track)
     }
 
     async function onRemoveFromStation(track) {
@@ -146,7 +228,7 @@ export function StationDetails() {
                         <img src={albumCoverArt} alt="Cover" />
                         <div className="station-header-title">
                             <p>Album</p>
-                            <h1>{station.name}</h1>
+                            <h1 onContextMenu={(ev) => onStationRightClick(ev, station)}>{station.name}</h1>
                             <div className="station-header-info">
                                 <h4>
                                     {[
@@ -165,7 +247,7 @@ export function StationDetails() {
                         </div>
                     </section>
 
-                    <StationControls openContextMenu={handleOpenMenu} station={station} />
+                    <StationControls openContextMenu={handleOpenMenuStation} station={station} />
                     <TrackList
                         openContextMenu={handleOpenMenu}
                         tracks={localTracks}

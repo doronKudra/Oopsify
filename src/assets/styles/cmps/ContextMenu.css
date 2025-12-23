@@ -6,26 +6,14 @@
     ul {
         display: flex;
         flex-direction: column;
-        width: 280px;
+        width: 278px;
         padding: 0.25rem;
         background-color: #282828;
         margin: 0;
         border-radius: 0.25rem;
     }
 
-    li button {
-        text-align: start;
-        font-weight: 500;
-        width: 100%;
-        background-color: #282828;
-        padding: 0.5rem 0.5rem 0.5rem 0.75rem;
-        border-radius: 0.125rem;
-
-        &:hover {
-            cursor: pointer;
-            background-color: #626262;
-        }
-    }
+    li button {}
 }
 
 .context-menu-backdrop {
@@ -37,4 +25,33 @@
 .context-menu-content {
     position: fixed;
     z-index: 1;
+}
+
+.menu-icon {
+    width: 16px;
+    height: 16px;
+    fill: #b3b3b3;
+}
+
+.menu-icon-green {
+    fill: #1ed760;
+}
+
+.context-menu-option {
+    display: flex;
+    gap: 12px;
+    height: 40px;
+    text-align: start;
+    color: #e9e9e9;
+    font-weight: 600;
+    font-size: 0.8rem;
+    width: 100%;
+    background-color: #282828;
+    padding: 0.5rem 0.5rem 0.5rem 0.75rem;
+    border-radius: 0.125rem;
+    align-items: center;
+    &:hover {
+        cursor: pointer;
+        background-color: #626262;
+    }
 }
