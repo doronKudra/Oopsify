@@ -16,7 +16,11 @@ import { StationControls } from './StationControls.jsx'
 import { FastAverageColor } from 'fast-average-color'
 import { DndContext } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
-import { makeId, mixHex } from '../services/util.service.js'
+import {
+    makeId,
+    mixHex,
+    formatSpotifyDuration,
+} from '../services/util.service.js'
 import { SearchInDetails } from './SearchInDetails.jsx'
 import { useContextMenu } from './OptionMenuProvider.jsx'
 
@@ -112,10 +116,12 @@ export function StationDetails() {
 
     if (!station) return <div>Loading...</div>
 
-    const stationDuration = station.tracks.reduce(
+    const stationDurationMs = station.tracks.reduce(
         (sum, t) => sum + (t.duration_ms || 0),
         0
     )
+    console.log('stationDurationMs:', stationDurationMs)
+    const stationDuration = formatSpotifyDuration(stationDurationMs)
 
     async function handleDragEnd(event) {
         const { active, over } = event
@@ -148,6 +154,7 @@ export function StationDetails() {
     const colorStop2 = mixHex(dominant, base, 0.6)
     const colorStop3 = mixHex(dominant, base, 0.8)
 
+    console.log('user:', user)
     return (
         <>
             <DndContext onDragEnd={handleDragEnd}>
@@ -162,22 +169,35 @@ export function StationDetails() {
                             <img src={albumCoverArt} alt="Cover" />
                         </div>
                         <div className="station-header-title">
-                            <p>Album</p>
-                            <h1>{station.name}</h1>
-                            <div className="station-header-info">
-                                <h4>
-                                    {[
-                                        station.artist && station.artist,
-                                        station.year || 2002,
-                                        `${localTracks.length} Songs`,
+                            <p className="header-type">
+                                {isStation ? 'Public Playlist' : 'Album'}
+                            </p>
 
-                                        `${Math.floor(
-                                            stationDuration / 60000
-                                        )} min`,
-                                    ]
-                                        .filter(Boolean)
-                                        .join(' • ')}
-                                </h4>
+                            <h1>{station.name}</h1>
+
+                            <div className="station-header-info">
+                                {isStation ? (
+                                    <>
+                                        <span className='enhance'>{user.fullName}</span>
+                                        <span> • </span>
+                                        <span>2025</span>
+                                        <span> • </span>
+                                        <span>{stationDuration}</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <img
+                                            src={station.artist.img}
+                                            alt={station.artist.name}
+                                            className="artist-img"
+                                        />
+                                        <span>{station.artist.name}</span>
+                                        <span> • </span>
+                                        <span>{station.year}</span>
+                                        <span> • </span>
+                                        <span>{stationDuration}</span>
+                                    </>
+                                )}
                             </div>
                         </div>
                     </section>
@@ -200,7 +220,6 @@ export function StationDetails() {
                             openContextMenu={handleOpenMenu}
                             tracks={localTracks}
                             tempIdsRef={tempIdsRef}
-                            durationMs={stationDuration}
                             user={user}
                             isStation={isStation}
                         />

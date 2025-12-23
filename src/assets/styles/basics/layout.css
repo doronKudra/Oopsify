@@ -36,12 +36,14 @@
     grid-row: 2;
     min-height: 0;
     overflow-y: auto;
+    
 }
 
 .route-scroll {
     flex: 1;
     overflow: auto;
     min-height: 0;
+    
 }
 
 .app-footer {

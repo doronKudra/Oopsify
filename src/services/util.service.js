@@ -491,3 +491,20 @@ export function mixHex(color1, color2, weight) {
 
     return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`
 }
+
+export function formatSpotifyDuration(ms) {
+    const totalSeconds = Math.floor(ms / 1000)
+    const minutes = Math.floor(totalSeconds / 60)
+    const seconds = totalSeconds % 60
+
+    if (minutes < 60) {
+        // Under 1 hour → "X min Y sec"
+        return `${minutes} min ${seconds} sec`
+    }
+
+    // 1 hour or more → "X hr Y min"
+    const hours = Math.floor(minutes / 60)
+    const remainingMinutes = minutes % 60
+
+    return `${hours} hr ${remainingMinutes} min`
+}

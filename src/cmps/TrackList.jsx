@@ -11,7 +11,6 @@ export function TrackList({
     openContextMenu,
     tracks,
     tempIdsRef,
-    durationMs,
     onToggleLiked,
     isStation
 }) {

@@ -1,123 +1,77 @@
+/* Whole Station */
 .station-details {
     padding: 8px;
     min-height: 100%;
 }
 
+/* Header Area */
 .station-header {
     display: flex;
     flex-direction: row;
-    margin: 0;
-    padding: 24px 24px 8px 8px;
+    gap: 24px;
+    padding: 24px;
+    align-items: flex-end;
 }
 
-.station-header img {
-    max-width: 40%;
-    height: 40%;
-    align-self: end;
-    border-radius: 10px;
+/* Img container */
+.cover-container {
+    width: min(232px, 40vw);
+    min-width: 120px;
 }
 
+.cover-container img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+/* Text container */
 .station-header-title {
-    align-self: end;
-    margin: 0 8px;
-}
-
-/* Buttons row */
-.btn-container {
     display: flex;
-    align-items: center;
-    gap: 12px;
-    padding-left: 8px;
-    padding-right: 6px;
-}
-
-.list-btn {
-    margin-left: auto;
-    display: flex;
-    align-items: center;
+    flex-direction: column;
     gap: 8px;
 }
 
-.list-btn svg {
-    height: 16px;
-    width: 16px;
+/* Type of station (Album / Public Playlist) */
+.header-type {
+    font-size: clamp(0.7rem, 1vw, 0.9rem);
+    font-weight: 600;
+    text-transform: uppercase;
+    opacity: 0.8;
 }
 
-/* All control buttons except preview */
-.btn-container button:not(.preview-btn) {
-    background-color: transparent;
-    color: #b3b3b3;
+/* Station Name */
+.station-header-title h1 {
+    font-size: clamp(1.8rem, 4vw, 3.5rem);
+    font-weight: 800;
+    margin: 0;
+    line-height: 1.1;
 }
 
-/* Icon sizing */
-.icon-control {
-    color: #b3b3b3;
-    height: 32px;
-    width: 32px;
-}
-
-/* Hover effect */
-.control-btn:hover .icon-control {
-    color: #fff;
-    transition: transform 0.2s ease, color 0.2s ease;
-}
-
-/* Play/Pause green circle */
-.green-circle {
-    background-color: #1ed760;
-    height: 56px;
-    width: 56px;
-    border-radius: 50%;
+/* Bottom row with info */
+.station-header-info {
     display: flex;
     align-items: center;
-    justify-content: center;
-    cursor: pointer;
+    gap: 6px;
+    font-size: clamp(0.85rem, 1.2vw, 1rem);
+    opacity: 0.9;
 }
 
-.play-pause-icon {
-    position: relative;
-    width: 24px;
-    height: 24px;
+/* Artist/User name emphasis */
+.station-header-info .enhance {
+    font-weight: 600;
 }
 
-.play-pause-icon svg {
-    position: absolute;
-    inset: 0;
-    fill: #000;
+/* Rest of bottom row */
+.station-header-info > :not(.enhance) {
+    color: #b3b3b3;
 }
 
-.play-icon {
-    display: block;
-}
-
-.pause-icon {
-    display: none;
-}
-
-.is-playing .play-icon {
-    display: none;
-}
-
-.is-playing .pause-icon {
-    display: block;
-}
-
-/* Preview button (Spotify-style frame + inset image) */
-.preview-btn {
-    width: 38px;
-    height: 48px;
-    padding: 2px;
-    background-color: #a7a7a7;
-    border-radius: 4px;
-    overflow: hidden;
-    border: none;
-}
-
-.preview-btn img {
-    width: 100%;
-    height: 100%;
+/* small circular img */
+.artist-img {
+    width: clamp(20px, 2vw, 28px);
+    height: clamp(20px, 2vw, 28px);
+    border-radius: 50%;
     object-fit: cover;
-    display: block;
-    border: 2px solid #111;
-    border-radius: 2px;
 }

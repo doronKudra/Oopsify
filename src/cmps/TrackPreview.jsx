@@ -11,7 +11,7 @@ export function TrackPreview({
     inDetails,
     isStation,
 }) {
-    console.log('track:', track?.album?.name)
+    // console.log('track:', track?.album?.name)
     const likedTracks = useSelector(
         (state) => state.userModule.user.likedTracks?.tracks || []
     )
