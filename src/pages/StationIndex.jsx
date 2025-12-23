@@ -17,7 +17,7 @@ export function StationIndex() {
     // const [filterBy, setFilterBy] = useState(stationService.getDefaultFilter())
     const stations = useSelector(storeState => storeState.stationModule.stations)
 
-    const [bgColor, setBgColor] = useState({ hex: '#3f3f3fff' })
+    const baseColor = '132, 0, 255'
     const user = useSelector(storeState => storeState.userModule.user)
     const { openContextMenu } = useContextMenu()
 
@@ -73,7 +73,14 @@ export function StationIndex() {
     }
     return (
         <main className="station-index" style={{
-            background: `linear-gradient(to bottom, ${bgColor.hex}, #121212)`,
+    background: `
+      linear-gradient(
+        to bottom,
+        rgba(${baseColor}, 0.3) 0px,
+        rgba(${baseColor}, 0.15) 150px,
+        #121212 300px
+      )
+    `,
         }}>
             <StationList
                 openContextMenu={handleOpenMenu}
@@ -82,11 +89,13 @@ export function StationIndex() {
             <StationList
                 openContextMenu={handleOpenMenu}
                 stations={stations}
-                listType={'index'} />
+                listType={'index'}
+                listTitle={'Recommended Stations'} />
             <StationList
                 openContextMenu={handleOpenMenu}
                 stations={stations}
-                listType={'index'} />
+                listType={'index'}
+                listTitle={'Discover Picks for you'} />
         </main>
     )
 }
