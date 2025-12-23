@@ -141,7 +141,7 @@
 
 .track-actions {
     display: flex;
-    align-items: center;
+    /* align-items: center; */
     justify-content: end;
     color: #b3b3b3;
 }
@@ -156,6 +156,8 @@
 }
 
 .track-actions .icon-control {
+    height: 20px;
+    width: 20px;
     opacity: 0.7;
     transition: opacity 0.15s ease, color 0.15s ease;
 }
@@ -177,3 +179,4 @@
     display: flex;
     align-items: center;
 }
+
