@@ -3,18 +3,34 @@
 }
 
 .track-list-container {
-    padding: 16px;
-    font-weight: 550;
+    font-weight: 400;
 }
 
 .track,
 .track-list-title {
     display: grid;
-    grid-template-columns: 1em 1fr 0.3fr;
     align-items: center;
     gap: 1rem;
     color: #b3b3b3;
-    padding: 0.3em;
+    padding-left: 24px;
+    font-size: 14px;
+}
+
+.playlist-view .track,
+.playlist-view .track-list-title {
+    grid-template-columns:
+        1.5em /* index */
+        3.5fr /* title */
+        1.7fr /* album */
+        150px; /* duration / actions */
+}
+
+.album-view .track,
+.album-view .track-list-title {
+    grid-template-columns:
+        1.5em /* index */
+        1fr /* title */
+        3.5em; /* duration / actions */
 }
 
 .track {
@@ -29,7 +45,7 @@
     display: flex;
     min-width: 40px;
 
-    >div {
+    > div {
         overflow: hidden;
     }
 }
@@ -46,8 +62,7 @@
     width: 61px;
     border-radius: 300px;
     background-color: var(--clr2);
-    box-shadow: 0px 0px 1px 1px rgba(255, 255, 255, 0.40);
-    font-weight: 500;
+    box-shadow: 0px 0px 1px 1px rgba(255, 255, 255, 0.4);
 
     will-change: transform;
 
@@ -57,8 +72,7 @@
     }
 }
 
-.left,
-.right {
+.left {
     text-align: center;
 }
 
@@ -80,17 +94,14 @@
     opacity: 1;
 }
 
-.track>.center,
-.track-list-title>.center {
+.track > .center,
+.track-list-title > .center {
     text-align: start;
-}
-
-.track-artist {
-    font-size: 0.875em;
 }
 
 .track-name {
     color: white;
+    font-size: 16px;
 }
 
 .track-name,
@@ -104,6 +115,13 @@
     border-bottom: 1px solid rgb(128, 128, 128, 0.5);
 }
 
+.title-track-duration {
+    text-align: center;
+        width: 150px;
+    padding-right: 24px;
+}
+
+
 .duration-icon {
     width: 1em;
 }
@@ -113,7 +131,7 @@
     width: 1em;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: end;
 }
 
 .track-num-text {
@@ -140,10 +158,10 @@
 }
 
 .track-actions {
-    display: flex;
-    /* align-items: center; */
-    justify-content: end;
+    display: grid;
+    grid-template-columns: 10fr 1fr 1fr;
     color: #b3b3b3;
+    padding-right: 24px;
 }
 
 .track-actions button {
@@ -171,7 +189,6 @@
     margin-right: 0.75em;
     width: 2.88em;
     font-size: 0.85em;
-    font-weight: 450;
     align-content: center;
 }
 
@@ -179,4 +196,3 @@
     display: flex;
     align-items: center;
 }
-

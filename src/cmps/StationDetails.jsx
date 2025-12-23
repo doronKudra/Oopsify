@@ -4,14 +4,19 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { tracks } from '../services/track/track.service.js'
 import { showSuccessMsg, showErrorMsg } from '../services/event-bus.service'
-import { loadStation, updateStation, addTrackToStation, removeTrackFromStation } from '../store/actions/station.actions'
+import {
+    loadStation,
+    updateStation,
+    addTrackToStation,
+    removeTrackFromStation,
+} from '../store/actions/station.actions'
 import { getDemoStation } from '../services/track/track.service.js'
 import { TrackList } from './TrackList.jsx'
 import { StationControls } from './StationControls.jsx'
 import { FastAverageColor } from 'fast-average-color'
 import { DndContext } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
-import { makeId } from '../services/util.service.js'
+import { makeId, mixHex } from '../services/util.service.js'
 import { SearchInDetails } from './SearchInDetails.jsx'
 import { useContextMenu } from './OptionMenuProvider.jsx'
 
@@ -32,31 +37,38 @@ export function StationDetails() {
         stationId === 'liked-songs' ? user.likedTracks : stationFromStore
     const { openContextMenu } = useContextMenu()
 
-    
     function handleOpenMenu({ x, y, context }) {
         const { track } = context
         const isInStation = station.tracks.some(({ id }) => id === track.id)
         const actions = [
-            (isInStation ?
-                { id: makeId(), name: 'Remove from Playlist', callback: () => onRemoveFromStation(track) }
-                : { id: makeId(), name: 'Add to Playlist', callback: () => onAddToStation(track) })
+            isInStation
+                ? {
+                      id: makeId(),
+                      name: 'Remove from Playlist',
+                      callback: () => onRemoveFromStation(track),
+                  }
+                : {
+                      id: makeId(),
+                      name: 'Add to Playlist',
+                      callback: () => onAddToStation(track),
+                  },
         ]
         openContextMenu({
             x,
             y,
             context,
-            actions
+            actions,
         })
     }
 
     async function onAddToStation(track) {
         const updatedTracks = [...localTracks, track]
         setLocalTracks(updatedTracks)
-        await addTrackToStation(station, track) 
+        await addTrackToStation(station, track)
     }
 
     async function onRemoveFromStation(track) {
-        const updatedTracks = localTracks.filter(t => t.id !== track.id)
+        const updatedTracks = localTracks.filter((t) => t.id !== track.id)
         setLocalTracks(updatedTracks)
         await removeTrackFromStation(station, track.id)
     }
@@ -127,23 +139,28 @@ export function StationDetails() {
         await updateStation(updatedStation)
     }
 
+    const isStation = station?.type === 'station'
+
+    const dominant = bgColor.hex
+    const base = '#121212'
+
+    const colorStop1 = mixHex(dominant, base, 0.4)
+    const colorStop2 = mixHex(dominant, base, 0.6)
+    const colorStop3 = mixHex(dominant, base, 0.8)
+
     return (
         <>
             <DndContext onDragEnd={handleDragEnd}>
-                <section
-                    className="station-details"
-                    style={{
-                        background: `linear-gradient(
-                                    to bottom,
-                                    ${bgColor.hex} 0%,
-                                    ${bgColor.hex + '80'} 284px,
-                                    ${bgColor.hex + '50'} 284px,
-                                    #121212 500px
-                                    )`,
-                    }}
-                >
-                    <section className="station-header">
-                        <img src={albumCoverArt} alt="Cover" />
+                <section className="station-details">
+                    <section
+                        className="station-header"
+                        style={{
+                            background: `linear-gradient( to bottom, ${dominant} 0%, ${colorStop1} 100% )`,
+                        }}
+                    >
+                        <div className="cover-container">
+                            <img src={albumCoverArt} alt="Cover" />
+                        </div>
                         <div className="station-header-title">
                             <p>Album</p>
                             <h1>{station.name}</h1>
@@ -164,16 +181,34 @@ export function StationDetails() {
                             </div>
                         </div>
                     </section>
-
-                    <StationControls openContextMenu={handleOpenMenu} station={station} />
-                    <TrackList
+                    <div
+                        style={{
+                            background: `linear-gradient( to bottom, ${colorStop2} 0%, ${colorStop3} 100% )`,
+                        }}
+                    >
+                        <StationControls
+                            openContextMenu={handleOpenMenu}
+                            station={station}
+                        />
+                    </div>
+                    <div
+                        style={{
+                            background: `linear-gradient( to bottom, ${colorStop3} 0px, ${base} 200px, ${base} 100% )`,
+                        }}
+                    >
+                        <TrackList
+                            openContextMenu={handleOpenMenu}
+                            tracks={localTracks}
+                            tempIdsRef={tempIdsRef}
+                            durationMs={stationDuration}
+                            user={user}
+                            isStation={isStation}
+                        />
+                    </div>
+                    <SearchInDetails
                         openContextMenu={handleOpenMenu}
                         tracks={localTracks}
-                        tempIdsRef={tempIdsRef}
-                        durationMs={stationDuration}
-                        user={user}
                     />
-                    <SearchInDetails openContextMenu={handleOpenMenu} tracks={localTracks} />
                 </section>
             </DndContext>
         </>

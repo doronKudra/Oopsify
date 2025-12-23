@@ -7,13 +7,26 @@ import { SortableTrack } from './SortableTracks.jsx'
 import { TrackPreview } from './TrackPreview.jsx'
 // get the user from store
 
-export function TrackList({ openContextMenu,tracks, tempIdsRef, durationMs, onToggleLiked }) {
+export function TrackList({
+    openContextMenu,
+    tracks,
+    tempIdsRef,
+    durationMs,
+    onToggleLiked,
+    isStation
+}) {
+
     return (
         <section>
-            <div className="track-list-container">
+            <div
+                className={`track-list-container ${
+                    isStation ? 'playlist-view' : 'album-view'
+                }`}
+            >
                 <div className="track-list-title">
                     <div className="title-track-number left">#</div>
                     <div className="center">Title</div>
+                    {isStation && <div>Album</div>}
                     <div className="title-track-duration right">
                         <svg
                             viewBox="0 0 16 16"
@@ -32,7 +45,10 @@ export function TrackList({ openContextMenu,tracks, tempIdsRef, durationMs, onTo
                 </div>
 
                 <div className="track-container">
-                    <SortableContext items={tempIdsRef.current} strategy={verticalListSortingStrategy}>
+                    <SortableContext
+                        items={tempIdsRef.current}
+                        strategy={verticalListSortingStrategy}
+                    >
                         {tracks.map((track, idx) => {
                             const tempId = tempIdsRef.current[idx]
                             return (
@@ -42,6 +58,7 @@ export function TrackList({ openContextMenu,tracks, tempIdsRef, durationMs, onTo
                                         track={track}
                                         idx={idx}
                                         onToggleLiked={onToggleLiked}
+                                        isStation={isStation}
                                     />
                                 </SortableTrack>
                             )

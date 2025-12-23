@@ -9,7 +9,9 @@ export function TrackPreview({
     idx,
     onToggleLiked,
     inDetails,
+    isStation,
 }) {
+    console.log('track:', track?.album?.name)
     const likedTracks = useSelector(
         (state) => state.userModule.user.likedTracks?.tracks || []
     )
@@ -19,7 +21,6 @@ export function TrackPreview({
         const hours = Math.floor(totalSec / 3600)
         const mins = Math.floor((totalSec % 3600) / 60)
         const secs = totalSec % 60
-
 
         if (hours > 0) {
             return (
@@ -63,7 +64,7 @@ export function TrackPreview({
             onContextMenu={(ev) => onTrackDetails(ev, track)}
             className="track"
         >
-            {/* LEFT */}
+            {/* Column 1 */}
             <div
                 onClick={() => onPlay(track)}
                 onPointerDown={(ev) => ev.stopPropagation()}
@@ -81,7 +82,7 @@ export function TrackPreview({
                 </svg>
             </div>
 
-            {/* MIDDLE */}
+            {/* Column 2 */}
             <div className="track-details center">
                 <div></div>
                 <img
@@ -97,7 +98,12 @@ export function TrackPreview({
                 </div>
             </div>
 
-            {/* RIGHT */}
+            {/* Column 3 */}
+            <div className="track-album-name" onClick={() => {}}>
+                {track?.album?.name && track?.album?.name}
+            </div>
+
+            {/* Column 4 */}
             {!inDetails ? (
                 <div className="track-actions right">
                     <button
