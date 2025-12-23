@@ -15,6 +15,7 @@
     gap: 1rem;
     color: #b3b3b3;
     padding: 0.3em;
+    padding-inline: 1em;
 }
 
 .track {
@@ -22,7 +23,6 @@
     overflow: hidden;
     border-radius: 5px;
     height: 3.5em;
-    /* padding-inline: 1em; */
 }
 
 .track-details {
@@ -48,6 +48,8 @@
     background-color: var(--clr2);
     box-shadow: 0px 0px 1px 1px rgba(255, 255, 255, 0.40);
     font-weight: 500;
+    justify-self: right;
+    margin-right: 16px;
 
     will-change: transform;
 
@@ -111,6 +113,7 @@
 .track-num {
     position: relative;
     width: 1em;
+    
     display: flex;
     align-items: center;
     justify-content: center;

@@ -8,7 +8,7 @@ export const i = 'i'
 async function search(artistName, txt) {
     const artists = Array.isArray(artistName) ? artistName.join('') : artistName
 
-    const KEY = 'AIzaSyAjEOAbhCL4hie4UHqednti2vWLTRgHnCo'
+    const KEY = 'AIzaSyAsP1qn92sD74u1A7XBQ3dn65wl8C45BE0'
     const toSearch = `${artists} ${txt} official audio`
     const url = new URL('https://www.googleapis.com/youtube/v3/search')
     url.searchParams.set('part', 'snippet')
@@ -18,5 +18,6 @@ async function search(artistName, txt) {
     url.searchParams.set('key', KEY)
 
     const data = await fetch(url).then(res => res.json())
+    if (!data.items[0]) alert('Track is not found, please try another track or wait sometime')
     return data.items[0]?.id.videoId
 }
