@@ -5,12 +5,15 @@ import { makeId } from '../services/util.service.js'
 export function LikedTracks({ user, listType }) {
     const { openContextMenu } = useContextMenu()
     function handleOpenMenu({ x, y, context }) {
+        const isPinned = true // later add to user pinned property inside a user along with playlist id
         openContextMenu({
             x,
             y,
             context,
             actions: [
-                { id:makeId(),name: 'Pin playlist', callback: ({ station }) => onPinStation(station) },
+                isPinned ? 
+                { id:makeId(),icon:'unpin',name: 'Unpin playlist', callback: ({ station }) => onPinStation(station) } :
+                { id:makeId(),icon:'pin',name: 'Pin playlist', callback: ({ station }) => onPinStation(station) },
             ]
         })
     }

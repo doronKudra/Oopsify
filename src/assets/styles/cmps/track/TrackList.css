@@ -38,7 +38,6 @@
     overflow: hidden;
     border-radius: 5px;
     height: 3.5em;
-    /* padding-inline: 1em; */
 }
 
 .track-details {
@@ -129,6 +128,7 @@
 .track-num {
     position: relative;
     width: 1em;
+    
     display: flex;
     align-items: center;
     justify-content: end;

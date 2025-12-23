@@ -1,8 +1,15 @@
-export function StationControls({ station }) {
-    console.log('station:', station)
+export function StationControls({ openContextMenu, station }) {
+    function onStationRightClick(ev, station) {
+
+        openContextMenu({
+            x: ev.clientX,
+            y: ev.clientY,
+            context: { station }
+        })
+    }
 
     const hasImg = station?.images?.[0]?.url
-
+    
     return (
         <div className="btn-container">
             {/* Play */}
@@ -111,7 +118,7 @@ export function StationControls({ station }) {
             <button
                 className="control-btn more-btn"
                 aria-label="More options"
-                onClick={() => {}}
+                onPointerDown={(ev) => onStationRightClick(ev,station)}
             >
                 <svg
                     viewBox="0 0 24 24"
@@ -128,7 +135,6 @@ export function StationControls({ station }) {
             <button
                 className="control-btn list-btn"
                 aria-label="List view"
-                onClick={() => {}}
             >
                 <span className="btn-label">List</span>
                 <svg

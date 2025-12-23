@@ -11,44 +11,99 @@ import { playerActions } from '../../store/actions/player.actions.js'
 
 export function AppFooter() {
 	const track = useSelector(state => state.playerModule.track)
+	const trackList = useSelector(state => state.playerModule.trackList)
+
 	const [isPlaying, setIsPlaying] = useState(false)
 	const [duration, setDuration] = useState(null)
 	const [currTime, setCurrTime] = useState(null)
+	const [volume, setVolume] = useState(100)
+	const lastVolume = useRef(100)
+
+	const intervalTimeRef = useRef(null)
 
 	// const currTime = playerRef.current.getCurrentTime()
-// getDuration() will return 0 until the video's metadata is loaded, which normally happens just after the video starts playing.
+	// getDuration() will return 0 until the video's metadata is loaded, which normally happens just after the video starts playing.
 	const playerRef = useRef(null)
 
 	function onReady({ target }) {
 		playerRef.current = target
 		target.playVideo()
-		setIsPlaying(true)
-		const trackDuration = playerRef.current.getDuration()
-		console.log('duration:',duration)
-		setDuration(trackDuration)
 		console.log('target:', target)
 	}
+
+	function onPlayerStateChange(event) {
+		if (!playerRef.current) return
+
+		if (event.data === window.YT.PlayerState.PLAYING) {
+			setIsPlaying(true)
+
+			const dur = playerRef.current.getDuration()
+			if (dur) setDuration(dur)
+
+			clearInterval(intervalTimeRef.current)
+			intervalTimeRef.current = setInterval(() => {
+				setCurrTime(playerRef.current.getCurrentTime())
+			}, 250)
+		}
+
+		if (
+			event.data === window.YT.PlayerState.PAUSED ||
+			event.data === window.YT.PlayerState.ENDED
+		) {
+			setIsPlaying(false)
+			clearInterval(intervalTimeRef.current)
+
+			if (event.data === window.YT.PlayerState.ENDED) {
+				console.log('track ended')
+				//playerActions.PlayPrevNextTrack()
+			}
+		}
+	}
+
 
 	function onPause() {
 		if (!playerRef.current) return
 		playerRef.current.pauseVideo()
-		setIsPlaying(false)
 	}
 
 	function onPlay() {
 		if (!playerRef.current) return
 		playerRef.current.playVideo()
-		setIsPlaying(true)
 	}
 
-	function onProgressBar(time, isMouseUp) {
-		console.log('time:', time)
-		if (!playerRef.current) return
-		playerRef.current.seekTo(time, isMouseUp)
+	function onProgressBar(value, isMouseUp) {
+		if (!playerRef.current || !duration) return
+		playerRef.current.seekTo((value / 1000) * duration, isMouseUp)
+		setCurrTime((value / 1000) * duration)
+		if (!isMouseUp) clearInterval(intervalTimeRef.current)
 	}
 
-	function onVolume() {
-		//target.setVolume
+	function onPrevNext(value) { //param = -1 || 1
+		playerActions.playPrevNextTrack(value)
+	}
+
+	function checkPrevNext(value) { //param = -1 || 1
+		const track = playerActions.getPrevNextTrack(value)
+		return track ? true : false
+	}
+	
+	
+	function onShuffle() {
+		playerActions.onShuffle()
+	}
+
+	function onVolumeBtn() {
+		const newVolume = volume ? 0:lastVolume.current 
+		lastVolume.current = volume
+		setVolume(newVolume)
+		playerRef.current.setVolume(newVolume)
+	}
+	
+	function onVolume({target}) { //value from 0-100
+		const value = target.value
+		lastVolume.current = value
+		setVolume(value)
+		playerRef.current.setVolume(value)
 	}
 
 	function onAdd() {
@@ -64,11 +119,22 @@ export function AppFooter() {
 
 	return (
 		<>
-			{track && <YtPlayer videoId={track.videoId} onReady={onReady} />}
+			{track && <YtPlayer videoId={track.videoId} onReady={onReady} onPlayerStateChange={onPlayerStateChange} />}
 			<footer className="app-footer">
 				<FooterTrackPreview track={track} onAdd={onAdd} onTilte={onTilte} onArtist={onArtist} />
-				<PlayerControls onProgressBar={onProgressBar} currTime={currTime} duration={duration} onPause={onPause} onPlay={onPlay} isPlaying={isPlaying} />
-				<VolumeControl />
+				<PlayerControls
+					trackList={trackList}
+					isPlaying={isPlaying}
+					currTime={currTime}
+					duration={duration}
+					onPlay={onPlay}
+					onPause={onPause}
+					onProgressBar={onProgressBar}
+					onPrevNext={onPrevNext}
+					checkPrevNext={checkPrevNext}
+					onShuffle={onShuffle}
+				/>
+				<VolumeControl volume={volume} onVolume={onVolume} onVolumeBtn={onVolumeBtn} />
 			</footer>
 		</>
 	)

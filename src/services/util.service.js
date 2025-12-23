@@ -8,6 +8,7 @@ export const utilService = {
     debounce,
     saveToStorage,
     loadFromStorage,
+    shuffleArray,
 }
 
 export function makeId(length = 6) {
@@ -452,6 +453,18 @@ export function randomPastTime() {
 
     const pastTime = getRandomIntInclusive(HOUR, WEEK)
     return Date.now() - pastTime
+}
+
+export function shuffleArray(array) {
+    let arr = [...array]
+
+    for (let i = arr.length - 1; i > 0; i--) {
+
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+
+    return arr;
 }
 
 export function debounce(func, timeout = 300) {

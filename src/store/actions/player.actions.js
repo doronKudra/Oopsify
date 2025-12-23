@@ -1,26 +1,68 @@
+import { utilService } from "../../services/util.service"
 import { youtubeService } from "../../services/youtubeService"
-import { ON_PLAY, UPDATE_CURRENT_TRACK } from "../reducers/player.reducer"
+import { ADD_TRACK_TO_LIST, SET_LIST_IDX, SET_TRACK_LIST, UPDATE_CURRENT_TRACK } from "../reducers/player.reducer"
 import { store } from "../store"
 
 
 
 export const playerActions = {
     onTrackToPlay,
-    onPlay,
-    onPause,
+    isTrackPlaying,
+    getPrevNextTrack,
+    onTrackList,
+    onShuffle,
+    onAddTrackToList,
+    playPrevNextTrack,
 }
 
 async function onTrackToPlay(track) {
     const artistName = track.artists.map(artist => artist.name + ' ')
     const trackName = track.name
-    const videoId = await youtubeService.search(artistName, trackName) || await youtubeService.search('', trackName)
+    const videoId = await youtubeService.search(artistName, trackName) || "7q2B4M5EiBkqrlsNW8lB7N"
     const trackToSave = { ...track, videoId: videoId }
     store.dispatch({ type: UPDATE_CURRENT_TRACK, track: trackToSave })
 }
-async function onPlay() {
-    store.dispatch({ type: ON_PLAY, isPlaying: true })
+
+function playPrevNextTrack(value) {
+    const trackList = store.getState().playerModule.trackList
+    
+    const reqIdx = store.getState().playerModule.idx + value
+    const track = trackList[reqIdx]
+    if (!trackList || !trackList.length || !track) return 
+    onTrackToPlay(track).then(()=> store.dispatch({type:SET_LIST_IDX,idx:reqIdx}))
 }
-async function onPause() {
-    store.dispatch({ type: ON_PLAY, isPlaying: false })
+
+function getPrevNextTrack(value) { //value = -1 || 1 // the same as checking if next || prev track
+    const trackList = store.getState().playerModule.trackList
+    if (!trackList || !trackList.length) return false
+
+    const reqIdx = store.getState().playerModule.idx + value
+    const track = trackList[reqIdx]
+    return track ? track : false
 }
+
+function onShuffle() {
+    let trackList = [...store.getState().playerModule.trackList]
+    if (!trackList || !trackList.length) return
+
+    const currIdx = store.getState().playerModule.idx
+    const currTrack = trackList.splice(currIdx, 1)
+    const shuffeled = utilService.shuffleArray(trackList).unshift(currTrack)
+    store.dispatch({ type: SET_TRACK_LIST, trackList: shuffeled })
+}
+
+function onTrackList(tracks) {
+    store.dispatch({ type: SET_TRACK_LIST, trackList: tracks })
+    store.dispatch({ type: SET_LIST_IDX, idx: 0 })
+}
+
+function isTrackPlaying(id) { // for lists display
+    const isPlaying = store.getState().playerModule.track.id === id
+    return isPlaying
+}
+
+function onAddTrackToList(track) {
+    store.dispatch({ type: ADD_TRACK_TO_LIST, track: track })
+}
+
 

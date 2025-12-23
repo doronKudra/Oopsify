@@ -20,14 +20,39 @@ export function SideBar() {
 
     function handleOpenMenu({ x, y, context }) {
         const { station } = context
-        const isLiked = user.likedStations.includes(station.id)
+        let actions
+        if ((station.owner.id === user.id)) {
+            actions = [
+                { id: makeId(), icon: 'queue', name: 'Add to queue', callback: () => {} }, // TODO
+                { id: makeId(), icon: 'profile', name: 'Add to profile', callback: () => {} }, // TODO
+                { id: makeId(), icon: 'edit', name: 'Edit details', callback: () => {} }, // TODO
+                { id: makeId(), icon: 'delete', name: 'Delete', callback: () => {} }, // TODO
+                { id: makeId(), icon: 'new-playlist', name: 'Create playlist', callback: () => {} }, // TODO
+                { id: makeId(), icon: 'add', name: 'Create folder', callback: () => {} }, // TODO
+                { id: makeId(), icon: 'private', name: 'Make private', callback: () => {} }, // TODO
+                { id: makeId(), icon: 'folder', name: 'Move to folder', callback: () => {} }, // TODO - make a dropdown cmp
+                { id: makeId(), icon: 'share', name: 'Share', callback: () => {} },
+            ]
+        }
+        else {
+            const isLiked = user.likedStations.includes(station.id)
+            const isPinned = false
+            if (station.type === 'station') {
+                actions = [
+                    { id: makeId(), icon: 'queue', name: 'Add to queue', callback: () => {} }, // TODO
+                    (isLiked && { id: makeId(), icon: 'profile', name: 'Add to profile', callback: () => {} }),// TODO
+                    { id: makeId(), icon: 'remove', name: 'Remove from Your Library', callback: () => onRemoveStation(station) },
+                    { id: makeId(), icon: 'new-playlist', name: 'Create playlist', callback: () => {} },// TODO
+                    { id: makeId(), icon: 'add', name: 'Create folder', callback: () => {} },// TODO
+                    { id: makeId(), icon: 'folder', name: 'Move to folder', callback: () => {} },// TODO
+                    isPinned ?
+                        { id: makeId(), icon: 'unpin', name: 'Unpin playlist', callback: ({ station }) => onPinStation(station) } :// TODO
+                        { id: makeId(), icon: 'pin', name: 'Pin playlist', callback: ({ station }) => onPinStation(station) },// TODO
+                    { id: makeId(), icon: 'share', name: 'Share', callback: () => {} },// TODO
 
-        const actions = [
-            { id: makeId(), name: 'Pin playlist', callback: () => onPinStation(station) },
-            (isLiked ?
-                { id: makeId(), name: 'Remove from Your Library', callback: () => onRemoveStation(station) }
-                : { id: makeId(), name: 'Add to Your Library', callback: () => onAddStation(station) })
-        ]
+                ]
+            }
+        }
         openContextMenu({
             x,
             y,
