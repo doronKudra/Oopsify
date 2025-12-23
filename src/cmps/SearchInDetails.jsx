@@ -66,7 +66,7 @@ export function SearchInDetails({ localTracks }) {
 
                     {tracks && tracks.length ?
                         tracks.map((track, idx) => (
-                            <TrackPreview key={track.id} track={track} isLiked={true} idx={idx} />
+                            <TrackPreview key={track.id} track={track} isLiked={true} idx={idx} inDetails={true}/>
                         ))
                         : <div> No Results </div>
                     }

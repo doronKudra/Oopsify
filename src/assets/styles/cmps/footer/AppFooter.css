@@ -65,20 +65,22 @@
     gap: 10px;
     font-size: small;
     color: #b3b3b3;
+
+    span{
+        line-height:13px;
+        height: max-content;
+        text-align:start;
+    }
 }
 
 .track-duration-footer {
     flex: 1;
+    margin: 0;
     height: 4px;
     background-color: #4d4d4d;
 
     &:hover .duration-bar {
         background-color: rgb(30, 215, 96);
-    }
-
-    .duration-bar {
-        height: 100%;
-        background-color: white;
     }
 }
 
