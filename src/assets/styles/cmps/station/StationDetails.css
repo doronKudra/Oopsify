@@ -1,62 +1,77 @@
+/* Whole Station */
 .station-details {
-    padding: 1em;
+    padding: 8px;
     min-height: 100%;
 }
 
+/* Header Area */
 .station-header {
     display: flex;
     flex-direction: row;
-    margin: 0;
-    padding: 3em 3em 1em 1em;
-    border-bottom: 1px solid rgb(0, 0, 0, 0.5);
-
-    img {
-        max-width: 40%;
-        height: 40%;
-        align-self: end;
-        border-radius: 10px;
-    }
+    gap: 24px;
+    padding: 24px;
+    align-items: flex-end;
 }
 
+/* Img container */
+.cover-container {
+    width: min(232px, 40vw);
+    min-width: 120px;
+}
+
+.cover-container img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+/* Text container */
 .station-header-title {
-    align-self: end;
-    margin: 0 1em;
-}
-
-.btn-container {
     display: flex;
-    align-items: center;
-    gap: 1em;
-    padding: 1em;
+    flex-direction: column;
+    gap: 8px;
 }
 
-.list-btn {
-    margin-left: auto;
+/* Type of station (Album / Public Playlist) */
+.header-type {
+    font-size: clamp(0.7rem, 1vw, 0.9rem);
+    font-weight: 600;
+    text-transform: uppercase;
+    opacity: 0.8;
+}
+
+/* Station Name */
+.station-header-title h1 {
+    font-size: clamp(1.8rem, 4vw, 3.5rem);
+    font-weight: 800;
+    margin: 0;
+    line-height: 1.1;
+}
+
+/* Bottom row with info */
+.station-header-info {
     display: flex;
     align-items: center;
     gap: 6px;
+    font-size: clamp(0.85rem, 1.2vw, 1rem);
+    opacity: 0.9;
 }
 
-.btn-container button {
-    background-color: transparent;
+/* Artist/User name emphasis */
+.station-header-info .enhance {
+    font-weight: 600;
+}
+
+/* Rest of bottom row */
+.station-header-info > :not(.enhance) {
     color: #b3b3b3;
 }
 
-.icon-control {
-    width: 2em;
-    color: #b3b3b3;
+/* small circular img */
+.artist-img {
+    width: clamp(20px, 2vw, 28px);
+    height: clamp(20px, 2vw, 28px);
+    border-radius: 50%;
+    object-fit: cover;
 }
-
-.control-btn:hover .icon-control {
-    color: #fff;
-    transition: transform 0.2s ease, color 0.2s ease;
-}
-
-.play-icon {
-    width: 3em;
-    color: #1ed760;
-}
-
-/* .track-list-container {
-    padding: 1em;
-} */
