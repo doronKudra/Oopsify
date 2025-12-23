@@ -1,4 +1,8 @@
 export function StationControls({ station }) {
+    console.log('station:', station)
+
+    const hasImg = station?.images?.[0]?.url
+
     return (
         <div className="btn-container">
             {/* Play */}
@@ -7,16 +11,34 @@ export function StationControls({ station }) {
                 aria-label="Play"
                 onClick={() => {}}
             >
-                <svg
-                    className="play-icon"
-                    data-encore-id="icon"
-                    role="img"
-                    aria-hidden="true"
-                    class="e-91000-icon e-91000-baseline"
-                    viewBox="0 0 24 24"
-                >
-                    <path d="m7.05 3.606 13.49 7.788a.7.7 0 0 1 0 1.212L7.05 20.394A.7.7 0 0 1 6 19.788V4.212a.7.7 0 0 1 1.05-.606"></path>
-                </svg>
+                <div className="green-circle">
+                    <span className="play-pause-icon">
+                        <svg
+                            className="play-icon"
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                        >
+                            <path d="m7.05 3.606 13.49 7.788a.7.7 0 0 1 0 1.212L7.05 20.394A.7.7 0 0 1 6 19.788V4.212a.7.7 0 0 1 1.05-.606"></path>
+                        </svg>
+
+                        <svg
+                            className="pause-icon"
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                        >
+                            <path d="M5.7 3a.7.7 0 0 0-.7.7v16.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V3.7a.7.7 0 0 0-.7-.7zm10 0a.7.7 0 0 0-.7.7v16.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V3.7a.7.7 0 0 0-.7-.7z"></path>
+                        </svg>
+                    </span>
+                </div>
+            </button>
+
+            {/* Preview */}
+            <button
+                className="control-btn preview-btn"
+                aria-label="Preview"
+                onClick={() => {}}
+            >
+                {hasImg && <img src={station.images[0].url} alt="Cover" />}
             </button>
 
             {/* Shuffle */}
