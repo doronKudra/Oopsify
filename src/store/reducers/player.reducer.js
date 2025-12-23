@@ -37,7 +37,7 @@ const initialState = {
 }
 
 export function playerReducer(state = initialState, action) {
-    console.log('action:', action)
+    // console.log('action:', action)
     switch (action.type) {
         case UPDATE_CURRENT_TRACK:
             return { ...state, track: action.track }

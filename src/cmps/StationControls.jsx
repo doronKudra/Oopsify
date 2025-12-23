@@ -9,6 +9,9 @@ export function StationControls({ openContextMenu, station }) {
             context: { station }
         })
     }
+
+    const hasImg = station?.images?.[0]?.url
+    
     return (
         <div className="btn-container">
             {/* Play */}
@@ -17,22 +20,34 @@ export function StationControls({ openContextMenu, station }) {
                 aria-label="Play"
                 onClick={() => playerActions.onTrackList(station.tracks)}
             >
-                <svg
-                    viewBox="0 0 24 24"
-                    className="icon-control play-icon"
-                    xmlns="http://www.w3.org/2000/svg"
-                    aria-hidden="true"
-                >
-                    <circle
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                    />
-                    <path d="M10 8l6 4-6 4V8z" fill="currentColor" />
-                </svg>
+                <div className="green-circle">
+                    <span className="play-pause-icon">
+                        <svg
+                            className="play-icon"
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                        >
+                            <path d="m7.05 3.606 13.49 7.788a.7.7 0 0 1 0 1.212L7.05 20.394A.7.7 0 0 1 6 19.788V4.212a.7.7 0 0 1 1.05-.606"></path>
+                        </svg>
+
+                        <svg
+                            className="pause-icon"
+                            viewBox="0 0 24 24"
+                            aria-hidden="true"
+                        >
+                            <path d="M5.7 3a.7.7 0 0 0-.7.7v16.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V3.7a.7.7 0 0 0-.7-.7zm10 0a.7.7 0 0 0-.7.7v16.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V3.7a.7.7 0 0 0-.7-.7z"></path>
+                        </svg>
+                    </span>
+                </div>
+            </button>
+
+            {/* Preview */}
+            <button
+                className="control-btn preview-btn"
+                aria-label="Preview"
+                onClick={() => {}}
+            >
+                {hasImg && <img src={station.images[0].url} alt="Cover" />}
             </button>
 
             {/* Shuffle */}
@@ -134,7 +149,6 @@ export function StationControls({ openContextMenu, station }) {
                         fill="currentColor"
                     />
                 </svg>
-
             </button>
         </div>
     )
