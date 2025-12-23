@@ -7,7 +7,7 @@ import { SortableTrack } from './SortableTracks.jsx'
 import { TrackPreview } from './TrackPreview.jsx'
 // get the user from store
 
-export function TrackList({ tracks, tempIdsRef, durationMs, onToggleLiked }) {
+export function TrackList({ openContextMenu,tracks, tempIdsRef, durationMs, onToggleLiked }) {
     return (
         <section>
             <div className="track-list-container">
@@ -38,6 +38,7 @@ export function TrackList({ tracks, tempIdsRef, durationMs, onToggleLiked }) {
                             return (
                                 <SortableTrack id={tempId} key={tempId}>
                                     <TrackPreview
+                                        openContextMenu={openContextMenu}
                                         track={track}
                                         idx={idx}
                                         onToggleLiked={onToggleLiked}

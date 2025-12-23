@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { tracks } from '../services/track/track.service.js'
 import { showSuccessMsg, showErrorMsg } from '../services/event-bus.service'
-import { loadStation, updateStation } from '../store/actions/station.actions'
+import { loadStation, updateStation, addTrackToStation, removeTrackFromStation } from '../store/actions/station.actions'
 import { getDemoStation } from '../services/track/track.service.js'
 import { TrackList } from './TrackList.jsx'
 import { StationControls } from './StationControls.jsx'
@@ -13,6 +13,7 @@ import { DndContext } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
 import { makeId } from '../services/util.service.js'
 import { SearchInDetails } from './SearchInDetails.jsx'
+import { useContextMenu } from './OptionMenuProvider.jsx'
 
 import {
     updateUserLikedTracks,
@@ -29,6 +30,36 @@ export function StationDetails() {
 
     const station =
         stationId === 'liked-songs' ? user.likedTracks : stationFromStore
+    const { openContextMenu } = useContextMenu()
+
+    
+    function handleOpenMenu({ x, y, context }) {
+        const { track } = context
+        const isInStation = station.tracks.some(({ id }) => id === track.id)
+        const actions = [
+            (isInStation ?
+                { id: makeId(), name: 'Remove from Playlist', callback: () => onRemoveFromStation(track) }
+                : { id: makeId(), name: 'Add to Playlist', callback: () => onAddToStation(track) })
+        ]
+        openContextMenu({
+            x,
+            y,
+            context,
+            actions
+        })
+    }
+
+    async function onAddToStation(track) {
+        const updatedTracks = [...localTracks, track]
+        setLocalTracks(updatedTracks)
+        await addTrackToStation(station, track) 
+    }
+
+    async function onRemoveFromStation(track) {
+        const updatedTracks = localTracks.filter(t => t.id !== track.id)
+        setLocalTracks(updatedTracks)
+        await removeTrackFromStation(station, track.id)
+    }
 
     useEffect(() => {
         if (stationId !== 'liked-songs') {
@@ -134,14 +165,15 @@ export function StationDetails() {
                         </div>
                     </section>
 
-                    <StationControls station={station} />
+                    <StationControls openContextMenu={handleOpenMenu} station={station} />
                     <TrackList
+                        openContextMenu={handleOpenMenu}
                         tracks={localTracks}
                         tempIdsRef={tempIdsRef}
                         durationMs={stationDuration}
                         user={user}
                     />
-                    <SearchInDetails tracks={localTracks} />
+                    <SearchInDetails openContextMenu={handleOpenMenu} tracks={localTracks} />
                 </section>
             </DndContext>
         </>
