@@ -8,10 +8,12 @@ const key = import.meta.env.VITE_SPOTKEY
 
 const token = await _getValidToken()
 
-async function getById(id, type = 'station') { //Type must be plural, not singular.
+async function getById(id, type = 'station') {
     const isArray = Array.isArray(id)
     const idToSend = isArray ? id.join(',') : id
     const typeToSearch = type === 'station' ? 'playlists' : type + 's'
+    if (isArray && typeToSearch === 'playlists') throw new Error("cannot get an array of playlists, only tracks, albums and artists");
+
 
     const url = `https://api.spotify.com/v1/${typeToSearch}${isArray ? '?ids=' : '/'}${idToSend}`
 
@@ -24,7 +26,7 @@ async function getById(id, type = 'station') { //Type must be plural, not singul
     if (!res.ok) throw new Error(`Spotify getById failed: type=${type} id=${idToSend}`)
 
     const clearedItem = isArray ? await _clearObject(await res.json(),
-        type === 'stations' ? 'playlists' : type) :
+        type === 'station' ? 'playlist' : type) :
         _clearObject(await res.json())
     return clearedItem
 }
@@ -34,7 +36,6 @@ function _clearObject(item, type) {
     if (type) {
         return item[type].map(i => _clearObject(i))
     }
-
     switch (item.type) {
         case 'playlist':
             return clearStation(item)
@@ -64,6 +65,7 @@ async function search(txt, type = 'track', limit = 15) {
     data = data[typeToSearch + 's'].items.filter(item => item)
 
     const dataToReturn = data.map(item => _clearObject(item))
+    // console.log('dataToReturn:', dataToReturn)
     return dataToReturn
 }
 
