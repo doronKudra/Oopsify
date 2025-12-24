@@ -11,6 +11,7 @@ import {
     SET_WATCHED_USER,
     SET_LIKED_TRACKS,
     UPDATE_USER,
+    SET_LIKED_STATIONS,
 } from '../reducers/user.reducer'
 
 export async function loadUsers() {

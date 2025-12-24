@@ -45,11 +45,11 @@ export function StationDetails() {
     function handleOpenMenu({ x, y, context }) {
         const { track } = context
         const isInStation = station.tracks.some(({ id }) => id === track.id)
-        const isLiked = true // TODO check if track is in liked
+        const isLiked = user.likedTracks.tracks.some(({ id }) => id === track.id)
         let actions
-        if (station.owner.id === user.id) {
+        if (station.id === 'liked-songs' || station.owner.id === user.id) {
             actions = [
-                {
+                !isInStation && {
                     id: makeId(),
                     icon: 'add',
                     name: 'Add to playlist',
@@ -65,46 +65,46 @@ export function StationDetails() {
                 },
                 isLiked
                     ? {
-                          id: makeId(),
-                          icon: 'remove',
-                          name: 'Remove from your Liked Songs',
-                          callback: () => {},
-                      } // TODO
+                        id: makeId(),
+                        icon: 'remove',
+                        name: 'Remove from your Liked Songs',
+                        callback: () => onToggleLiked(track),
+                    }
                     : {
-                          id: makeId(),
-                          icon: 'save',
-                          name: 'Save to your Liked Songs',
-                          callback: () => {},
-                      }, // TODO
+                        id: makeId(),
+                        icon: 'save',
+                        name: 'Save to your Liked Songs',
+                        callback: () => onToggleLiked(track),
+                    },
                 {
                     id: makeId(),
                     icon: 'queue',
                     name: 'Add to queue',
-                    callback: () => {},
+                    callback: () => { },
                 }, // TODO
                 {
                     id: makeId(),
                     icon: 'radio',
                     name: 'Go to song radio',
-                    callback: () => {},
+                    callback: () => { },
                 }, // TODO
                 {
                     id: makeId(),
                     icon: 'artist',
                     name: 'Go to artist',
-                    callback: () => {},
+                    callback: () => { },
                 }, // TODO
                 {
                     id: makeId(),
                     icon: 'album',
                     name: 'Go to album',
-                    callback: () => {},
+                    callback: () => { },
                 }, // TODO - make a dropdown cmp
                 {
                     id: makeId(),
                     icon: 'share',
                     name: 'Share',
-                    callback: () => {},
+                    callback: () => { },
                 }, // TODO
             ]
         } else {
@@ -118,46 +118,46 @@ export function StationDetails() {
                     }, // TODO (add to a different playlist) dropdown
                     isLiked
                         ? {
-                              id: makeId(),
-                              icon: 'remove',
-                              name: 'Remove from your Liked Songs',
-                              callback: () => {},
-                          } // TODO
+                            id: makeId(),
+                            icon: 'remove',
+                            name: 'Remove from your Liked Songs',
+                            callback: () => onToggleLiked(track),
+                        }
                         : {
-                              id: makeId(),
-                              icon: 'save',
-                              name: 'Save to your Liked Songs',
-                              callback: () => {},
-                          }, // TODO
+                            id: makeId(),
+                            icon: 'save',
+                            name: 'Save to your Liked Songs',
+                            callback: () => onToggleLiked(track),
+                        },
                     {
                         id: makeId(),
                         icon: 'queue',
                         name: 'Add to queue',
-                        callback: () => {},
+                        callback: () => { },
                     }, // TODO
                     {
                         id: makeId(),
                         icon: 'radio',
                         name: 'Go to song radio',
-                        callback: () => {},
+                        callback: () => { },
                     }, // TODO
                     {
                         id: makeId(),
                         icon: 'artist',
                         name: 'Go to artist',
-                        callback: () => {},
+                        callback: () => { },
                     }, // TODO
                     {
                         id: makeId(),
                         icon: 'album',
                         name: 'Go to album',
-                        callback: () => {},
+                        callback: () => { },
                     }, // TODO - make a dropdown cmp
                     {
                         id: makeId(),
                         icon: 'share',
                         name: 'Share',
-                        callback: () => {},
+                        callback: () => { },
                     }, // TODO
                 ]
             }
@@ -190,43 +190,43 @@ export function StationDetails() {
                     id: makeId(),
                     icon: 'queue',
                     name: 'Add to queue',
-                    callback: () => {},
+                    callback: () => { },
                 }, // TODO
                 {
                     id: makeId(),
                     icon: 'profile',
                     name: 'Add to profile',
-                    callback: () => {},
+                    callback: () => { },
                 },
                 {
                     id: makeId(),
                     icon: 'edit',
                     name: 'Edit details',
-                    callback: () => {},
+                    callback: () => { },
                 }, // TODO
                 {
                     id: makeId(),
                     icon: 'delete',
                     name: 'Delete',
-                    callback: () => {},
+                    callback: () => { },
                 }, // TODO
                 {
                     id: makeId(),
                     icon: 'private',
                     name: 'Make private',
-                    callback: () => {},
+                    callback: () => { },
                 }, // TODO
                 {
                     id: makeId(),
                     icon: 'folder',
                     name: 'Move to folder',
-                    callback: () => {},
+                    callback: () => { },
                 }, // TODO - make a dropdown cmp
                 {
                     id: makeId(),
                     icon: 'share',
                     name: 'Share',
-                    callback: () => {},
+                    callback: () => { },
                 }, // TODO
             ]
         } else {
@@ -235,40 +235,40 @@ export function StationDetails() {
                 actions = [
                     isLiked
                         ? {
-                              id: makeId(),
-                              icon: 'remove',
-                              name: 'Remove from Your Library',
-                              callback: () => onRemoveStation(station),
-                          }
+                            id: makeId(),
+                            icon: 'remove',
+                            name: 'Remove from Your Library',
+                            callback: () => onRemoveStation(station),
+                        }
                         : {
-                              id: makeId(),
-                              icon: 'save',
-                              name: 'Add to Your Library',
-                              callback: () => onAddStation(station),
-                          },
+                            id: makeId(),
+                            icon: 'save',
+                            name: 'Add to Your Library',
+                            callback: () => onAddStation(station),
+                        },
                     {
                         id: makeId(),
                         icon: 'queue',
                         name: 'Add to queue',
-                        callback: () => {},
+                        callback: () => { },
                     }, // TODO
                     isLiked && {
                         id: makeId(),
                         icon: 'profile',
                         name: 'Add to profile',
-                        callback: () => {},
+                        callback: () => { },
                     }, // TODO
                     {
                         id: makeId(),
                         icon: 'folder',
                         name: isLiked ? 'Move to folder' : 'Add to folder',
-                        callback: () => {},
+                        callback: () => { },
                     }, // TODO
                     {
                         id: makeId(),
                         icon: 'share',
                         name: 'Share',
-                        callback: () => {},
+                        callback: () => { },
                     }, // TODO
                 ]
             }
@@ -289,24 +289,30 @@ export function StationDetails() {
         toggleLikedStation(station.id)
     }
 
-    function onAddStation(station) {
-        toggleLikedStation(station.id)
-    }
-
-    function onRemoveStation(station) {
-        toggleLikedStation(station.id)
-    }
-
     async function onAddToStation(track) {
-        const updatedTracks = [...localTracks, track]
-        setLocalTracks(updatedTracks)
-        await addTrackToStation(station, track)
+        if (stationId === 'liked-songs') {
+            await toggleLiked(track)
+        }
+        else {
+            const updatedTracks = [...localTracks, track]
+            setLocalTracks(updatedTracks)
+            await addTrackToStation(station.id, track)
+        }
     }
 
     async function onRemoveFromStation(track) {
-        const updatedTracks = localTracks.filter((t) => t.id !== track.id)
-        setLocalTracks(updatedTracks)
-        await removeTrackFromStation(station, track.id)
+        if (stationId === 'liked-songs') {
+            await toggleLiked(track)
+        }
+        else {
+            const updatedTracks = localTracks.filter((t) => t.id !== track.id)
+            setLocalTracks(updatedTracks)
+            await removeTrackFromStation(station, track.id)
+        }
+    }
+
+    async function onToggleLiked(track) {
+        await toggleLiked(track)
     }
 
     useEffect(() => {
@@ -427,11 +433,11 @@ export function StationDetails() {
                                 ) : (
                                     <>
                                         <img
-                                            src={station.artist.img}
-                                            alt={station.artist.name}
+                                            src={station?.artist?.img}
+                                            alt={station?.artist?.name}
                                             className="artist-img"
                                         />
-                                        <span>{station.artist.name}</span>
+                                        <span>{station?.artist?.name}</span>
                                         <span> • </span>
                                         <span>{station.year}</span>
                                         <span> • </span>
