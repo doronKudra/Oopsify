@@ -121,12 +121,13 @@ export function LoginSignup({ isSignup }) {
                 </label>
                 <input
                     id="password"
-                    type="userName"
-                    name="userName"
+                    type="password"
+                    name="password"
                     required
                     value={credentials.password}
                     onChange={handleChange}
                 />
+
                 {errors.password && <p className="error">{errors.password}</p>}
 
                 {isSignup && (

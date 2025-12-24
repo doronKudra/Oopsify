@@ -16,7 +16,7 @@ export const userService = {
     saveLoggedinUser,
 }
 
-_createLoggedinUser()
+// _createLoggedinUser()
 
 async function getUsers() {
     const users = await storageService.query(STORAGE_KEY_USER)
@@ -93,7 +93,7 @@ async function saveLoggedinUser(user) {
         likedTracks: {
             name: 'Liked Songs',
             tracks: user.likedTracks.tracks,
-            createdBy: 'admin',
+            createdBy: user.userName,
             images: [{ url: '/src/assets/images/liked-songs.png' }],
             id: 'liked-songs',
         },
