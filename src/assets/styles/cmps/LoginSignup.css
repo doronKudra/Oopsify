@@ -4,10 +4,11 @@
     flex-direction: column;
     align-items: center;
     width: 100%;
-    gap: 32px;
+    gap: 24px;
     padding: 48px 20px;
     color: #fff;
     max-width: 380px;
+    height: 100vh;
 }
 
 .loginsignup-header-area {
@@ -128,4 +129,11 @@
 
 .other-option button:hover {
     text-decoration: underline;
+}
+
+.error {
+    color: #ff6b6b;
+    font-size: 0.85rem;
+    margin-top: -8px;
+    margin-bottom: 8px;
 }

@@ -19,25 +19,20 @@ const initialState = {
 }
 
 export function userReducer(state = initialState, action) {
-    var newState = state
     switch (action.type) {
         case SET_USER:
-            newState = { ...state, user: action.user }
-            break
+            return { ...state, user: action.user }
         case SET_WATCHED_USER:
-            newState = { ...state, watchedUser: action.user }
-            break
+            return { ...state, watchedUser: action.user }
         case REMOVE_USER:
-            newState = {
+            return {
                 ...state,
                 users: state.users.filter((user) => user._id !== action.userId),
             }
-            break
         case SET_USERS:
-            newState = { ...state, users: action.users }
-            break
+            return { ...state, users: action.users }
         case SET_LIKED_TRACKS:
-            newState = {
+            return {
                 ...state,
                 user: {
                     ...state.user,
@@ -47,25 +42,17 @@ export function userReducer(state = initialState, action) {
                     },
                 },
             }
-            break
         case SET_LIKED_STATIONS:
-            newState = {
+            return {
                 ...state,
                 user: {
                     ...state.user,
-                    likedStations: [
-                        ...state.user.likedStations,
-                        ...action.id
-                    ],
+                    likedStations: [...state.user.likedStations, ...action.id],
                 },
             }
-            break
         case UPDATE_USER:
-            newState = { ...state, user: { ...state.user, ...action.user } }
-            break
+            return { ...state, user: { ...state.user, ...action.user } }
         default:
+            return state
     }
-    // For debug:
-    window.userState = newState
-    return newState
 }
