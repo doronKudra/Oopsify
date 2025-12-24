@@ -9,7 +9,7 @@ export function LoginSignup() {
     const navigate = useNavigate()
 
     function clearState() {
-        setCredentials({ username: '', password: '', fullname: '', imgUrl: '' })
+        setCredentials({ username: '', password: '', fullname: ''})
     }
 
     function handleChange(ev) {
@@ -89,8 +89,8 @@ export function LoginSignup() {
 
                 <input
                     id="password"
-                    type="userName"
-                    name="userName"
+                    type="password"
+                    name="password"
                     required
                     value={credentials.userName}
                     onChange={(ev) => handleChange(ev.target.value)}

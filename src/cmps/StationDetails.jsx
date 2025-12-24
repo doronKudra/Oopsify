@@ -427,11 +427,11 @@ export function StationDetails() {
                                 ) : (
                                     <>
                                         <img
-                                            src={station.artist.img}
-                                            alt={station.artist.name}
+                                            src={station?.artist?.img}
+                                            alt={station?.artist?.name}
                                             className="artist-img"
                                         />
-                                        <span>{station.artist.name}</span>
+                                        <span>{station?.artist?.name}</span>
                                         <span> • </span>
                                         <span>{station.year}</span>
                                         <span> • </span>
