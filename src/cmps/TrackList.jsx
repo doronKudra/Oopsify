@@ -7,21 +7,11 @@ import { SortableTrack } from './SortableTracks.jsx'
 import { TrackPreview } from './TrackPreview.jsx'
 // get the user from store
 
-export function TrackList({
-    openContextMenu,
-    tracks,
-    tempIdsRef,
-    onToggleLiked,
-    isStation
-}) {
+export function TrackList({ openContextMenu, tracks, tempIdsRef, isStation }) {
 
     return (
         <section>
-            <div
-                className={`track-list-container ${
-                    isStation ? 'playlist-view' : 'album-view'
-                }`}
-            >
+            <div className={`track-list-container ${!isStation && 'album-view'}`}>
                 <div className="track-list-title">
                     <div className="title-track-number left">#</div>
                     <div className="center">Title</div>
@@ -56,7 +46,6 @@ export function TrackList({
                                         openContextMenu={openContextMenu}
                                         track={track}
                                         idx={idx}
-                                        onToggleLiked={onToggleLiked}
                                         isStation={isStation}
                                     />
                                 </SortableTrack>
