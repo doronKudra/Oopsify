@@ -1,6 +1,7 @@
 /* Whole Station */
 .station-details {
     min-height: 100%;
+    background-color: var(--clr2);
 }
 
 /* Header Area */

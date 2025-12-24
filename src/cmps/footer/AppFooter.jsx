@@ -62,7 +62,7 @@ export function AppFooter() {
 
 	function onPlayerStateChange(event) {
 		if (!playerRef.current) return
-
+		console.log('event.data:',event.data)
 		if (event.data === window.YT.PlayerState.PLAYING) {
 			setIsPlaying(true)
 
