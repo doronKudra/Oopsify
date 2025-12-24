@@ -179,6 +179,10 @@ iframe {
     display: none;
 }
 
+.volume-input{
+    max-width: 93px;
+}
+
 .track-duration-footer,
 .volume-input {
     --fill: 0%;

@@ -12,39 +12,47 @@
     align-items: center;
     gap: 1rem;
     color: #b3b3b3;
-    padding-left: 24px;
+    padding: 0 16px;
+    margin: 0 19px ;
     font-size: 14px;
 }
 
 .playlist-view .track,
 .playlist-view .track-list-title {
     grid-template-columns:
-        1.5em /* index */
-        3.5fr /* title */
-        1.7fr /* album */
-        150px; /* duration / actions */
+        1.5em
+        /* index */
+        3.5fr
+        /* title */
+        1.7fr
+        /* album */
+        150px;
+    /* duration / actions */
 }
 
 .album-view .track,
 .album-view .track-list-title {
     grid-template-columns:
-        1.5em /* index */
-        1fr /* title */
-        3.5em; /* duration / actions */
+        1.5em
+        /* index */
+        1fr
+        /* title */
+        3.5em;
+    /* duration / actions */
 }
 
 .track {
     position: relative;
     overflow: hidden;
     border-radius: 5px;
-    height: 3.5em;
+    height: 54px;
 }
 
 .track-details {
     display: flex;
     min-width: 40px;
 
-    > div {
+    >div {
         overflow: hidden;
     }
 }
@@ -93,8 +101,8 @@
     opacity: 1;
 }
 
-.track > .center,
-.track-list-title > .center {
+.track>.center,
+.track-list-title>.center {
     text-align: start;
 }
 
@@ -103,6 +111,7 @@
     font-size: 16px;
 }
 
+.track-album-name,
 .track-name,
 .track-artist {
     overflow: hidden;
@@ -116,7 +125,7 @@
 
 .title-track-duration {
     text-align: center;
-        width: 150px;
+    width: 150px;
     padding-right: 24px;
 }
 
@@ -127,26 +136,34 @@
 
 .track-num {
     position: relative;
-    width: 1em;
-    
+    width: 16px;
+    height: 16px;
+
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
 }
 
 .track-num-text {
     opacity: 1;
+    font-size: 16px;
     transition: opacity 0.2s ease;
 }
 
 .track-num-icon {
     position: absolute;
-    inset: 0;
     opacity: 0;
     transition: opacity 0.2s ease;
-    width: 1em;
-    height: 1em;
     color: white;
+    width: 16px;
+    height: 16px;
+}
+
+.control-btn.liked-btn{
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .track:hover .track-num-text {
@@ -159,6 +176,7 @@
 
 .track-actions {
     display: grid;
+    
     grid-template-columns: 10fr 1fr 1fr;
     color: #b3b3b3;
     padding-right: 24px;
@@ -195,4 +213,24 @@
 .control-button {
     display: flex;
     align-items: center;
+}
+
+@media (max-width: 680px) {
+
+    .track-album-name,
+    .list-album-title {
+        display: none;
+    }
+
+    .playlist-view .track,
+    .playlist-view .track-list-title {
+        grid-template-columns:
+            1.5em
+            /* index */
+            3.5fr
+            /* title */
+            /* album */
+            150px;
+        /* duration / actions */
+    }
 }

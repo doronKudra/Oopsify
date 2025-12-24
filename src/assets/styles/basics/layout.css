@@ -26,6 +26,7 @@
     overflow: hidden;
     min-height: 0;
     border-radius: 8px;
+    margin-right: 8px;
 }
 
 .content-area {
@@ -39,9 +40,7 @@
 .route-scroll {
     flex: 1;
     overflow: auto;
-    margin-right: 8px;
     min-height: 0;
-    
 }
 
 .app-footer {
