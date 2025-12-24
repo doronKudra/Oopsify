@@ -35,33 +35,31 @@ export async function removeUser(userId) {
     }
 }
 
-export async function login(credentials) {
-    try {
-        const user = await userService.login(credentials)
-        store.dispatch({
-            type: SET_USER,
-            user,
-        })
-        socketService.login(user._id)
-        return user
-    } catch (err) {
-        console.log('Cannot login', err)
-        throw err
+export function login(credentials) {
+    return async (dispatch) => {
+        try {
+            const user = await userService.login(credentials)
+            dispatch({ type: SET_USER, user })
+            socketService.login(user.id)
+            return user
+        } catch (err) {
+            console.log('Cannot login', err)
+            throw err
+        }
     }
 }
 
-export async function signup(credentials) {
-    try {
-        const user = await userService.signup(credentials)
-        store.dispatch({
-            type: SET_USER,
-            user,
-        })
-        socketService.login(user._id)
-        return user
-    } catch (err) {
-        console.log('Cannot signup', err)
-        throw err
+export function signup(credentials) {
+    return async (dispatch) => {
+        try {
+            const user = await userService.signup(credentials)
+            dispatch({ type: SET_USER, user })
+            socketService.login(user.id)
+            return user
+        } catch (err) {
+            console.error('Signup failed:', err)
+            throw err
+        }
     }
 }
 
@@ -122,7 +120,9 @@ export function updateUserLikedTracks(tracks) {
 export async function toggleLikedStation(clickedStationId) {
     const user = store.getState().userModule.user
     const likedStations = user?.likedStations || []
-    const isLiked = likedStations.some((stationId) => stationId === clickedStationId)
+    const isLiked = likedStations.some(
+        (stationId) => stationId === clickedStationId
+    )
     let updatedStations
     if (isLiked) {
         updatedStations = likedStations.filter(
@@ -134,11 +134,10 @@ export async function toggleLikedStation(clickedStationId) {
     // updateUserLikedStations(updatedStations)
     const userToUpdate = {
         ...user,
-        likedStations: [ ...updatedStations ],
+        likedStations: [...updatedStations],
     }
     await updateUser(userToUpdate)
 }
-
 
 export async function toggleLiked(clickedTrack) {
     const user = store.getState().userModule.user

@@ -64,7 +64,7 @@ async function signup(user) {
         likedStations: user.likedStations || [],
         likedTracks: {
             name: 'Liked Songs',
-            tracks: user.likedTracks.tracks || [],
+            tracks: user.likedTracks?.tracks || [],
             owner: {
                 userName: user.userName,
                 id: user.id,
