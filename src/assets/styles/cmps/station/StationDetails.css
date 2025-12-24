@@ -47,6 +47,10 @@
     margin-bottom: 3px;
 }
 
+.station-owner-header:hover{
+    cursor: pointer;
+}
+
 /* Station Name */
 .station-header-title h1 {
     font-size: clamp(24px,  2cqw, 52px);
