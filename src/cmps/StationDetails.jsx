@@ -427,11 +427,11 @@ export function StationDetails() {
                                 ) : (
                                     <>
                                         <img
-                                            src={station.artist.img}
-                                            alt={station.artist.name}
+                                            src={station?.artist?.img}
+                                            alt={station?.artist?.name}
                                             className="artist-img"
                                         />
-                                        <span>{station.artist.name}</span>
+                                        <span>{station?.artist?.name}</span>
                                         <span> • </span>
                                         <span>{station.year}</span>
                                         <span> • </span>
@@ -454,7 +454,7 @@ export function StationDetails() {
                     </div>
                     <div
                         style={{
-                            background: `linear-gradient( to bottom, ${colorStop3} 0px, ${base} 200px, ${base} 100% )`,
+                            background: `linear-gradient( to bottom, ${colorStop3} 0px, ${base} 100px, ${base} 100% )`,
                         }}
                     >
                         <TrackList
