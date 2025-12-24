@@ -124,7 +124,6 @@ export async function toggleLikedStation(clickedStationId) {
     const likedStations = user?.likedStations || []
     const isLiked = likedStations.some((stationId) => stationId === clickedStationId)
     let updatedStations
-    console.log('likedStations', likedStations)
     if (isLiked) {
         updatedStations = likedStations.filter(
             (stationId) => stationId !== clickedStationId
