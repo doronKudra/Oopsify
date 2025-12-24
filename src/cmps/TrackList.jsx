@@ -25,7 +25,7 @@ export function TrackList({
                 <div className="track-list-title">
                     <div className="title-track-number left">#</div>
                     <div className="center">Title</div>
-                    {isStation && <div>Album</div>}
+                    {isStation && <div className='list-album-title'>Album</div>}
                     <div className="title-track-duration right">
                         <svg
                             viewBox="0 0 16 16"

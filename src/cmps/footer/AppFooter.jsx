@@ -12,23 +12,27 @@ import { playerActions } from '../../store/actions/player.actions.js'
 export function AppFooter() {
 	const track = useSelector(state => state.playerModule.track)
 	const trackList = useSelector(state => state.playerModule.trackList)
+	const trackIdx = useSelector(state => state.playerModule.idx)
 
 	const [isPlaying, setIsPlaying] = useState(false)
 	const [duration, setDuration] = useState(null)
 	const [currTime, setCurrTime] = useState(null)
-	const [volume, setVolume] = useState(100)
-	const lastVolume = useRef(100)
-
+	const [volume, setVolume] = useState(50)
+	const lastVolume = useRef(50)
+	
 	const intervalTimeRef = useRef(null)
-
-	// const currTime = playerRef.current.getCurrentTime()
-	// getDuration() will return 0 until the video's metadata is loaded, which normally happens just after the video starts playing.
+	const volumeRef = useRef(null)
+	
 	const playerRef = useRef(null)
 
+	useEffect(()=>{
+		volumeRef.current.style.setProperty('--fill',`${volume}%`)
+	},[])
+	
 	function onReady({ target }) {
 		playerRef.current = target
 		target.playVideo()
-		console.log('target:', target)
+		playerRef.current.setVolume(volume)
 	}
 
 	function onPlayerStateChange(event) {
@@ -43,7 +47,7 @@ export function AppFooter() {
 			clearInterval(intervalTimeRef.current)
 			intervalTimeRef.current = setInterval(() => {
 				setCurrTime(playerRef.current.getCurrentTime())
-			}, 250)
+			}, 500)
 		}
 
 		if (
@@ -55,7 +59,7 @@ export function AppFooter() {
 
 			if (event.data === window.YT.PlayerState.ENDED) {
 				console.log('track ended')
-				//playerActions.PlayPrevNextTrack()
+				playerActions.playPrevNextTrack(1)
 			}
 		}
 	}
@@ -78,32 +82,34 @@ export function AppFooter() {
 		if (!isMouseUp) clearInterval(intervalTimeRef.current)
 	}
 
-	function onPrevNext(value) { //param = -1 || 1
+	function onPrevNext(value) { //arg = -1 || 1
 		playerActions.playPrevNextTrack(value)
 	}
 
-	function checkPrevNext(value) { //param = -1 || 1
+	function checkPrevNext(value) { //arg = -1 || 1
 		const track = playerActions.getPrevNextTrack(value)
 		return track ? true : false
 	}
-	
-	
+
+
 	function onShuffle() {
 		playerActions.onShuffle()
 	}
 
 	function onVolumeBtn() {
-		const newVolume = volume ? 0:lastVolume.current 
+		const newVolume = volume ? 0 : lastVolume.current
 		lastVolume.current = volume
 		setVolume(newVolume)
 		playerRef.current.setVolume(newVolume)
+		volumeRef.current.style.setProperty('--fill',`${newVolume}%`)
 	}
-	
-	function onVolume({target}) { //value from 0-100
+
+	function onVolume({ target }) { //value from 0-100
 		const value = target.value
 		lastVolume.current = value
 		setVolume(value)
 		playerRef.current.setVolume(value)
+		volumeRef.current.style.setProperty('--fill',`${value}%`)
 	}
 
 	function onAdd() {
@@ -134,7 +140,7 @@ export function AppFooter() {
 					checkPrevNext={checkPrevNext}
 					onShuffle={onShuffle}
 				/>
-				<VolumeControl volume={volume} onVolume={onVolume} onVolumeBtn={onVolumeBtn} />
+				<VolumeControl volume={volume} onVolume={onVolume} onVolumeBtn={onVolumeBtn} volumeRef={volumeRef} />
 			</footer>
 		</>
 	)

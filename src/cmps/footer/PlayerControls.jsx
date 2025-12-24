@@ -3,9 +3,14 @@ import { utilService } from "../../services/util.service"
 
 export function PlayerControls({ trackList, currTime, duration, onPause, onPlay, isPlaying, onProgressBar, onPrevNext, checkPrevNext, onShuffle }) {
 
-    const [progressValue, setProgressValue] = useState(null)
+    const [progressValue, setProgressValue] = useState(0)
     const [isTrackList, setIsTrackList] = useState(false)
     const isChanged = useRef(false)
+    const progressRef = useRef(null)
+
+    useEffect(() => {
+        progressRef.current.style.setProperty('--fill',`${progressValue / 10}%`)
+    }, [progressValue])
 
 
     useEffect(() => {
@@ -40,7 +45,6 @@ export function PlayerControls({ trackList, currTime, duration, onPause, onPlay,
         isChanged.current = false
         const value = target.value
         onProgressBar(value, true)
-        console.log('value:', value)
     }
 
     function onChangeProgress({ target }) {
@@ -87,12 +91,13 @@ export function PlayerControls({ trackList, currTime, duration, onPause, onPlay,
             <div className="time-display">
                 <span>{duration && currTime ? getCurrTime(currTime) : '-:--'}</span>
                 <input
+                    ref={progressRef}
                     className="track-duration-footer" type="range" name="range" min="0" max="1000"
                     value={progressValue}
                     onChange={onChangeProgress}
                     onMouseUp={onMouseUpProg}
                 />
-                <span>{duration ? getCurrTime(duration) : '-:--'}</span>
+                <span>{duration !== null ? getCurrTime(duration) : '-:--'}</span>
             </div>
         </section>
     )

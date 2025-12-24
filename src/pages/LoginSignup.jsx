@@ -123,6 +123,8 @@ export function LoginSignup({ isSignup }) {
                     id="password"
                     type="password"
                     name="password"
+                    type="password"
+                    name="password"
                     required
                     value={credentials.password}
                     onChange={handleChange}

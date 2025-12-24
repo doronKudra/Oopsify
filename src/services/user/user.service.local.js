@@ -65,9 +65,13 @@ async function signup(user) {
         likedTracks: {
             name: 'Liked Songs',
             tracks: user.likedTracks?.tracks || [],
-            createdBy: user.userName,
+            owner: {
+                userName: user.userName,
+                id: user.id,
+            },
             images: [{ url: '/src/assets/images/liked-songs.png' }],
             id: 'liked-songs',
+            type: 'station',
         },
     }
     const savedUser = await storageService.post(STORAGE_KEY_USER, userToSave)
@@ -93,9 +97,13 @@ async function saveLoggedinUser(user) {
         likedTracks: {
             name: 'Liked Songs',
             tracks: user.likedTracks.tracks,
-            createdBy: user.userName,
+            owner: {
+                userName: user.userName,
+                id: user.id,
+            },
             images: [{ url: '/src/assets/images/liked-songs.png' }],
             id: 'liked-songs',
+            type: 'station',
         },
     }
     sessionStorage.setItem(
@@ -116,19 +124,17 @@ async function _createLoggedinUser() {
         userName: 'admin',
         password: 'admin',
         imgUrl: 'https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png',
-        likedStations: [
-            '3xqcAMgjHGrv3ElA51zZRj',
-            '7gb4GZz7iIHGilXxD7638E',
-            '4DJztJkufdlND0Hvg4nGkK',
-            '3E0RgJpQug1ibE2jTGI0Hk',
-            '2O3jLuM3inA4vw5fZdGz9W',
-        ],
+        likedStations: ['3xqcAMgjHGrv3ElA51zZRj', '7gb4GZz7iIHGilXxD7638E', '4DJztJkufdlND0Hvg4nGkK', '3E0RgJpQug1ibE2jTGI0Hk', '2O3jLuM3inA4vw5fZdGz9W'],
         likedTracks: {
             name: 'Liked Songs',
             tracks: [],
-            createdBy: 'admin',
+            owner: {
+                userName: 'admin',
+                id: 'admin',
+            },
             images: [{ url: '/src/assets/images/liked-songs.png' }],
             id: 'liked-songs',
+            type: 'station',
         },
     }
     users.push(user)

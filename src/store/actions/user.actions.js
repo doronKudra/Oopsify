@@ -11,6 +11,7 @@ import {
     SET_WATCHED_USER,
     SET_LIKED_TRACKS,
     UPDATE_USER,
+    SET_LIKED_STATIONS,
 } from '../reducers/user.reducer'
 
 export async function loadUsers() {
@@ -123,7 +124,6 @@ export async function toggleLikedStation(clickedStationId) {
         (stationId) => stationId === clickedStationId
     )
     let updatedStations
-    console.log('likedStations', likedStations)
     if (isLiked) {
         updatedStations = likedStations.filter(
             (stationId) => stationId !== clickedStationId

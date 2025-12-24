@@ -52,6 +52,7 @@
             font-weight: 500;
             color: rgb(187, 187, 187);
         }
+
     }
 
     &:has(#header-search:hover) .magnifying-glass-svg,
@@ -91,6 +92,7 @@
     .search-genre-btn {
         right: 2px;
         border-left: 1px solid var(--header3);
+
         &:hover {
             >* {
                 fill: white;
@@ -100,6 +102,7 @@
 
     .xmark-btn {
         right: 50px;
+
         &:hover {
             >* {
                 fill: white;
@@ -133,6 +136,7 @@
     }
 
     .spotify-logo {
+        cursor: pointer;
         fill: white;
     }
 }

@@ -1,35 +1,39 @@
 /* Whole Station */
 .station-details {
-    padding: 8px;
     min-height: 100%;
 }
 
 /* Header Area */
 .station-header {
+    max-height: 256px;
     display: flex;
-    flex-direction: row;
-    gap: 24px;
-    padding: 24px;
-    align-items: flex-end;
+    gap: 16px;
+    padding: 50px 19px 19px 19px;
+    /* align-items:end; */
+    /* min-height: 185px; */
 }
 
 /* Img container */
 .cover-container {
-    width: min(232px, 40vw);
-    min-width: 120px;
+    width: max-content;
+    height: max-content;
 }
 
 .cover-container img {
-    width: 100%;
+    height: 70%;
+    max-width: 175px;
+    min-width: 128px;
     aspect-ratio: 1 / 1;
     object-fit: cover;
     border-radius: 4px;
+    box-shadow: rgba(0, 0, 0, 0.5) 0px 4px 60px 0px;
 }
 
 /* Text container */
 .station-header-title {
     display: flex;
     flex-direction: column;
+    justify-content: end;
     gap: 8px;
 }
 
@@ -37,15 +41,23 @@
 .header-type {
     font-size: clamp(0.7rem, 1vw, 0.9rem);
     font-weight: 600;
-    opacity: 0.8;
+    text-transform: uppercase;
+    opacity: 0.90;
+    margin-bottom: 3px;
 }
 
 /* Station Name */
 .station-header-title h1 {
-    font-size: clamp(1.8rem, 4vw, 3.5rem);
+    font-size: clamp(24px,  2cqw, 52px);
     font-weight: 800;
+    max-height: 120px;
     margin: 0;
     line-height: 1.1;
+
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
 }
 
 /* Bottom row with info */
@@ -63,7 +75,7 @@
 }
 
 /* Rest of bottom row */
-.station-header-info > :not(.enhance) {
+.station-header-info> :not(.enhance) {
     color: #b3b3b3;
 }
 
