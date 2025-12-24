@@ -37,7 +37,6 @@
 .header-type {
     font-size: clamp(0.7rem, 1vw, 0.9rem);
     font-weight: 600;
-    text-transform: uppercase;
     opacity: 0.8;
 }
 

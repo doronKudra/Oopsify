@@ -11,6 +11,8 @@
 
 @import "cmps/AboutUs.css";
 @import "cmps/UserDetails.css";
+
+@import "cmps/AuthLayout.css";
 @import "cmps/LoginSignup.css";
 
 @import "cmps/AppHeader.css";

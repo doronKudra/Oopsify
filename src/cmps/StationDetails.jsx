@@ -454,7 +454,7 @@ export function StationDetails() {
                     </div>
                     <div
                         style={{
-                            background: `linear-gradient( to bottom, ${colorStop3} 0px, ${base} 200px, ${base} 100% )`,
+                            background: `linear-gradient( to bottom, ${colorStop3} 0px, ${base} 100px, ${base} 100% )`,
                         }}
                     >
                         <TrackList
