@@ -1,3 +1,5 @@
+import { playerActions } from "../store/actions/player.actions"
+
 export function StationControls({ openContextMenu, station }) {
     function onStationRightClick(ev, station) {
 
@@ -16,7 +18,7 @@ export function StationControls({ openContextMenu, station }) {
             <button
                 className="control-btn play-btn"
                 aria-label="Play"
-                onClick={() => {}}
+                onClick={() => playerActions.onTrackList(station.tracks)}
             >
                 <div className="green-circle">
                     <span className="play-pause-icon">

@@ -43,7 +43,7 @@ export function playerReducer(state = initialState, action) {
             return { ...state, track: action.track }
 
         case SET_TRACK_LIST:
-            return { ...state, trackList: action.trackList }
+            return { ...state, trackList: action.trackList, idx: 0 }
 
         case SET_LIST_IDX:
             return { ...state, idx: action.idx }

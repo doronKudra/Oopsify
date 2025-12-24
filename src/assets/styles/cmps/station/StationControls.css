@@ -3,17 +3,25 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    padding-left: 8px;
-    padding-right: 6px;
-    padding-top: 18px;
-    padding-bottom: 14px;
+    padding: 19px;
+}
+
+.btn-container button:not(.preview-btn) {
+    background-color: transparent;
+    width: max-content;
+    height: max-content;
+    padding: 0;
+    margin: 0 6px;
+    color: #b3b3b3;
 }
 
 .list-btn {
-    margin-left: auto;
+    flex: 1;
     display: flex;
     align-items: center;
     gap: 8px;
+    justify-content: right;
+    margin: 0;
 }
 
 .list-btn svg {
@@ -22,10 +30,6 @@
 }
 
 /* All control buttons except preview */
-.btn-container button:not(.preview-btn) {
-    background-color: transparent;
-    color: #b3b3b3;
-}
 
 /* Icon sizing */
 .icon-control {
@@ -38,6 +42,10 @@
 .control-btn:hover .icon-control {
     color: #fff;
     transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.control-btn.play-btn{
+    padding-left: 0;
 }
 
 /* Play/Pause green circle */
