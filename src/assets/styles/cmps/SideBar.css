@@ -4,13 +4,14 @@
     border-radius: 0.5rem;
     height: 100%;
     padding-inline: 4px;
+    overflow-y: auto;
 }
 
-.sidebar-scroll::-webkit-scrollbar {
+.sidebar-container::-webkit-scrollbar,.sidebar-scroll::-webkit-scrollbar {
   display: none;
 }
 
-.sidebar-scroll{
+.sidebar-container,.sidebar-scroll{
     -ms-overflow-style: none;  /* IE and Edge */
     scrollbar-width: none;     /* Firefox */
 }
