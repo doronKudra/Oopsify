@@ -62,7 +62,7 @@ export function ContextMenu({ actions, context, position, onClose }) { // dynami
 
     if (!actions?.length) return
     return (<div className="context-menu">
-        <div onClick={onClose} className="context-menu-backdrop"></div>
+        <div onMouseDown={onClose} className="context-menu-backdrop"></div>
         <div onClick={ev => ev.stopPropagation()} style={{ position: 'fixed', top: position.y, left: position.x}} className="context-menu-content">
             <ul>
                 {actions.map(action =>

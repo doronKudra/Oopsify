@@ -1,6 +1,7 @@
 
 @import "setup/var.css";
 @import "setup/typography.css";
+@import "setup/mq.css";
 
 @import "basics/helpers.css";
 @import "basics/layout.css";
