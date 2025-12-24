@@ -1,5 +1,6 @@
 import { store } from '../store'
 import { stationService } from '../../services/station'
+import { userService } from '../../services/user'
 import {
     ADD_STATION,
     REMOVE_STATION,
@@ -8,6 +9,7 @@ import {
     UPDATE_STATION,
     SET_SIDEBAR_STATIONS,
 } from '../reducers/station.reducer'
+import { updateUser } from './user.actions'
 
 export async function loadStations(filterBy) {
     try {
@@ -52,15 +54,27 @@ export async function removeStation(stationId) {
 export async function addStation({ userName, id }) {
     try {
         const station = stationService.getEmptyStation({ userName, id })
-        console.log('we got here ', station)
-        const savedStation = await stationService.save(station).then(store.dispatch({ type: ADD_STATION, station }))
+        const savedStation = await stationService.save(station)
 
-        return savedStation
+        const stationToStore = JSON.parse(JSON.stringify(savedStation))
+
+        store.dispatch({ type: ADD_STATION, station: stationToStore })
+
+        const user = store.getState().userModule.user
+        if (user && !user.likedStations.includes(stationToStore.id)) {
+            await updateUser({
+                ...user,
+                likedStations: [...user.likedStations, stationToStore.id],
+            })
+        }
+
+        return stationToStore
     } catch (err) {
         console.error('Cannot add station', err)
         throw err
     }
 }
+
 
 export async function updateStation(station) {
     try {
@@ -73,16 +87,11 @@ export async function updateStation(station) {
     }
 }
 
-export async function addTrackToStation(station, track) {
+export async function addTrackToStation(stationId, track) {
     try {
-        const updatedStation = {
-            ...station,
-            tracks: [...station.tracks, track],
-        }
-
-        const savedStation = await stationService.save(updatedStation)
+        const savedStation = await stationService.addTrack(stationId, track)
         store.dispatch({ type: UPDATE_STATION, station: savedStation })
-
+        
         return savedStation
     } catch (err) {
         console.error('Cannot add track to station', err)
@@ -112,7 +121,7 @@ async function unitTestActions() {
     await loadStations()
     await addStation(stationService.getEmptyStation())
     await updateStation({
-        _id: 'm1oC7',
+        id: 'm1oC7',
         name: 'Station-Good',
     })
     await removeStation('m1oC7')
