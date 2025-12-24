@@ -4,6 +4,7 @@ import { AppHeader } from './cmps/AppHeader.jsx'
 import { AppFooter } from './cmps/footer/AppFooter.jsx'
 import { SideBar } from './cmps/SideBar/SideBar.jsx'
 import { UserMsg } from './cmps/UserMsg.jsx'
+import { EditStation } from './cmps/EditStation.jsx'
 
 export function AppLayout() {
     return (
@@ -17,7 +18,7 @@ export function AppLayout() {
                     <Outlet />
                 </div>
             </main>
-
+            {/* <EditStation/> */}
             <AppFooter />
         </div>
     )

@@ -1,10 +1,12 @@
-
-.edit-modal{
-    position: fixed; /* Stays in place relative to the viewport */
+.edit-modal {
+    position: fixed;
+    /* Stays in place relative to the viewport */
     top: 0;
     left: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
+    width: 100%;
+    /* Full width */
+    height: 100%;
+    /* Full height */
     display: flex;
     flex-direction: column;
     width: 32.75em;
@@ -13,48 +15,70 @@
     border-radius: 8px;
 }
 
-.edit-modal-header{
+.edit-modal-header {
     display: flex;
     justify-content: space-between;
     padding: 1.5em;
-    h2{
+
+    h2 {
         display: inline-block;
         margin: 0;
     }
-    button{
-        
-    }
+
+    button {}
 }
 
-.edit-modal-img{
+.edit-modal-img {
     max-height: 11.25em;
     max-width: 11.25em;
     border-radius: 5px;
 }
 
-.edit-modal-body{
+.edit-modal-body {
     display: flex;
     padding-inline: 18px;
 }
 
-.edit-modal-fields{
+.edit-modal-fields {
     display: flex;
     flex-direction: column;
     width: 17.5rem;
     height: 2.5rem;
     margin-left: 1rem;
     gap: 1rem;
-    input,textarea{
+
+    input,
+    textarea {
         padding-inline: 12px;
         width: 100%;
         background-color: #3e3e3e;
         border: none;
+        border-radius: 4px;
     }
-    textarea{
-       height: 7.75rem; 
-       resize: none;
+
+    textarea {
+        height: 7.75rem;
+        resize: none;
     }
-    input{
+
+    input {
         height: 40px;
+    }
+
+    .edit-modal-fields-label {
+        color: #b3b3b3;
+        inset-inline-start: 10px;
+        /* opacity: 0; */
+        position: absolute;
+        top: 0;
+        -webkit-transform: translateY(-50%);
+        transform: translateY(-50%);
+        -webkit-transition: opacity .2s;
+        transition: opacity .2s;
+        font-size: 0.7rem;
+        font-weight: 700;
+    }
+    .edit-modal-field{
+        position: relative;
     }
 }

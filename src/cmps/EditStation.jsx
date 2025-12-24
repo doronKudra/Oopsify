@@ -1,6 +1,6 @@
 
 
-export function EditStation(){
+export function EditStation() {
     return <div className="edit-modal">
         <header className="edit-modal-header">
             <h2>Edit details</h2>
@@ -14,8 +14,9 @@ export function EditStation(){
                 </div>
             </div>
             <div className="edit-modal-fields">
-                <div>
-                    <input type="text" />
+                <div className="edit-modal-name-field">
+                    <span className="edit-modal-fields-label">Name</span>
+                    <input type="text" placeholder="Add a name"/>
                 </div>
                 <div>
                     <textarea />
