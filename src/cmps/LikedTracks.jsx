@@ -3,6 +3,7 @@ import { useContextMenu } from '../cmps/OptionMenuProvider.jsx'
 import { makeId } from '../services/util.service.js'
 
 export function LikedTracks({ user, listType }) {
+    if(!user) return
     const { openContextMenu } = useContextMenu()
     function handleOpenMenu({ x, y, context }) {
         const isPinned = true // later add to user pinned property inside a user along with playlist id
