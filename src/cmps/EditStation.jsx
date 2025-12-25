@@ -1,20 +1,25 @@
 import { store } from '../store/store'
-import { UPDATE_STATION, SET_STATION } from '../store/reducers/station.reducer'
 import { useState } from 'react'
+import { updateStation,loadStation } from '../store/actions/station.actions'
+import { useSelector } from 'react-redux'
 
 export function EditStation({ closeModal }) {
-    const station = store.getState().stationModule.station
+    const station = useSelector(storeState => storeState.stationModule.station)
     const [name, setName] = useState(station?.name || '')
     const [description, setDescription] = useState(station?.description || '')
     const [image, setImage] = useState(station?.images[0]?.url || '')
+
     function onSave() {
         if (!station) return
-
-        const updatedStation = { ...station, name, description,images:[{url:image}] }
-
-        store.dispatch({ type: UPDATE_STATION, station: updatedStation })
-        store.dispatch({ type: SET_STATION, station: updatedStation })
-
+        
+        const updatedStation = {
+            ...station,       
+            name,             
+            description,      
+            images: [{ url: image }] 
+        }
+        updateStation(updatedStation)
+        
         closeModal()
     }
     function onImageChange(e) {
@@ -43,7 +48,7 @@ export function EditStation({ closeModal }) {
                         onClick={() => document.getElementById('station-image-input').click()}
                     />
                     <div className="edit-modal-image-overlay" onClick={() => document.getElementById('station-image-input').click()}>
-                        
+
                     </div>
                     <input
                         id="station-image-input"

@@ -8,6 +8,9 @@ import { UPDATE_CURRENT_TRACK } from '../../store/reducers/player.reducer.js'
 import { useSelector } from 'react-redux'
 import { YtPlayer } from '../YtPlayer.jsx'
 import { playerActions } from '../../store/actions/player.actions.js'
+import { useContextMenu } from '../OptionMenuProvider.jsx'
+import { makeId } from '../../services/util.service.js'
+import { toggleLiked} from '../../store/actions/user.actions.js'
 
 export function AppFooter() {
 	const track = useSelector(state => state.playerModule.track)
@@ -19,16 +22,38 @@ export function AppFooter() {
 	const [currTime, setCurrTime] = useState(null)
 	const [volume, setVolume] = useState(50)
 	const lastVolume = useRef(50)
-	
+
 	const intervalTimeRef = useRef(null)
 	const volumeRef = useRef(null)
-	
-	const playerRef = useRef(null)
 
-	useEffect(()=>{
-		volumeRef.current.style.setProperty('--fill',`${volume}%`)
-	},[])
-	
+	const playerRef = useRef(null)
+	const { openContextMenu } = useContextMenu()
+	function handleOpenMenu({ x, y, context }) {
+		const { track } = context
+		//const isInStation = false // for now
+		const isLiked = true
+		let actions = [
+			{ id: makeId(), icon: 'add', name: 'Add to playlist', callback: () => onAddToStation(track), }, // TODO (add to a different playlist) dropdown
+			isLiked ? { id: makeId(), icon: 'remove', name: 'Remove from your Liked Songs', callback: () => onToggleLiked(track), }
+				: { id: makeId(), icon: 'save', name: 'Save to your Liked Songs', callback: () => onToggleLiked(track), },
+			{ id: makeId(), icon: 'queue', name: 'Add to queue', callback: () => { }, }, // TODO
+			{ id: makeId(), icon: 'radio', name: 'Go to song radio', callback: () => { }, }, // TODO
+			{ id: makeId(), icon: 'artist', name: 'Go to artist', callback: () => { }, }, // TODO
+			{ id: makeId(), icon: 'album', name: 'Go to album', callback: () => { }, }, // TODO - make a dropdown cmp
+			{ id: makeId(), icon: 'share', name: 'Share', callback: () => { }, }, // TODO
+		]
+		openContextMenu({
+			x,
+			y,
+			context,
+			actions,
+		})
+	}
+
+	useEffect(() => {
+		volumeRef.current.style.setProperty('--fill', `${volume}%`)
+	}, [])
+
 	function onReady({ target }) {
 		playerRef.current = target
 		target.playVideo()
@@ -36,6 +61,7 @@ export function AppFooter() {
 	}
 
 	function onPlayerStateChange(event) {
+		console.log('event.data:',event.data)
 		if (!playerRef.current) return
 		console.log('event.data:',event.data)
 		if (event.data === window.YT.PlayerState.PLAYING) {
@@ -101,7 +127,7 @@ export function AppFooter() {
 		lastVolume.current = volume
 		setVolume(newVolume)
 		playerRef.current.setVolume(newVolume)
-		volumeRef.current.style.setProperty('--fill',`${newVolume}%`)
+		volumeRef.current.style.setProperty('--fill', `${newVolume}%`)
 	}
 
 	function onVolume({ target }) { //value from 0-100
@@ -109,11 +135,11 @@ export function AppFooter() {
 		lastVolume.current = value
 		setVolume(value)
 		playerRef.current.setVolume(value)
-		volumeRef.current.style.setProperty('--fill',`${value}%`)
+		volumeRef.current.style.setProperty('--fill', `${value}%`)
 	}
 
 	function onAdd() {
-		console.log('adding...:')
+		toggleLiked(track)
 	}
 	function onTilte() {
 		console.log('titling...:')
@@ -127,7 +153,7 @@ export function AppFooter() {
 		<>
 			{track && <YtPlayer videoId={track.videoId} onReady={onReady} onPlayerStateChange={onPlayerStateChange} />}
 			<footer className="app-footer">
-				<FooterTrackPreview track={track} onAdd={onAdd} onTilte={onTilte} onArtist={onArtist} />
+				<FooterTrackPreview openContextMenu={handleOpenMenu} track={track} onAdd={onAdd} onTilte={onTilte} onArtist={onArtist} />
 				<PlayerControls
 					trackList={trackList}
 					isPlaying={isPlaying}

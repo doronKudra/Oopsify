@@ -4,6 +4,20 @@
     border-radius: 0.5rem;
     height: 100%;
     padding-inline: 4px;
+    overflow-y: auto;
+}
+
+.sidebar-container::-webkit-scrollbar,.sidebar-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.route-scroll::-webkit-scrollbar{
+    display: none;
+}
+
+.sidebar-container,.sidebar-scroll{
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;     /* Firefox */
 }
 
 .sidebar-actions {

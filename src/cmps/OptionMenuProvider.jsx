@@ -3,7 +3,7 @@ import { ContextMenu } from './OptionMenu.jsx'
 
 const MENU_SIZE = {
     width: 280,
-    height: 40,
+    height: 250,
 }
 
 const OptionMenuContext = createContext()
