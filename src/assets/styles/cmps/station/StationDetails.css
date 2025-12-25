@@ -9,7 +9,7 @@
 /* Header Area */
 .station-header {
     align-items: end;
-    --color-stop-1: color-mix(in srgb, var(--avgColor) 80%, #121212);
+    --color-stop-1: color-mix(in srgb, var(--avgColor) 70%, #121212);
     --color-stop-2: color-mix(in srgb, var(--avgColor) 60%, #121212);
 
     position: relative;
