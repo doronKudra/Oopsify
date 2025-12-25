@@ -39,7 +39,6 @@
         box-shadow: inset 0 0 0 0 transparent;
         transition: box-shadow 0.3s;
 
-
         &:hover {
             box-shadow: inset 0 0 0 1px rgb(80, 80, 80);
         }
@@ -52,14 +51,12 @@
             font-weight: 500;
             color: rgb(187, 187, 187);
         }
-
     }
 
     &:has(#header-search:hover) .magnifying-glass-svg,
     &:has(#header-search:focus) .magnifying-glass-svg {
         fill: white;
     }
-
 
     /* ICONS */
 
@@ -94,7 +91,7 @@
         border-left: 1px solid var(--header3);
 
         &:hover {
-            >* {
+            > * {
                 fill: white;
             }
         }
@@ -104,7 +101,7 @@
         right: 50px;
 
         &:hover {
-            >* {
+            > * {
                 fill: white;
             }
         }
@@ -126,7 +123,6 @@
         &:hover {
             .home-icon {
                 fill: white;
-
             }
         }
 
@@ -139,4 +135,31 @@
         cursor: pointer;
         fill: white;
     }
+}
+
+.loggedInUser-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background-color: #1db954; /* Spotify green */
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.2s ease, transform 0.15s ease;
+    padding: 0;
+}
+
+.loggedInUser-btn:hover {
+    background-color: #1ed760;
+    transform: scale(1.05);
+}
+
+.loggedInUser-btn:active {
+    transform: scale(0.97);
 }

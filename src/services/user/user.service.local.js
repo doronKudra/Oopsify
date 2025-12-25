@@ -16,7 +16,7 @@ export const userService = {
     saveLoggedinUser,
 }
 
-_createLoggedinUser() // use if local storage userDB is empty
+// _createLoggedinUser() // use if local storage userDB is empty
 
 async function getUsers() {
     const users = await storageService.query(STORAGE_KEY_USER)
@@ -45,12 +45,13 @@ async function update(userToUpdate) {
 }
 
 async function login(userCred) {
-    console.log('userCred:', userCred)
     const users = await storageService.query(STORAGE_KEY_USER)
     const user = users.find((user) => user.userName === userCred.userName)
-    console.log('user:', user)
-    if (user) return saveLoggedinUser(user)
-    else Promise.reject()
+
+    if (!user) throw new Error('User not found')
+    if (user.password !== userCred.password) throw new Error('Wrong password')
+
+    return saveLoggedinUser(user)
 }
 
 async function signup(user) {
@@ -82,10 +83,12 @@ async function signup(user) {
 }
 
 async function logout() {
+    // localStorage.removeItem(STORAGE_KEY_LOGGEDIN_USER)
     sessionStorage.removeItem(STORAGE_KEY_LOGGEDIN_USER)
 }
 
 function getLoggedinUser() {
+    // return JSON.parse(localStorage.getItem(STORAGE_KEY_LOGGEDIN_USER))
     return JSON.parse(sessionStorage.getItem(STORAGE_KEY_LOGGEDIN_USER))
 }
 
@@ -109,6 +112,10 @@ async function saveLoggedinUser(user) {
             type: 'station',
         },
     }
+    // localStorage.setItem(
+    //     STORAGE_KEY_LOGGEDIN_USER,
+    //     JSON.stringify(loggedinUser)
+    // )
     sessionStorage.setItem(
         STORAGE_KEY_LOGGEDIN_USER,
         JSON.stringify(loggedinUser)
