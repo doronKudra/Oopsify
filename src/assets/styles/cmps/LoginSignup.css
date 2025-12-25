@@ -19,7 +19,7 @@ body {
     color: #fff;
     max-width: 380px;
     height: 100vh;
-    overflow-y: auto; /* Spotify-style internal scroll */
+    overflow-y: auto;
     margin: 0 auto;
 }
 
@@ -32,12 +32,12 @@ body {
 }
 
 .logo-container svg {
-    width: 48px;
-    height: 48px;
+    width: 30px;
+    height: 30px;
 }
 
 .loginsignup-header {
-    font-size: 32px;
+    font-size: 48px;
     font-weight: 700;
     text-align: center;
 }
@@ -48,7 +48,6 @@ body {
     flex-direction: column;
     width: 100%;
     gap: 12px;
-    padding: 20px 0;
 }
 
 .auth-card label {
@@ -94,7 +93,6 @@ body {
     text-align: center;
     font-size: 0.9rem;
     color: #b3b3b3;
-    margin: 8px 0;
 }
 
 /* Social login */
@@ -105,11 +103,16 @@ body {
     gap: 12px;
 }
 
+.google-built-in {
+    border: 1px solid grey;
+    border-radius: 30px;
+}
+
 .social-login button {
     width: 100%;
     padding: 12px 14px;
     border-radius: 30px;
-    border: 1px solid #727272;
+    border: 1px solid grey;
     background: transparent;
     color: #fff;
     font-weight: 600;

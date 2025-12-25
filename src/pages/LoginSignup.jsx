@@ -114,6 +114,18 @@ export function LoginSignup({ isSignup }) {
         // navigate('/')
     }
 
+    const guestUser = {
+        fullName: 'Guest User',
+        userName: 'guest',
+        password: 'guest', // not used, but keeps structure consistent
+        imgUrl: 'https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png',
+    }
+
+    function onLoginAsGuest() {
+        login(guestUser)
+        navigate('/')
+    }
+
     return (
         <div className="login-signup">
             <div className="loginsignup-header-area">
@@ -195,7 +207,9 @@ export function LoginSignup({ isSignup }) {
                     </div>
                 )}
                 <button className="apple-login">Continue with Apple</button>
-                <button className="guest-login">Continue as Guest</button>
+                <button className="guest-btn" onClick={onLoginAsGuest}>
+                    Continue as Guest
+                </button>
             </div>
 
             <div className="other-option">
