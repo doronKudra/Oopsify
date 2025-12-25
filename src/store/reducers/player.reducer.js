@@ -6,30 +6,7 @@ export const SET_LIST_IDX = 'SET_LIST_IDX'
 export const ADD_TRACK_TO_LIST = 'ADD_TRACK_TO_LIST'
 
 const initialState = {
-    track: {
-        "id": "0RiNcFUdQtXydBAYnwIG94",
-        "name": "BHVL",
-        "type": "track",
-        "duration": 280936,
-        "images": [
-            { "url": "https://i.scdn.co/image/ab67616d0000b273481f91f4c6bad263e8b76adc" },
-            { "url": "https://i.scdn.co/image/ab67616d00001e02481f91f4c6bad263e8b76adc" },
-            { "url": "https://i.scdn.co/image/ab67616d00004851481f91f4c6bad263e8b76adc" }
-        ],
-        album: {
-            "id": "2XcbU8zU1yA29WyLAsg8RL",
-            "name": "BHVL / Elevator",
-            "type": "album"
-        },
-        artists: [
-            {
-                "id": "4HsyzV3FBsr7AkXr2KU1HW",
-                "name": "Radio Diffusion",
-                "type": "artist"
-            }
-        ],
-        videoId: "4du2Ricvsig"
-    },
+    track: null,
     trackList: [
 
     ],
