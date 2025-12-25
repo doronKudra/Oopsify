@@ -102,9 +102,7 @@ export function AppHeader() {
 					<div className='logged-in-user-icon'>{getInitial(loggedInUser.fullName)}</div>
 				</button>
 				:
-				<button className="login-btn">
-					<NavLink to="login" className="login-link">Login</NavLink>
-				</button>
+				<button onClick={() => navigate('/login')} className="login-btn">Log in</button>
 			}
 		</header>
 	)
