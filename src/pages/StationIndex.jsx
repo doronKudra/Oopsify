@@ -16,7 +16,6 @@ export function StationIndex() {
 
     // const [filterBy, setFilterBy] = useState(stationService.getDefaultFilter())
     const stations = useSelector(storeState => storeState.stationModule.stations)
-
     const baseColor = '132, 0, 255'
     const user = useSelector(storeState => storeState.userModule.user)
     const { openContextMenu } = useContextMenu()
