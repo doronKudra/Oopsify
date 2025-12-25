@@ -1,6 +1,7 @@
 /* Whole Station */
 .station-details {
     min-height: 100%;
+    background-color: var(--clr2);
 }
 
 /* Header Area */
@@ -44,6 +45,10 @@
     text-transform: uppercase;
     opacity: 0.90;
     margin-bottom: 3px;
+}
+
+.station-owner-header:hover{
+    cursor: pointer;
 }
 
 /* Station Name */

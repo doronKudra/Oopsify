@@ -10,6 +10,13 @@
     padding: 8px;
 }
 
+.footer-liked-icon{
+    fill:#1ed760;
+    height: 16px;
+    width: 16px;
+    cursor: pointer;
+    transition: 0.2s;
+}
 
 .footer-track-preview {
     display: flex;

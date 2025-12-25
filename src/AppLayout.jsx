@@ -1,4 +1,5 @@
 // AppLayout.jsx
+import { useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import { AppHeader } from './cmps/AppHeader.jsx'
 import { AppFooter } from './cmps/footer/AppFooter.jsx'
@@ -17,7 +18,6 @@ export function AppLayout() {
                     <Outlet />
                 </div>
             </main>
-
             <AppFooter />
         </div>
     )

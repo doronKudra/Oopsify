@@ -3,14 +3,7 @@ import { playerActions } from '../store/actions/player.actions'
 import { toggleLiked } from '../store/actions/user.actions'
 import { useLocation } from 'react-router'
 
-export function TrackPreview({
-    openContextMenu,
-    track,
-    idx,
-    onToggleLiked,
-    inDetails,
-    isStation,
-}) {
+export function TrackPreview({ openContextMenu, track, idx, inDetails }) {
     // console.log('track:', track?.album?.name)
     const likedTracks = useSelector(
         (state) => state.userModule.user.likedTracks?.tracks || []
@@ -99,7 +92,7 @@ export function TrackPreview({
             </div>
 
             {/* Column 3 */}
-            <div className="track-album-name" onClick={() => {}}>
+            <div className="track-album-name" onClick={() => { }}>
                 {track?.album?.name && track?.album?.name}
             </div>
 

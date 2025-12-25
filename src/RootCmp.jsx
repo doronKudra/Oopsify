@@ -11,52 +11,49 @@ import { StationIndex } from './pages/StationIndex.jsx'
 import { StationDetails } from './cmps/StationDetails.jsx'
 import { UserDetails } from './pages/UserDetails'
 
-import { AppHeader } from './cmps/AppHeader'
-import { AppFooter } from './cmps/footer/AppFooter.jsx'
-import { UserMsg } from './cmps/UserMsg.jsx'
-
-import { SideBar } from './cmps/SideBar/SideBar.jsx'
 import { SearchPage } from './pages/SearchPage.jsx'
 import { SearchGenres } from './pages/SearchGenres.jsx'
-import { EditStation } from './cmps/EditStation.jsx'
 import { OptionMenuProvider } from './cmps/OptionMenuProvider.jsx'
 import { ZoharTest } from './cmps/footer/ZoharTest.jsx'
+import { ModalProvider } from './cmps/ModalProvider.jsx'
 
 export function RootCmp() {
     return (
         <DndContext>
-            <OptionMenuProvider>
-                <Routes>
-                    {/* AUTH ROUTES */}
-                    <Route element={<AuthLayout />}>
-                        <Route
-                            path="/login"
-                            element={<LoginSignup isSignup={false} />}
-                        />
-                        <Route
-                            path="/signup"
-                            element={<LoginSignup isSignup={true} />}
-                        />
-                    </Route>
-
-                    {/* MAIN APP ROUTES */}
-                    <Route element={<AppLayout />}>
-                        <Route path="test" element={<ZoharTest />} />
-                        <Route path="about" element={<AboutUs />}>
-                            <Route path="team" element={<AboutTeam />} />
-                            <Route path="vision" element={<AboutVision />} />
+            <ModalProvider>
+                <OptionMenuProvider>
+                    <Routes>
+                        {/* AUTH ROUTES */}
+                        <Route element={<AuthLayout />}>
+                            <Route
+                                path="/login"
+                                element={<LoginSignup isSignup={false} />}
+                            />
+                            <Route
+                                path="/signup"
+                                element={<LoginSignup isSignup={true} />}
+                            />
                         </Route>
-                        <Route path="/" element={<StationIndex />} />
-                        <Route path="genres" element={<SearchGenres />} />
-                        <Route path="search" element={<SearchPage />} />
-                        <Route
-                            path="station/:stationId"
-                            element={<StationDetails />}
-                        />
-                        <Route path="user/:id" element={<UserDetails />} />
-                    </Route>
-                </Routes>
-            </OptionMenuProvider>
+
+                        {/* MAIN APP ROUTES */}
+                        <Route element={<AppLayout />}>
+                            <Route path="test" element={<ZoharTest />} />
+                            <Route path="about" element={<AboutUs />}>
+                                <Route path="team" element={<AboutTeam />} />
+                                <Route path="vision" element={<AboutVision />} />
+                            </Route>
+                            <Route path="/" element={<StationIndex />} />
+                            <Route path="genres" element={<SearchGenres />} />
+                            <Route path="search" element={<SearchPage />} />
+                            <Route
+                                path="station/:stationId"
+                                element={<StationDetails />}
+                            />
+                            <Route path="user/:id" element={<UserDetails />} />
+                        </Route>
+                    </Routes>
+                </OptionMenuProvider>
+            </ModalProvider>
         </DndContext>
     )
 }

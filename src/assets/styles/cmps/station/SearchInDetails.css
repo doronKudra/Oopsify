@@ -1,7 +1,8 @@
 .SearchInDetails {
-    min-height: 100%;
+    min-height: 400px;
     position: relative;
     background-color: var(--clr2);
+    margin: 0 19px;
     padding: 24px 16px 40px;
     border-top: 1px solid rgb(128, 128, 128, 0.5);
 
@@ -11,7 +12,7 @@
         height: 20px;
         width: max-content;
         padding: 0;
-        margin: 10px 16px 0 0;
+        margin: 10px 35px 0 0;
         
         font-weight: 600;
         background-color: transparent;
@@ -21,6 +22,7 @@
 
 .search-details-header {
     padding-bottom: 24px;
+    /* margin: 0 35px; */
     display: flex;
     justify-content: space-between;
     

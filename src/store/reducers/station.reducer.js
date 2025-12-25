@@ -13,38 +13,32 @@ const initialState = {
 }
 
 export function stationReducer(state = initialState, action) {
-    let newState = state
     let stations
     switch (action.type) {
         case SET_STATIONS:
-            newState = { ...state, stations: action.stations }
-            break
+            return { ...state, stations: action.stations }
         case SET_SIDEBAR_STATIONS:
-            newState = { ...state, sidebarStations: action.stations }
-            break
+            return { ...state, sidebarStations: action.stations }
         case SET_STATION:
-            newState = { ...state, station: action.station }
-            break
+            return { ...state, station: action.station }
         case REMOVE_STATION:
             const lastRemovedStation = state.stations.find(station => station.id === action.stationId)
             stations = state.stations.filter(station => station.id !== action.stationId)
-            newState = { ...state, stations, lastRemovedStation }
-            break
+            return { ...state, stations, lastRemovedStation }
         case ADD_STATION:
-            newState = { ...state, stations: [...state.stations, action.station] }
-            break
+            return { ...state, stations: [...state.stations, action.station] }
         case UPDATE_STATION:
-            stations = state.stations.map(station => (station.id === action.station.id) ? action.station : station)
-            newState = { ...state, stations }
-            break
+            stations = state.stations.map(station =>
+                station.id === action.station.id ? { ...action.station } : station)
+            const currentStation = state.station?.id === action.station.id ? { ...action.station } : state.station
+            return { ...state, stations, station: currentStation }
         case ADD_STATION_MSG:
             if (action.msg && state.station) {
-                newState = { ...state, station: { ...state.station, msgs: [...state.station.msgs || [], action.msg] } }
-                break
+                return { ...state, station: { ...state.station, msgs: [...state.station.msgs || [], action.msg] } }
             }
         default:
+            return state
     }
-    return newState
 }
 
 // unitTestReducer()

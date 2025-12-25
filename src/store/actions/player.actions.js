@@ -32,8 +32,8 @@ function onAddTrackToList(track) {
 
 //REPLACE THE CURRENT PLAYLIST
 function onTrackList(tracks) {
-    store.dispatch({ type: SET_TRACK_LIST, trackList: tracks })
     onTrackToPlay(tracks[0])
+    store.dispatch({ type: SET_TRACK_LIST, trackList: tracks })
 }
 
 //FOR PREVIEW TO SHOW PLAYING SONG STYLE
@@ -76,7 +76,7 @@ function onShuffle() {
 function _pushToList(track) {
     const trackList = [...store.getState().playerModule.trackList]
     if (!trackList || !trackList.length) return
-    const currIdx = store.getState().playerModule.idx + value
+    const currIdx = store.getState().playerModule.idx + 1
     trackList.splice(currIdx, 0, track)
 }
 

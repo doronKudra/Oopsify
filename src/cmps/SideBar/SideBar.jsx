@@ -1,5 +1,3 @@
-import { Link, NavLink } from 'react-router-dom'
-import { useNavigate } from 'react-router'
 import { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { SideBarHeader } from './SideBarHeader.jsx'
@@ -11,12 +9,14 @@ import { LikedTracks } from '../LikedTracks.jsx'
 import { useContextMenu } from '../OptionMenuProvider.jsx'
 import { makeId } from '../../services/util.service.js'
 import { toggleLikedStation } from '../../store/actions/user.actions.js'
+import { useModal } from '../ModalProvider.jsx'
 
 export function SideBar() {
     const user = useSelector(storeState => storeState.userModule.user)
     const [filterBy, setFilterBy] = useState(stationService.getDefaultFilter())
     const stations = useSelector(storeState => storeState.stationModule.sidebarStations)
     const { openContextMenu } = useContextMenu()
+    const { openEditStation } = useModal()
 
     function handleOpenMenu({ x, y, context }) {
         const { station } = context
@@ -25,7 +25,7 @@ export function SideBar() {
             actions = [
                 { id: makeId(), icon: 'queue', name: 'Add to queue', callback: () => {} }, // TODO
                 { id: makeId(), icon: 'profile', name: 'Add to profile', callback: () => {} }, // TODO
-                { id: makeId(), icon: 'edit', name: 'Edit details', callback: () => {} }, // TODO
+                { id: makeId(), icon: 'edit', name: 'Edit details', callback: () => {openEditStation()} },
                 { id: makeId(), icon: 'delete', name: 'Delete', callback: () => {} }, // TODO
                 { id: makeId(), icon: 'new-playlist', name: 'Create playlist', callback: () => {} }, // TODO
                 { id: makeId(), icon: 'add', name: 'Create folder', callback: () => {} }, // TODO
@@ -85,7 +85,7 @@ export function SideBar() {
     }, [user?.likedStations])
 
     return (
-        <div className="content-area">
+        <div className="route-scroll sidebar-scroll">
             <aside className='sidebar-container'>
                 <header className='sidebar-actions'>
                     <SideBarHeader />

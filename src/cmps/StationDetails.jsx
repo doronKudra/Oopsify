@@ -23,6 +23,7 @@ import {
 } from '../services/util.service.js'
 import { SearchInDetails } from './SearchInDetails.jsx'
 import { useContextMenu } from './OptionMenuProvider.jsx'
+import { useModal } from './ModalProvider.jsx'
 
 import {
     toggleLikedStation,
@@ -33,7 +34,7 @@ import {
 
 export function StationDetails() {
     const { stationId } = useParams()
-
+    const { openEditStation } = useModal()
     const user = useSelector((store) => store.userModule.user)
 
     const stationFromStore = useSelector((store) => store.stationModule.station)
@@ -202,7 +203,7 @@ export function StationDetails() {
                     id: makeId(),
                     icon: 'edit',
                     name: 'Edit details',
-                    callback: () => { },
+                    callback: () => openEditStation(),
                 }, // TODO
                 {
                     id: makeId(),
@@ -398,10 +399,11 @@ export function StationDetails() {
             <DndContext onDragEnd={handleDragEnd}>
                 <section className="station-details">
                     <section
-                        className="station-header"
+                        className="station-header station-owner-header"
                         style={{
                             background: `linear-gradient( to bottom, ${dominant} 0%, ${colorStop1} 100% )`,
                         }}
+                        onClick={() => openEditStation()}
                     >
                         <div className="cover-container">
                             <img src={albumCoverArt} alt="Cover" />

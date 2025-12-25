@@ -13,32 +13,46 @@
     gap: 1rem;
     color: #b3b3b3;
     padding: 0 16px;
-    margin: 0 19px ;
+    margin: 0 19px;
     font-size: 14px;
+    grid-template-columns: 1.5em 3fr 2fr 110px;
 }
 
-.playlist-view .track,
-.playlist-view .track-list-title {
-    grid-template-columns:
-        1.5em
-        /* index */
-        3.5fr
-        /* title */
-        1.7fr
-        /* album */
-        150px;
-    /* duration / actions */
+.album-view {
+
+    .track-album-name,
+    .list-album-title {
+        display: none;
+    }
+
+    .title-track-duration{
+        padding-left: 40px;
+    }
+    .track,
+    .track-list-title {
+        grid-template-columns: 1.5em 1fr 150px;
+    }
 }
 
-.album-view .track,
-.album-view .track-list-title {
-    grid-template-columns:
-        1.5em
-        /* index */
-        1fr
-        /* title */
-        3.5em;
-    /* duration / actions */
+@media (max-width: 700px) {
+
+    .track-album-name,
+    .list-album-title {
+        display: none;
+    }
+
+    .track,
+    .track-list-title {
+        grid-template-columns: 1.5em 3.5fr 110px;
+    }
+
+    .album-view {
+
+        .track,
+        .track-list-title {
+            grid-template-columns: 1.5em 1fr 150px;
+        }
+    }
 }
 
 .track {
@@ -70,7 +84,7 @@
     border-radius: 300px;
     background-color: var(--clr2);
     box-shadow: 0px 0px 1px 1px rgba(255, 255, 255, 0.4);
-
+    justify-self: right;
     will-change: transform;
 
     &:hover {
@@ -109,6 +123,7 @@
 .track-name {
     color: white;
     font-size: 16px;
+    font-weight: 600;
 }
 
 .track-album-name,
@@ -125,8 +140,7 @@
 
 .title-track-duration {
     text-align: center;
-    width: 150px;
-    padding-right: 24px;
+    padding-left: 3px;
 }
 
 
@@ -160,7 +174,7 @@
     height: 16px;
 }
 
-.control-btn.liked-btn{
+.control-btn.liked-btn {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -176,10 +190,9 @@
 
 .track-actions {
     display: grid;
-    
-    grid-template-columns: 10fr 1fr 1fr;
+    justify-self: right;
+    grid-template-columns: repeat(3, max-content);
     color: #b3b3b3;
-    padding-right: 24px;
 }
 
 .track-actions button {
@@ -204,8 +217,7 @@
 }
 
 .track-duration-list {
-    margin-right: 0.75em;
-    width: 2.88em;
+    margin: 0 8px;
     font-size: 0.85em;
     align-content: center;
 }
@@ -213,24 +225,4 @@
 .control-button {
     display: flex;
     align-items: center;
-}
-
-@media (max-width: 680px) {
-
-    .track-album-name,
-    .list-album-title {
-        display: none;
-    }
-
-    .playlist-view .track,
-    .playlist-view .track-list-title {
-        grid-template-columns:
-            1.5em
-            /* index */
-            3.5fr
-            /* title */
-            /* album */
-            150px;
-        /* duration / actions */
-    }
 }

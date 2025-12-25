@@ -16,7 +16,7 @@ export const userService = {
     saveLoggedinUser,
 }
 
-// _createLoggedinUser()
+_createLoggedinUser() // use if local storage userDB is empty
 
 async function getUsers() {
     const users = await storageService.query(STORAGE_KEY_USER)

@@ -8,7 +8,7 @@
 @import "basics/base.css";
 @import "basics/forms.css";
 
-@import "RootCmp.css";
+/* @import "RootCmp.css"; */
 
 @import "cmps/AboutUs.css";
 @import "cmps/UserDetails.css";
