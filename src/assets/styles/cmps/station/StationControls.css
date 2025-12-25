@@ -4,6 +4,8 @@
     align-items: center;
     gap: 12px;
     padding: 19px;
+    position: relative;
+    z-index: 2;
 }
 
 .btn-container button:not(.preview-btn) {

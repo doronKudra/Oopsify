@@ -2,58 +2,63 @@
 .station-details {
     min-height: 100%;
     background-color: var(--clr2);
+    position: relative;
+    z-index: 1;
 }
 
 /* Header Area */
 .station-header {
-    max-height: 256px;
-    display: flex;
+    align-items: end;
+    --color-stop-1: color-mix(in srgb, var(--avgColor) 80%, #121212);
+    --color-stop-2: color-mix(in srgb, var(--avgColor) 60%, #121212);
+
+    position: relative;
+    background: linear-gradient(
+        to bottom,
+        var(--avgColor) 0%,
+        var(--avgColor) 40%,
+        var(--color-stop-1) 100%
+    );
+    display: grid;
+    grid-template-columns: minmax(190px, auto) 1fr;
     gap: 16px;
     padding: 50px 19px 19px 19px;
-    /* align-items:end; */
-    /* min-height: 185px; */
+    z-index: 0;
 }
 
-/* Img container */
-.cover-container {
-    width: max-content;
-    height: max-content;
-}
+.station-header::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    height: 175px;
 
-.cover-container img {
-    height: 70%;
-    max-width: 175px;
-    min-width: 128px;
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
-    border-radius: 4px;
-    box-shadow: rgba(0, 0, 0, 0.5) 0px 4px 60px 0px;
-}
+    background: linear-gradient(
+        to bottom,
+        var(--color-stop-2) 0%,
+        #121212 100%
+    );
 
-/* Text container */
-.station-header-title {
-    display: flex;
-    flex-direction: column;
-    justify-content: end;
-    gap: 8px;
+    pointer-events: none;
+    z-index: -1;
 }
 
 /* Type of station (Album / Public Playlist) */
 .header-type {
     font-size: clamp(0.7rem, 1vw, 0.9rem);
     font-weight: 600;
-    text-transform: uppercase;
-    opacity: 0.90;
+    opacity: 0.9;
     margin-bottom: 3px;
 }
 
-.station-owner-header:hover{
+.station-owner-header:hover {
     cursor: pointer;
 }
 
 /* Station Name */
 .station-header-title h1 {
-    font-size: clamp(24px,  2cqw, 52px);
+    font-size: clamp(24px, 2cqw, 52px);
     font-weight: 800;
     max-height: 120px;
     margin: 0;
@@ -80,7 +85,7 @@
 }
 
 /* Rest of bottom row */
-.station-header-info> :not(.enhance) {
+.station-header-info > :not(.enhance) {
     color: #b3b3b3;
 }
 
