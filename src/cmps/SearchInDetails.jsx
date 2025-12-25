@@ -3,7 +3,7 @@ import { debounce } from "../services/util.service"
 import { spotifyService } from "../services/spotifyService.js"
 import { TrackPreview } from "./TrackPreview.jsx"
 
-export function SearchInDetails({openContextMenu, localTracks }) {
+export function SearchInDetails({openContextMenu,  tracks: isTracksInDetails }) {
 
     const [txt, setTxt] = useState('')
     const [tracks, setTracks] = useState([])
@@ -15,10 +15,10 @@ export function SearchInDetails({openContextMenu, localTracks }) {
     }, [txt])
 
     useEffect(() => {
-        console.log('localTracks:', localTracks)
-        if (!localTracks || !localTracks.length) setIsShown(true)
+        console.log('localTracks:', isTracksInDetails)
+        if (!isTracksInDetails) setIsShown(true)
         else setIsShown(false)
-    }, [localTracks])
+    }, [isTracksInDetails])
 
     function handleSearch({ target }) {
         setTxt(target.value)
@@ -43,19 +43,22 @@ export function SearchInDetails({openContextMenu, localTracks }) {
         )
     }
 
-
+console.log('isTracksInDetails:',isTracksInDetails)
     return (
         <>
-            <div className="SearchInDetails">
+            <div className="SearchInDetails" style={!isTracksInDetails ? {border:'0'}:undefined}>
 
 
-                <div className="search-details-header">
+                <div className="search-details-header" >
                     <div>
                         <h3>Let's find something for your playlist</h3>
                         <div className="search-input-container">
                             <svg data-encore-id="icon" role="img" aria-hidden="true" className="details-search-svg" viewBox="0 0 16 16" ><path d="M7 1.75a5.25 5.25 0 1 0 0 10.5 5.25 5.25 0 0 0 0-10.5M.25 7a6.75 6.75 0 1 1 12.096 4.12l3.184 3.185a.75.75 0 1 1-1.06 1.06L11.304 12.2A6.75 6.75 0 0 1 .25 7"></path></svg>
                             <input value={txt} onChange={handleSearch} type="text" placeholder="Search for tracks" />
+                            {
+                             txt &&   
                             <svg onClick={() => setTxt('')} data-encore-id="icon" role="img" aria-label="Close" aria-hidden="false" className="search-details-xmark-input" viewBox="0 0 24 24"><path d="M3.293 3.293a1 1 0 0 1 1.414 0L12 10.586l7.293-7.293a1 1 0 1 1 1.414 1.414L13.414 12l7.293 7.293a1 1 0 0 1-1.414 1.414L12 13.414l-7.293 7.293a1 1 0 0 1-1.414-1.414L10.586 12 3.293 4.707a1 1 0 0 1 0-1.414"></path></svg>
+                            }
                         </div>
                     </div>
                     <button onClick={() => setIsShown(false)} className="search-details-xmark-btn">
@@ -67,9 +70,8 @@ export function SearchInDetails({openContextMenu, localTracks }) {
                     {tracks && tracks.length ?
                         tracks.map((track, idx) => (
                             <TrackPreview openContextMenu={openContextMenu} key={track.id} track={track} idx={idx} isStation={false}  inDetails={true}/>
-                        ))
-                        : <div> No Results </div>
-                    }
+                        )):''}
+                     {txt ? <div> No Results </div>:""}
                 </div>
             </div>
         </>

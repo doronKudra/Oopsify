@@ -8,7 +8,7 @@ import { TrackPreview } from './TrackPreview.jsx'
 // get the user from store
 
 export function TrackList({ openContextMenu, tracks, tempIdsRef, isStation }) {
-
+    console.log('tracks:',tracks)
     return (
         <section>
             <div className={`track-list-container ${!isStation && 'album-view'}`}>

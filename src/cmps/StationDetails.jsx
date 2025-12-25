@@ -41,6 +41,7 @@ export function StationDetails() {
 
     const station =
         stationId === 'liked-songs' ? user.likedTracks : stationFromStore
+        console.log('station:',station)
     const { openContextMenu } = useContextMenu()
 
     function handleOpenMenu({ x, y, context }) {
@@ -321,10 +322,11 @@ export function StationDetails() {
             loadStation(stationId)
         }
     }, [stationId])
-
+    
     const [localTracks, setLocalTracks] = useState([])
     useEffect(() => {
         if (station?.tracks) {
+            console.log('1:',123456789)
             setLocalTracks(station.tracks)
         }
     }, [station])
@@ -393,7 +395,6 @@ export function StationDetails() {
     const colorStop2 = mixHex(dominant, base, 0.6)
     const colorStop3 = mixHex(dominant, base, 0.8)
 
-    console.log('user:', user)
     return (
         <>
             <DndContext onDragEnd={handleDragEnd}>
@@ -475,7 +476,7 @@ export function StationDetails() {
                     </div>
                     <SearchInDetails
                         openContextMenu={handleOpenMenu}
-                        tracks={localTracks}
+                        tracks={localTracks.length}
                     />
                 </section>
             </DndContext>
