@@ -87,7 +87,7 @@
     }
 
     .search-details-xmark-input{
-        right: 4px;
+        right: 3px;
         cursor: pointer;
         &:hover{
             fill: white;
@@ -95,7 +95,7 @@
     }
 
     .details-search-svg{
-        left: 14px;
+        left: 17px;
     }
 }
 

@@ -91,7 +91,7 @@
         border-left: 1px solid var(--header3);
 
         &:hover {
-            > * {
+            >* {
                 fill: white;
             }
         }
@@ -101,7 +101,7 @@
         right: 50px;
 
         &:hover {
-            > * {
+            >* {
                 fill: white;
             }
         }
@@ -137,29 +137,61 @@
     }
 }
 
-.loggedInUser-btn {
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    background-color: #1db954; /* Spotify green */
-    color: white;
+.login-btn {
+    background-color: white;
+    color: black;
+    font-size: 16px;
     font-weight: 600;
-    font-size: 14px;
+    border-radius: 150px;
+    height: 100%;
+    width: 100px;
+     &:hover {
+        background-color: #fff;
+        transition: transform 0.1s;
+        /* background-color: #1f1f1f; */
+        transform: scale(1.04);
+    }
+
+    &:active {
+        transform: scale(1);
+        opacity: 0.85;
+    }
+}
+
+.logged-in-user-btn {
+    height: 100%;
+    aspect-ratio: 1;
+    background-color: #1f1f1f;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+    transition: transform 0.1s;
+
+    &:hover {
+        transition: transform 0.1s;
+        background-color: #1f1f1f;
+        transform: scale(1.05);
+    }
+
+    &:active {
+        transform: scale(1);
+        opacity: 0.85;
+    }
+}
+
+/* Spotify green */
+.logged-in-user-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #1db954;
+    color: #1f1f1f;
+    font-weight: 700;
+    font-size: 15px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: none;
-    cursor: pointer;
-    user-select: none;
-    transition: background-color 0.2s ease, transform 0.15s ease;
-    padding: 0;
-}
-
-.loggedInUser-btn:hover {
-    background-color: #1ed760;
-    transform: scale(1.05);
-}
-
-.loggedInUser-btn:active {
-    transform: scale(0.97);
+    line-height: 14px;
 }
