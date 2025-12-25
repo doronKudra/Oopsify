@@ -35,31 +35,27 @@ export async function removeUser(userId) {
     }
 }
 
-export function login(credentials) {
-    return async (dispatch) => {
-        try {
-            const user = await userService.login(credentials)
-            dispatch({ type: SET_USER, user })
-            socketService.login(user.id)
-            return user
-        } catch (err) {
-            console.log('Cannot login', err)
-            throw err
-        }
+export async function login(credentials) {
+    try {
+        const user = await userService.login(credentials)
+        if (user) store.dispatch({ type: SET_USER, user })
+        // socketService.login(user.id)
+        return user
+    } catch (err) {
+        console.log('Cannot login', err)
+        throw err
     }
 }
 
-export function signup(credentials) {
-    return async (dispatch) => {
-        try {
-            const user = await userService.signup(credentials)
-            dispatch({ type: SET_USER, user })
-            socketService.login(user.id)
-            return user
-        } catch (err) {
-            console.error('Signup failed:', err)
-            throw err
-        }
+export async function signup(credentials) {
+    try {
+        const user = await userService.signup(credentials)
+        store.dispatch({ type: SET_USER, user })
+        socketService.login(user.id)
+        return user
+    } catch (err) {
+        console.error('Signup failed:', err)
+        throw err
     }
 }
 

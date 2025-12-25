@@ -16,7 +16,7 @@ export const userService = {
     saveLoggedinUser,
 }
 
-_createLoggedinUser() // use if local storage userDB is empty
+// _createLoggedinUser() // use if local storage userDB is empty
 
 async function getUsers() {
     const users = await storageService.query(STORAGE_KEY_USER)
@@ -46,9 +46,12 @@ async function update(userToUpdate) {
 
 async function login(userCred) {
     const users = await storageService.query(STORAGE_KEY_USER)
-    const user = users.find((user) => user.username === userCred.username)
+    const user = users.find((user) => user.userName === userCred.userName)
 
-    if (user) return saveLoggedinUser(user)
+    if (!user) throw new Error('User not found')
+    if (user.password !== userCred.password) throw new Error('Wrong password')
+
+    return saveLoggedinUser(user)
 }
 
 async function signup(user) {
@@ -75,14 +78,17 @@ async function signup(user) {
         },
     }
     const savedUser = await storageService.post(STORAGE_KEY_USER, userToSave)
-    return saveLoggedinUser(savedUser)
+    saveLoggedinUser(savedUser)
+    return savedUser
 }
 
 async function logout() {
+    // localStorage.removeItem(STORAGE_KEY_LOGGEDIN_USER)
     sessionStorage.removeItem(STORAGE_KEY_LOGGEDIN_USER)
 }
 
 function getLoggedinUser() {
+    // return JSON.parse(localStorage.getItem(STORAGE_KEY_LOGGEDIN_USER))
     return JSON.parse(sessionStorage.getItem(STORAGE_KEY_LOGGEDIN_USER))
 }
 
@@ -106,6 +112,10 @@ async function saveLoggedinUser(user) {
             type: 'station',
         },
     }
+    // localStorage.setItem(
+    //     STORAGE_KEY_LOGGEDIN_USER,
+    //     JSON.stringify(loggedinUser)
+    // )
     sessionStorage.setItem(
         STORAGE_KEY_LOGGEDIN_USER,
         JSON.stringify(loggedinUser)
@@ -124,7 +134,13 @@ async function _createLoggedinUser() {
         userName: 'admin',
         password: 'admin',
         imgUrl: 'https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png',
-        likedStations: ['3xqcAMgjHGrv3ElA51zZRj', '7gb4GZz7iIHGilXxD7638E', '4DJztJkufdlND0Hvg4nGkK', '3E0RgJpQug1ibE2jTGI0Hk', '2O3jLuM3inA4vw5fZdGz9W'],
+        likedStations: [
+            '3xqcAMgjHGrv3ElA51zZRj',
+            '7gb4GZz7iIHGilXxD7638E',
+            '4DJztJkufdlND0Hvg4nGkK',
+            '3E0RgJpQug1ibE2jTGI0Hk',
+            '2O3jLuM3inA4vw5fZdGz9W',
+        ],
         likedTracks: {
             name: 'Liked Songs',
             tracks: [],

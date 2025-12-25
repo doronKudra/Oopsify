@@ -85,7 +85,7 @@ export function SideBar() {
     }, [user?.likedStations])
 
     return (
-        <div className="content-area">
+        <div className="route-scroll sidebar-scroll">
             <aside className='sidebar-container'>
                 <header className='sidebar-actions'>
                     <SideBarHeader />

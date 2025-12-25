@@ -7,11 +7,13 @@ import { updateUserLikedStations } from '../store/actions/user.actions.js'
 import { useSelector } from 'react-redux'
 
 export function StationList({ openContextMenu,stations, listType, listTitle }) {
-    if (!stations?.length) return
+    let displayStations = [...stations]
+    if(listType === 'recent') displayStations = displayStations.slice(0,8)
+    if (!displayStations?.length) return
     return (<section>
         {listTitle && <div className="station-list-header"><a>{listTitle}</a><a className='station-list-show-all-link'><span>Show all</span></a></div>}
         <ul className={listType + "-station-list"}>
-            {stations.map(station =>
+            {displayStations.map(station =>
                 <li key={station.id}>
                     <StationPreview openContextMenu={openContextMenu} station={station} listType={listType} />
                 </li>)

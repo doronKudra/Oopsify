@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router'
 import { useSelector, useDispatch } from 'react-redux'
 import { signup, login } from '../store/actions/user.actions'
 import { userService } from '../services/user'
+import { GoogleLoginButton } from '../cmps/GoogleLoginButton'
+import { jwtDecode } from 'jwt-decode'
 
 export function LoginSignup({ isSignup }) {
     const dispatch = useDispatch()
@@ -53,15 +55,12 @@ export function LoginSignup({ isSignup }) {
         const newErrors = validateAll()
         if (Object.keys(newErrors).length > 0) return
 
-        if (isSignup)
-            try {
-                await dispatch(signup(credentials))
-            } catch (err) {
-                setErrors({ server: err.message })
-                return
-            }
-        else {
-            await dispatch(login(credentials))
+        try {
+            if (isSignup) await signup(credentials)
+            else await login(credentials)
+        } catch (err) {
+            setErrors({ server: err.message })
+            return
         }
 
         clearState()
@@ -94,10 +93,59 @@ export function LoginSignup({ isSignup }) {
         setErrors(newErrors)
     }
 
+    function handleGoogleLogin(credential) {
+        const googleUser = jwtDecode(credential)
+
+        const user = {
+            id: googleUser.sub,
+            fullName: googleUser.name,
+            userName: googleUser.email,
+            imgUrl: googleUser.picture,
+            likedStations: [],
+            likedTracks: {
+                name: 'Liked Songs',
+                tracks: [],
+                createdBy: googleUser.email,
+                images: [{ url: '/src/assets/images/liked-songs.png' }],
+                id: 'liked-songs',
+            },
+        }
+        signup(user)
+        // navigate('/')
+    }
+
+    const guestUser = {
+        fullName: 'Guest User',
+        userName: 'guest',
+        password: 'guest', // not used, but keeps structure consistent
+        imgUrl: 'https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png',
+    }
+
+    function onLoginAsGuest() {
+        login(guestUser)
+        navigate('/')
+    }
+
     return (
         <div className="login-signup">
             <div className="loginsignup-header-area">
-                <div className="logo-container">{/* SVG unchanged */}</div>
+                <div className="logo-container">
+                    <svg
+                        role="img"
+                        viewBox="0 0 24 24"
+                        aria-label="Spotify"
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="48"
+                        height="48"
+                    >
+                        {' '}
+                        <title>Spotify</title>{' '}
+                        <path
+                            fill="#FFFFFF"
+                            d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.155 17.337a.748.748 0 0 1-1.03.278c-2.824-1.73-6.37-2.123-10.557-1.17a.75.75 0 1 1-.33-1.46c4.62-1.046 8.57-.59 11.66 1.36a.748.748 0 0 1 .257.992zm1.47-3.258a.936.936 0 0 1-1.285.348c-3.23-1.98-8.15-2.56-11.94-1.4a.937.937 0 1 1-.55-1.79c4.3-1.32 9.77-.67 13.39 1.57a.936.936 0 0 1 .385 1.27zm.13-3.39a1.122 1.122 0 0 1-1.54.417c-3.7-2.21-9.36-2.41-13.03-1.32a1.125 1.125 0 0 1-.64-2.15c4.3-1.28 10.67-1.05 15 1.57a1.12 1.12 0 0 1 .21 1.48z"
+                        />{' '}
+                    </svg>
+                </div>
                 <h1 className="loginsignup-header">
                     {isSignup ? 'Sign up to start listening' : 'Welcome back'}
                 </h1>
@@ -121,8 +169,6 @@ export function LoginSignup({ isSignup }) {
                 </label>
                 <input
                     id="password"
-                    type="password"
-                    name="password"
                     type="password"
                     name="password"
                     required
@@ -155,9 +201,15 @@ export function LoginSignup({ isSignup }) {
             <p className="separator">Or</p>
 
             <div className="social-login">
-                <button className="google-login">Continue with Google</button>
+                {isSignup && (
+                    <div className="social-login">
+                        <GoogleLoginButton onLogin={handleGoogleLogin} />
+                    </div>
+                )}
                 <button className="apple-login">Continue with Apple</button>
-                <button className="guest-login">Continue as Guest</button>
+                <button className="guest-btn" onClick={onLoginAsGuest}>
+                    Continue as Guest
+                </button>
             </div>
 
             <div className="other-option">

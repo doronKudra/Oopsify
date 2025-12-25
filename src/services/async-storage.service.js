@@ -18,7 +18,6 @@ function query(entityType, delay = 500) {
 }
 
 function get(entityType, entityId) {
-    
     return query(entityType).then((entities) => {
         const entity = entities.find((entity) => entity.id === entityId)
         if (!entity)
@@ -32,6 +31,7 @@ function get(entityType, entityId) {
 function post(entityType, newEntity) {
     newEntity.id = _makeId()
     return query(entityType).then((entities) => {
+        if (!entities) entities = []
         entities.push(newEntity)
         _save(entityType, entities)
         return newEntity
