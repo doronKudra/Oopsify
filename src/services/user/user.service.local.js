@@ -45,10 +45,12 @@ async function update(userToUpdate) {
 }
 
 async function login(userCred) {
+    console.log('userCred:', userCred)
     const users = await storageService.query(STORAGE_KEY_USER)
-    const user = users.find((user) => user.username === userCred.username)
-
+    const user = users.find((user) => user.userName === userCred.userName)
+    console.log('user:', user)
     if (user) return saveLoggedinUser(user)
+    else Promise.reject()
 }
 
 async function signup(user) {
@@ -75,7 +77,8 @@ async function signup(user) {
         },
     }
     const savedUser = await storageService.post(STORAGE_KEY_USER, userToSave)
-    return saveLoggedinUser(savedUser)
+    saveLoggedinUser(savedUser)
+    return savedUser
 }
 
 async function logout() {
@@ -124,7 +127,13 @@ async function _createLoggedinUser() {
         userName: 'admin',
         password: 'admin',
         imgUrl: 'https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png',
-        likedStations: ['3xqcAMgjHGrv3ElA51zZRj', '7gb4GZz7iIHGilXxD7638E', '4DJztJkufdlND0Hvg4nGkK', '3E0RgJpQug1ibE2jTGI0Hk', '2O3jLuM3inA4vw5fZdGz9W'],
+        likedStations: [
+            '3xqcAMgjHGrv3ElA51zZRj',
+            '7gb4GZz7iIHGilXxD7638E',
+            '4DJztJkufdlND0Hvg4nGkK',
+            '3E0RgJpQug1ibE2jTGI0Hk',
+            '2O3jLuM3inA4vw5fZdGz9W',
+        ],
         likedTracks: {
             name: 'Liked Songs',
             tracks: [],

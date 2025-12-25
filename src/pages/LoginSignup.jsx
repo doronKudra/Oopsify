@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router'
 import { useSelector, useDispatch } from 'react-redux'
 import { signup, login } from '../store/actions/user.actions'
 import { userService } from '../services/user'
+import { GoogleLoginButton } from '../cmps/GoogleLoginButton'
+import { jwtDecode } from 'jwt-decode'
 
 export function LoginSignup({ isSignup }) {
     const dispatch = useDispatch()
@@ -53,15 +55,12 @@ export function LoginSignup({ isSignup }) {
         const newErrors = validateAll()
         if (Object.keys(newErrors).length > 0) return
 
-        if (isSignup)
-            try {
-                await dispatch(signup(credentials))
-            } catch (err) {
-                setErrors({ server: err.message })
-                return
-            }
-        else {
-            await dispatch(login(credentials))
+        try {
+            if (isSignup) await signup(credentials)
+            else await login(credentials)
+        } catch (err) {
+            setErrors({ server: err.message })
+            return
         }
 
         clearState()
@@ -94,6 +93,28 @@ export function LoginSignup({ isSignup }) {
         setErrors(newErrors)
     }
 
+    function handleGoogleLogin(credential) {
+        const googleUser = jwtDecode(credential)
+
+        const user = {
+            id: googleUser.sub,
+            fullName: googleUser.name,
+            userName: googleUser.email,
+            imgUrl: googleUser.picture,
+            likedStations: [],
+            likedTracks: {
+                name: 'Liked Songs',
+                tracks: [],
+                createdBy: googleUser.email,
+                images: [{ url: '/src/assets/images/liked-songs.png' }],
+                id: 'liked-songs',
+            },
+        }
+        // dispatch({ type: SET_USER, user })
+        signup(user)
+        // navigate('/')
+    }
+
     return (
         <div className="login-signup">
             <div className="loginsignup-header-area">
@@ -121,8 +142,6 @@ export function LoginSignup({ isSignup }) {
                 </label>
                 <input
                     id="password"
-                    type="password"
-                    name="password"
                     type="password"
                     name="password"
                     required
@@ -155,7 +174,11 @@ export function LoginSignup({ isSignup }) {
             <p className="separator">Or</p>
 
             <div className="social-login">
-                <button className="google-login">Continue with Google</button>
+                {isSignup && (
+                    <div className="social-login">
+                        <GoogleLoginButton onLogin={handleGoogleLogin} />
+                    </div>
+                )}
                 <button className="apple-login">Continue with Apple</button>
                 <button className="guest-login">Continue as Guest</button>
             </div>

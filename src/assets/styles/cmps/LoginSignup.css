@@ -137,3 +137,8 @@
     margin-top: -8px;
     margin-bottom: 8px;
 }
+
+.google-built-in {
+    border: 1px solid grey;
+    border-radius: 30px;
+}
