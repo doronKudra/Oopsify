@@ -117,7 +117,7 @@ export function LoginSignup({ isSignup }) {
     const guestUser = {
         fullName: 'Guest User',
         userName: 'guest',
-        password: 'guest', // not used, but keeps structure consistent
+        password: 'guest',
         imgUrl: 'https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png',
     }
 

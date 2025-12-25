@@ -104,7 +104,7 @@ async function saveLoggedinUser(user) {
             name: 'Liked Songs',
             tracks: user.likedTracks.tracks,
             owner: {
-                userName: user.userName,
+                userName: user.fullName,
                 id: user.id,
             },
             images: [{ url: '/src/assets/images/liked-songs.png' }],
