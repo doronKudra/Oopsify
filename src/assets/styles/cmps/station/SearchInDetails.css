@@ -46,6 +46,7 @@
             width: 24px;
             height: 24px;
             fill: var(--header3);
+            margin-left: 6px;
 
             &:hover {
                 fill: white;
@@ -97,6 +98,10 @@
     .details-search-svg{
         left: 17px;
     }
+}
+
+.border-top-none{
+    border: 0;
 }
 
 @media (max-width:500px) {
