@@ -1,9 +1,13 @@
 .track-container {
     margin-top: 0.5em;
+    position: relative;
+    z-index: 1;
 }
 
 .track-list-container {
     font-weight: 400;
+    position: relative;
+    z-index: 1;
 }
 
 .track,
@@ -19,13 +23,12 @@
 }
 
 .album-view {
-
     .track-album-name,
     .list-album-title {
         display: none;
     }
 
-    .title-track-duration{
+    .title-track-duration {
         padding-left: 40px;
     }
     .track,
@@ -35,7 +38,6 @@
 }
 
 @media (max-width: 700px) {
-
     .track-album-name,
     .list-album-title {
         display: none;
@@ -47,7 +49,6 @@
     }
 
     .album-view {
-
         .track,
         .track-list-title {
             grid-template-columns: 1.5em 1fr 150px;
@@ -66,7 +67,7 @@
     display: flex;
     min-width: 40px;
 
-    >div {
+    > div {
         overflow: hidden;
     }
 }
@@ -115,8 +116,8 @@
     opacity: 1;
 }
 
-.track>.center,
-.track-list-title>.center {
+.track > .center,
+.track-list-title > .center {
     text-align: start;
 }
 
@@ -142,7 +143,6 @@
     text-align: center;
     padding-left: 3px;
 }
-
 
 .duration-icon {
     width: 1em;
