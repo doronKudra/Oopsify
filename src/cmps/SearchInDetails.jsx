@@ -46,7 +46,7 @@ export function SearchInDetails({openContextMenu,  tracks: isTracksInDetails }) 
 console.log('isTracksInDetails:',isTracksInDetails)
     return (
         <>
-            <div className="SearchInDetails" style={!isTracksInDetails ? {border:'0'}:undefined}>
+            <div className="SearchInDetails border-top-none">
 
 
                 <div className="search-details-header" >

@@ -14,6 +14,30 @@ export const userService = {
     saveLoggedinUser,
 }
 
+// const userToSave = {
+//     fullName: user.fullName,
+//     userName: user.userName,
+//     password: user.password,
+//     imgUrl: user.imgUrl,
+//     likedStations: user.likedStations || [],
+//     likedTracks: {
+//         name: 'Liked Songs',
+//         tracks: user.likedTracks?.tracks || [],
+//         owner: {
+//             userName: user.userName,
+//             id: user.id,
+//         },
+//         images: [{ url: '/src/assets/images/liked-songs.png' }],
+//         id: 'liked-songs',
+//         type: 'station',
+//     },
+// }
+
+async function signup(userCred) {
+    const user = await httpService.post('auth/signup', userCred)
+    return saveLoggedinUser(user)
+}
+
 function getUsers() {
     return httpService.get(`user`)
 }
@@ -38,7 +62,6 @@ async function update({ _id, score }) {
 }
 
 async function login(userCred) {
-    console.log(userCred)
     try {
         const user = await httpService.post('auth/login', userCred)
         if (!user) throw new Error('Invalid login')
@@ -49,21 +72,6 @@ async function login(userCred) {
     }
 }
 
-async function signup(userCred) {
-    try {
-        if (!userCred.imgUrl)
-            userCred.imgUrl =
-                'https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png'
-        if (!userCred.likedTracks) userCred.likedTracks = { tracks: [] }
-        if (!userCred.likedStations) userCred.likedStations = []
-
-        const user = await httpService.post('auth/signup', userCred)
-        return saveLoggedinUser(user)
-    } catch (err) {
-        console.error('Signup failed', err)
-        throw err
-    }
-}
 
 async function logout() {
     sessionStorage.removeItem(STORAGE_KEY_LOGGEDIN_USER)
