@@ -5,14 +5,14 @@ import { userService as remote } from './user.service.remote'
 
 function getEmptyUser() {
     return {
-        userName: '', 
+        username: '', 
         password: '', 
-        fullName: '',
+        fullname: '',
     }
 }
 
 const service = (VITE_LOCAL === 'true')? local : remote
-export const userService = { ...service, getEmptyUser }
+export const userService = { ...remote, getEmptyUser }
 
 // Easy access to this service from the dev tools console
 // when using script - dev / dev:local

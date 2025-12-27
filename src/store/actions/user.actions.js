@@ -1,45 +1,15 @@
 import { userService } from '../../services/user'
-import { socketService } from '../../services/socket.service'
 import { store } from '../store'
 
 import { showErrorMsg } from '../../services/event-bus.service'
-import { LOADING_DONE, LOADING_START } from '../reducers/system.reducer'
-import {
-    REMOVE_USER,
-    SET_USER,
-    SET_USERS,
-    SET_WATCHED_USER,
-    SET_LIKED_TRACKS,
-    UPDATE_USER,
-    SET_LIKED_STATIONS,
-} from '../reducers/user.reducer'
+import { SET_USER, SET_WATCHED_USER, SET_LIKED_TRACKS, UPDATE_USER, SET_LIKED_STATIONS, } from '../reducers/user.reducer'
+import { stationService } from '../../services/station/station.service.remote'
 
-export async function loadUsers() {
-    try {
-        store.dispatch({ type: LOADING_START })
-        const users = await userService.getUsers()
-        store.dispatch({ type: SET_USERS, users })
-    } catch (err) {
-        console.log('UserActions: err in loadUsers', err)
-    } finally {
-        store.dispatch({ type: LOADING_DONE })
-    }
-}
 
-export async function removeUser(userId) {
-    try {
-        await userService.remove(userId)
-        store.dispatch({ type: REMOVE_USER, userId })
-    } catch (err) {
-        console.log('UserActions: err in removeUser', err)
-    }
-}
-
-export async function login(credentials) {
+export async function login(credentials) { //✅
     try {
         const user = await userService.login(credentials)
         if (user) store.dispatch({ type: SET_USER, user })
-        // socketService.login(user.id)
         return user
     } catch (err) {
         console.log('Cannot login', err)
@@ -47,11 +17,10 @@ export async function login(credentials) {
     }
 }
 
-export async function signup(credentials) {
+export async function signup(credentials) { //✅
     try {
         const user = await userService.signup(credentials)
         store.dispatch({ type: SET_USER, user })
-        socketService.login(user.id)
         return user
     } catch (err) {
         console.error('Signup failed:', err)
@@ -59,31 +28,19 @@ export async function signup(credentials) {
     }
 }
 
-export async function logout() {
+export async function logout() { //✅
+    console.log('logout:')
     try {
         await userService.logout()
-        store.dispatch({
-            type: SET_USER,
-            user: null,
-        })
-        socketService.logout()
+        store.dispatch({ type: SET_USER, user: null })
     } catch (err) {
         console.log('Cannot logout', err)
         throw err
     }
 }
 
-export async function loadUser(userId) {
-    try {
-        const user = await userService.getById(userId)
-        store.dispatch({ type: SET_WATCHED_USER, user })
-    } catch (err) {
-        showErrorMsg('Cannot load user')
-        console.log('Cannot load user', err)
-    }
-}
 
-export async function updateUser(user) {
+export async function updateUser(user) { //✅
     try {
         const savedUser = await userService.update(user)
         console.log('savedUser:', savedUser)
@@ -95,6 +52,35 @@ export async function updateUser(user) {
     }
 }
 
+
+// export async function addTrackToStation(track, station) {
+//     try {
+//         const storeUser = store.getState().userModule.user
+//         const stationToSave = { ...station, tracks: [...station.tracks, track] }
+//         const updatedUser = { ...storeUser, likedTracks: { ...storeUser.likedTracks, tracks: updatedTracks } }
+//         userService.update()
+
+//     } catch (err) {
+
+//     }
+//     store.dispatch({ type: UPDATE_USER_STATION, station: stationToSave })
+// }
+
+export async function toggleLikedTrack(track) {
+    const storeUser = store.getState().userModule.user
+    if (!storeUser?.likedTracks?.tracks) throw new Error('userActions: no user or likedTracks in toggleLikedTrack')
+
+    const likedTracks = storeUser.likedTracks
+    const tracks = likedTracks.tracks
+    const updatedTracks = tracks.some(t => t.id === track.id)
+        ? tracks.filter(t => t.id !== track.id)
+        : [track, ...tracks]
+    const updatedLikedTracks = { ...likedTracks, tracks: updatedTracks }
+
+    await stationService.save(updatedLikedTracks)
+    store.dispatch({ type: SET_LIKED_TRACKS, tracks: updatedTracks })
+}
+
 export function updateUserLikedStations(stations) {
     return (dispatch) => {
         dispatch({
@@ -104,21 +90,22 @@ export function updateUserLikedStations(stations) {
     }
 }
 
-export function updateUserLikedTracks(tracks) {
-    return (dispatch) => {
-        dispatch({
-            type: SET_LIKED_TRACKS,
-            tracks,
-        })
-    }
-}
+
+// export function updateUserLikedTracks(tracks) {
+//     return (dispatch) => {
+//         dispatch({
+//             type: SET_LIKED_TRACKS,
+//             tracks,
+//         })
+//     }
+// }
 
 export async function toggleLikedStation(clickedStationId) {
     const user = store.getState().userModule.user
-    const likedStations = user?.likedStations || []
-    const isLiked = likedStations.some(
-        (stationId) => stationId === clickedStationId
-    )
+    if (!user) return console.log('userActions: no user in toggleLikedStation')
+
+    const likedStations = user.likedStations
+    const isLiked = likedStations.some(stationId => stationId === clickedStationId)
     let updatedStations
     if (isLiked) {
         updatedStations = likedStations.filter(
@@ -135,23 +122,48 @@ export async function toggleLikedStation(clickedStationId) {
     await updateUser(userToUpdate)
 }
 
-export async function toggleLiked(clickedTrack) {
-    const user = store.getState().userModule.user
-    const likedTracks = user?.likedTracks?.tracks || []
-    const isLiked = likedTracks.some((track) => track.id === clickedTrack.id)
-    let updatedTracks
+// export async function toggleLiked(clickedTrack) {
+//     const user = store.getState().userModule.user
+//     if (!user) return console.log('userActions: no user in toggleLiked')
 
-    if (isLiked) {
-        updatedTracks = likedTracks.filter(
-            (track) => track.id !== clickedTrack.id
-        )
-    } else {
-        updatedTracks = [...likedTracks, clickedTrack]
+//     const likedTracks = user.likedTracks.tracks
+//     const isLiked = likedTracks.some((track) => track.id === track.id)
+//     let updatedTracks
+
+//     if (isLiked) updatedTracks = likedTracks.filter(track => track.id !== track.id)
+//     else updatedTracks = [...likedTracks, clickedTrack]
+
+//     store.dispatch({ type: SET_LIKED_TRACKS, updatedTracks })
+// }
+
+export async function loadUser(userId) { // dont know why... maybe for userDetails?
+    try {
+        const user = await userService.getById(userId)
+        store.dispatch({ type: SET_WATCHED_USER, user })
+    } catch (err) {
+        showErrorMsg('Cannot load user')
+        console.log('Cannot load user', err)
     }
-    updateUserLikedTracks(updatedTracks)
-    const userToUpdate = {
-        ...user,
-        likedTracks: { ...user.likedTracks, tracks: updatedTracks },
-    }
-    await updateUser(userToUpdate)
 }
+
+
+// export async function loadUsers() {
+//     try {
+//         store.dispatch({ type: LOADING_START })
+//         const users = await userService.getUsers()
+//         store.dispatch({ type: SET_USERS, users })
+//     } catch (err) {
+//         console.log('UserActions: err in loadUsers', err)
+//     } finally {
+//         store.dispatch({ type: LOADING_DONE })
+//     }
+// }
+
+// export async function removeUser(userId) {
+//     try {
+//         await userService.remove(userId)
+//         store.dispatch({ type: REMOVE_USER, userId })
+//     } catch (err) {
+//         console.log('UserActions: err in removeUser', err)
+//     }
+// }

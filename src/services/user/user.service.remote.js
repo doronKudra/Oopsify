@@ -1,3 +1,5 @@
+import { SET_USER } from '../../store/reducers/user.reducer'
+import { store } from '../../store/store'
 import { httpService } from '../http.service'
 
 const STORAGE_KEY_LOGGEDIN_USER = 'loggedinUser'
@@ -6,62 +8,33 @@ export const userService = {
     login,
     logout,
     signup,
-    getUsers,
     getById,
     remove,
     update,
+    saveStation,
     getLoggedinUser,
     saveLoggedinUser,
+    // getUsers,
 }
 
-// const userToSave = {
-//     fullName: user.fullName,
-//     userName: user.userName,
-//     password: user.password,
-//     imgUrl: user.imgUrl,
-//     likedStations: user.likedStations || [],
-//     likedTracks: {
-//         name: 'Liked Songs',
-//         tracks: user.likedTracks?.tracks || [],
-//         owner: {
-//             userName: user.userName,
-//             id: user.id,
-//         },
-//         images: [{ url: '/src/assets/images/liked-songs.png' }],
-//         id: 'liked-songs',
-//         type: 'station',
-//     },
-// }
 
-async function signup(userCred) {
-    const user = await httpService.post('auth/signup', userCred)
-    return saveLoggedinUser(user)
+setUser()
+
+
+async function signup(userCred) { // ✅
+    console.log('singup.....:')
+    try {
+        let user = await httpService.post('auth/signup', userCred)
+        user.likedTracks = _getEmptyLikedTrack(user)
+        saveLoggedinUser(user)
+        return await update(user)
+    } catch (err) {
+        console.log('signup failed', err)
+        throw err
+    }
 }
 
-function getUsers() {
-    return httpService.get(`user`)
-}
-
-async function getById(userId) {
-    const user = await httpService.get(`user/${userId}`)
-    return user
-}
-
-function remove(userId) {
-    return httpService.delete(`user/${userId}`)
-}
-
-async function update({ _id, score }) {
-    const user = await httpService.put(`user/${_id}`, { _id, score })
-
-    // When admin updates other user's details, do not update loggedinUser
-    const loggedinUser = getLoggedinUser() // Might not work because its defined in the main service???
-    if (loggedinUser._id === user._id) saveLoggedinUser(user)
-
-    return user
-}
-
-async function login(userCred) {
+async function login(userCred) { // ✅
     try {
         const user = await httpService.post('auth/login', userCred)
         if (!user) throw new Error('Invalid login')
@@ -72,23 +45,75 @@ async function login(userCred) {
     }
 }
 
-
-async function logout() {
+async function logout() { //✅
     sessionStorage.removeItem(STORAGE_KEY_LOGGEDIN_USER)
-    return await httpService.post('auth/logout')
+    return await httpService.post('auth/logout') //only for clear the cookies
 }
+
+async function setUser(userId) {
+    const sessionUser = getLoggedinUser()
+    const user = await getById(sessionUser._id)
+    store.dispatch({ type: SET_USER, user })
+}
+
+async function getById(userId) { //✅
+    const user = await httpService.get(`user/${userId}`)
+    return user
+}
+
+
+async function update(userToUpdate) { //✅
+    console.log('userToUpdate:', userToUpdate)
+    const user = await httpService.put(`user/${userToUpdate._id}`, userToUpdate)
+
+    // When admin updates other user's details, do not update loggedinUser
+    const loggedinUser = getLoggedinUser() // Might not work because its defined in the main service???
+    if (loggedinUser && loggedinUser._id === user._id) saveLoggedinUser(user)
+    return user
+}
+
+async function saveStation(station) {
+    console.log('station:', station)
+    const savedStation = await httpService.put(`station/${station._id}`, station)
+    // } else {
+    // savedStation = await httpService.post('station', station)
+    // }
+    return savedStation
+}
+
+
+
+function remove(userId) { //? requireAuth
+    return httpService.delete(`user/${userId}`)
+}
+
 
 function getLoggedinUser() {
-    return JSON.parse(sessionStorage.getItem(STORAGE_KEY_LOGGEDIN_USER))
+    const user = JSON.parse(sessionStorage.getItem(STORAGE_KEY_LOGGEDIN_USER))
+    return user
 }
 
-function saveLoggedinUser(user) {
-    user = {
-        _id: user._id,
-        userName: user.userName,
-        fullName: user.fullName,
-        imgUrl: user.imgUrl || '',
+function saveLoggedinUser({ _id, username, fullname }) {
+    const user = {
+        _id,
+        username,
+        fullname
     }
     sessionStorage.setItem(STORAGE_KEY_LOGGEDIN_USER, JSON.stringify(user))
+    setUser(user._id)
     return user
+}
+
+function _getEmptyLikedTrack(user) {
+    console.log('_getEmptyLikedTrack:',)
+    return {
+        name: 'Liked Tracks',
+        tracks: [],
+        images: [{ url: '/src/assets/images/liked-songs.png' }],
+        id: 'liked-tracks',
+        owner: {
+            name: user.fullname,
+            id: user._id,
+        }
+    }
 }

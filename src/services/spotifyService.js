@@ -159,7 +159,7 @@ async function _getToken() {
         'spotify_token_expires',
         Date.now() + data.expires_in * 1000
     )
-    console.log('data.access_token:', data.access_token)
+    // console.log('data.access_token:', data.access_token)
     return data.access_token
 }
 

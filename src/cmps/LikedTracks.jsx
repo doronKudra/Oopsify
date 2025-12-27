@@ -3,7 +3,10 @@ import { useContextMenu } from '../cmps/OptionMenuProvider.jsx'
 import { makeId } from '../services/util.service.js'
 
 export function LikedTracks({ user, listType }) {
-    if(!user) return
+    console.log('1:',1)
+    console.log('user:',user)
+    if(!user?.likedTracks) return
+    console.log('1:',1)
     const { openContextMenu } = useContextMenu()
     function handleOpenMenu({ x, y, context }) {
         const isPinned = true // later add to user pinned property inside a user along with playlist id
@@ -23,16 +26,16 @@ export function LikedTracks({ user, listType }) {
         console.log('pinned')
     }
 
-    const likedTracks = user ? user.likedTracks : {}
+    const likedTracks = user.likedTracks
     const station = {
         name: 'Liked Songs',
-        tracks: likedTracks.tracks || [],
+        tracks: likedTracks.tracks,
         owner: {
-            id: user.id,
-            name: user.userName,
+            id: user._id,
+            name: user.username,
         },
         images: [{ url: '/src/assets/images/liked-songs.png' }],
-        id: 'liked-songs'
+        id: 'liked-tracks'
     }
     return (
         <StationList

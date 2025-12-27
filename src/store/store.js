@@ -14,6 +14,5 @@ export const store = configureStore({
 })
 
 store.subscribe(() => {
-    const playerState = store.getState().playerModule
-    console.log('playerState changed:', playerState)
+    console.log('playerState changed:', store.getState())
 })

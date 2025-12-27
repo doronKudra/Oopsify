@@ -20,12 +20,14 @@ async function remove(stationId) {
     return httpService.delete(`station/${stationId}`)
 }
 async function save(station) {
+    console.log('station:',station)
     var savedStation
-    if (station._id) {
+    // if (station._id) {
+        console.log('saving...:')
         savedStation = await httpService.put(`station/${station._id}`, station)
-    } else {
-        savedStation = await httpService.post('station', station)
-    }
+    // } else {
+        // savedStation = await httpService.post('station', station)
+    // }
     return savedStation
 }
 

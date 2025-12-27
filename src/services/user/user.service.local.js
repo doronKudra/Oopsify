@@ -5,15 +5,15 @@ const STORAGE_KEY_LOGGEDIN_USER = 'loggedinUser'
 const STORAGE_KEY_USER = 'user'
 
 export const userService = {
-    login,
-    logout,
-    signup,
-    getUsers,
-    getById,
-    remove,
-    update,
-    getLoggedinUser,
-    saveLoggedinUser,
+    // login,
+    // logout,
+    // signup,
+    // getUsers,
+    // getById,
+    // remove,
+    // update,
+    // getLoggedinUser,
+    // saveLoggedinUser,
 }
 
 // _createLoggedinUser() // use if local storage userDB is empty
@@ -46,7 +46,7 @@ async function update(userToUpdate) {
 
 async function login(userCred) {
     const users = await storageService.query(STORAGE_KEY_USER)
-    const user = users.find((user) => user.userName === userCred.userName)
+    const user = users.find((user) => user.username === userCred.username)
 
     if (!user) throw new Error('User not found')
     if (user.password !== userCred.password) throw new Error('Wrong password')
@@ -61,8 +61,8 @@ async function signup(user) {
             'https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png'
 
     const userToSave = {
-        fullName: user.fullName,
-        userName: user.userName,
+        fullname: user.fullname,
+        username: user.username,
         password: user.password,
         imgUrl: user.imgUrl,
         likedStations: user.likedStations || [],
@@ -70,7 +70,7 @@ async function signup(user) {
             name: 'Liked Songs',
             tracks: user.likedTracks?.tracks || [],
             owner: {
-                userName: user.userName,
+                username: user.username,
                 id: user.id,
             },
             images: [{ url: '/src/assets/images/liked-songs.png' }],
@@ -96,8 +96,8 @@ function getLoggedinUser() {
 async function saveLoggedinUser(user) {
     const loggedinUser = {
         id: user.id,
-        fullName: user.fullName,
-        userName: user.userName,
+        fullname: user.fullname,
+        username: user.username,
         password: user.password,
         imgUrl: user.imgUrl,
         likedStations: user.likedStations,
@@ -105,7 +105,7 @@ async function saveLoggedinUser(user) {
             name: 'Liked Songs',
             tracks: user.likedTracks.tracks,
             owner: {
-                userName: user.fullName,
+                username: user.fullname,
                 id: user.id,
             },
             images: [{ url: '/src/assets/images/liked-songs.png' }],
@@ -131,8 +131,8 @@ async function _createLoggedinUser() {
     const users = []
     const user = {
         id: makeId(),
-        fullName: 'Mustafa Adminsky',
-        userName: 'admin',
+        fullname: 'Mustafa Adminsky',
+        username: 'admin',
         password: 'admin',
         imgUrl: 'https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png',
         likedStations: [
@@ -146,7 +146,7 @@ async function _createLoggedinUser() {
             name: 'Liked Songs',
             tracks: [],
             owner: {
-                userName: 'admin',
+                username: 'admin',
                 id: 'admin',
             },
             images: [{ url: '/src/assets/images/liked-songs.png' }],
@@ -156,5 +156,5 @@ async function _createLoggedinUser() {
     }
     users.push(user)
     localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(users))
-    login({ userName: 'admin', password: 'admin' })
+    login({ username: 'admin', password: 'admin' })
 }

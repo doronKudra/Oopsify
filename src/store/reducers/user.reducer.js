@@ -13,18 +13,16 @@ export const UPDATE_USER = 'UPDATE_USER'
 export const SET_LIKED_STATIONS = 'SET_LIKED_STATIONS'
 
 const initialState = {
-    user: userService.getLoggedinUser(),
+    user: null,
     users: [],
     watchedUser: null,
 }
 
 export function userReducer(state = initialState, action) {
+    console.log('action:',action)
     switch (action.type) {
         case SET_USER:
-            console.log('action:', action)
             return { ...state, user: action.user }
-        case SET_WATCHED_USER:
-            return { ...state, watchedUser: action.user }
         case REMOVE_USER:
             return {
                 ...state,
@@ -54,6 +52,8 @@ export function userReducer(state = initialState, action) {
                     ],
                 },
             }
+        case SET_WATCHED_USER:
+            return { ...state, watchedUser: action.user }
         case UPDATE_USER:
             return { ...state, user: { ...state.user, ...action.user } }
         default:
