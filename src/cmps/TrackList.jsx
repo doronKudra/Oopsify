@@ -7,7 +7,7 @@ import { SortableTrack } from './SortableTracks.jsx'
 import { TrackPreview } from './TrackPreview.jsx'
 // get the user from store
 
-export function TrackList({ openContextMenu, tracks, tempIdsRef, isStation }) {
+export function TrackList({ openContextMenu, tracks, tempIdsRef, isStation, isOwner}) {
     return (
         <section>
             <div className={`track-list-container ${!isStation && 'album-view'}`}>
@@ -37,7 +37,7 @@ export function TrackList({ openContextMenu, tracks, tempIdsRef, isStation }) {
                         items={tempIdsRef.current}
                         strategy={verticalListSortingStrategy}
                     >
-                        {tracks.map((track, idx) => {
+                        {isOwner ? tracks.map((track, idx) => {
                             const tempId = tempIdsRef.current[idx]
                             return (
                                 <SortableTrack id={tempId} key={tempId}>
@@ -48,6 +48,16 @@ export function TrackList({ openContextMenu, tracks, tempIdsRef, isStation }) {
                                         isStation={isStation}
                                     />
                                 </SortableTrack>
+                            )
+                        }):
+                        tracks.map((track, idx) => {
+                            return (
+                                <TrackPreview
+                                    openContextMenu={openContextMenu}
+                                    track={track}
+                                    idx={idx}
+                                    isStation={isStation}
+                                />
                             )
                         })}
                     </SortableContext>

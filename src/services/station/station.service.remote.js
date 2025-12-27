@@ -24,7 +24,7 @@ async function save(station) {
     var savedStation
     // if (station._id) {
         console.log('saving...:')
-        savedStation = await httpService.put(`station/${station._id}`, station)
+        savedStation = await httpService.put(`station/${station.id}`, station)
     // } else {
         // savedStation = await httpService.post('station', station)
     // }

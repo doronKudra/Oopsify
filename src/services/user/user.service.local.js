@@ -65,7 +65,7 @@ async function signup(user) {
         username: user.username,
         password: user.password,
         imgUrl: user.imgUrl,
-        likedStations: user.likedStations || [],
+        stations: user.stations || [],
         likedTracks: {
             name: 'Liked Songs',
             tracks: user.likedTracks?.tracks || [],
@@ -100,7 +100,7 @@ async function saveLoggedinUser(user) {
         username: user.username,
         password: user.password,
         imgUrl: user.imgUrl,
-        likedStations: user.likedStations,
+        stations: user.stations,
         likedTracks: {
             name: 'Liked Songs',
             tracks: user.likedTracks.tracks,
@@ -135,7 +135,7 @@ async function _createLoggedinUser() {
         username: 'admin',
         password: 'admin',
         imgUrl: 'https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png',
-        likedStations: [
+        stations: [
             '3xqcAMgjHGrv3ElA51zZRj',
             '7gb4GZz7iIHGilXxD7638E',
             '4DJztJkufdlND0Hvg4nGkK',

@@ -16,10 +16,10 @@ export const stationService = {
 
 async function query(filterBy = {}) {
     var stations = await storageService.query(STORAGE_KEY)
-    if (filterBy?.likedStations) {
-        let likedStations = filterBy.likedStations
+    if (filterBy?.stations) {
+        let stations = filterBy.stations
         stations = stations.filter((station) =>
-            likedStations.includes(station.id)
+            stations.includes(station.id)
         )
     }
     console.log('stations:',stations)

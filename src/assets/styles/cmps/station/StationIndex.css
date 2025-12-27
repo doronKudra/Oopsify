@@ -1,29 +1,50 @@
 .station-index {
     border-radius: 8px;
-    padding: 1em;
+    padding: 1em 30px;
     width: 100%;
     display: flex;
-    >section{
+    flex-direction: column;
+    position: relative;
+
+    > section {
         overflow: hidden;
     }
 
-    & header {
-
+    header {
         align-items: center;
         justify-content: space-between;
-
-        padding-block: .3em;
+        padding-block: 0.3em;
     }
 
-    & h2 {
+    h2 {
         margin: 0;
         font-size: 1.3em;
     }
 
-    & button {
+    button {
         margin-inline-end: 0;
     }
 }
+
+.station-index::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background: linear-gradient(
+        to bottom,
+        var(--homeBg) 0px,
+        color-mix(in srgb, var(--homeBg) 50%, #121212) 150px,
+        #121212 300px
+    );
+    transition: background 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.station-index > * {
+    position: relative;
+    z-index: 1;
+}
+
 
 .station-list-header {
     display: flex;
@@ -111,12 +132,6 @@ a.recent-station-preview-link {
     row-gap: 8px;
     column-gap: 8px;
     margin-inline: 10px;
-}
-
-.station-index {
-    display: flex;
-    flex-direction: column;
-    padding-inline: 30px;
 }
 
 .recent-preview-station-title {

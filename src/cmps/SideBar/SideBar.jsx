@@ -35,7 +35,7 @@ export function SideBar() {
             ]
         }
         else {
-            const isLiked = user.likedStations.includes(station.id)
+            const isLiked = user.stations.includes(station.id)
             const isPinned = false
             if (station.type === 'station') {
                 actions = [
@@ -77,12 +77,12 @@ export function SideBar() {
     }, [filterBy])
 
     useEffect(() => {
-        if (!user?.likedStations) return
+        if (!user?.stations) return
         setFilterBy(prev => ({
             ...prev,
-            likedStations: user.likedStations
+            stations: user.stations
         }))
-    }, [user?.likedStations])
+    }, [user?.stations])
 
     return (
         <div className="route-scroll sidebar-scroll">

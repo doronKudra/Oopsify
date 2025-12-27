@@ -52,6 +52,7 @@ async function logout() { //✅
 
 async function setUser() {
     const sessionUser = getLoggedinUser()
+    if(!sessionUser) return
     const user = await getById(sessionUser._id)
     store.dispatch({ type: SET_USER, user })
 }
@@ -74,7 +75,7 @@ async function update(userToUpdate) { //✅
 
 async function saveStation(station) {
     console.log('station:', station)
-    const savedStation = await httpService.put(`station/${station._id}`, station)
+    const savedStation = await httpService.put(`station/${station.id}`, station)
     // } else {
     // savedStation = await httpService.post('station', station)
     // }

@@ -15,6 +15,7 @@ import { makeId, mixHex, formatSpotifyDuration } from '../services/util.service.
 import { SearchInDetails } from './SearchInDetails.jsx'
 import { useContextMenu } from './OptionMenuProvider.jsx'
 import { useModal } from './ModalProvider.jsx'
+import { setUserStation } from '../store/actions/user.actions.js'
 
 import { toggleLikedStation, toggleLikedTrack } from '../store/actions/user.actions.js'
 
@@ -24,7 +25,7 @@ export function StationDetails() {
     const user = useSelector((store) => store.userModule.user)
     const station = useSelector((store) => store.stationModule.station)
     const [tracks, setTracks] = useState([])
-
+    const isOwner = (station?.owner?.id === user?._id)
     useEffect(() => {
         if (stationId !== 'liked-tracks') {
             loadStation(stationId) //updates the store's station
@@ -126,11 +127,12 @@ export function StationDetails() {
         tempIdsRef.current = arrayMove(tempIdsRef.current, oldIndex, newIndex)
 
         // 3. Persist to backend + Redux
+        console.log(updateStation)
         const updatedStation = {
             ...station,
             tracks: newTrackOrder,
         }
-        await updateStation(updatedStation)
+        await setUserStation(updatedStation)
     }
 
     const isStation = station?.type === 'station'
@@ -143,21 +145,14 @@ export function StationDetails() {
         if (!track) return
         const isInStation = station.tracks.some(({ id }) => id === track.id)
         const isLiked = user.likedTracks.tracks.some(({ id }) => id === track.id)
-        const isOwner = (station.owner.id === user.id)
         let actions
-        if (station.id === 'liked-songs' || station.owner.id === user.id) {
+        if (station.id === 'liked-songs' || station.owner.id === user._id) {
             actions = [
                 {
                     id: makeId(),
                     icon: 'add',
                     name: 'Add to playlist',
                     callback: () => { },
-                    children: stations.map(station => ({
-                        id: makeId(),
-                        icon: '',
-                        name: station.name,
-                        callback: () => addTrackToStation(station.id, track),
-                    }))
                 }, // TODO (add to a different playlist) dropdown
                 isInStation && isOwner && {
                     id: makeId(),
@@ -217,12 +212,6 @@ export function StationDetails() {
                         icon: 'add',
                         name: 'Add to playlist',
                         callback: () => { },
-                        children: stations.map(station => ({
-                            id: makeId(),
-                            icon: 'add',
-                            name: station.name,
-                            callback: () => addTrackToStation(station.id, track),
-                        }))
                     }, // TODO (add to a different playlist) dropdown
                     isLiked
                         ? {
@@ -292,7 +281,7 @@ export function StationDetails() {
     function handleOpenMenuStation({ x, y, context }) {
         const { station } = context
         let actions
-        if (station.owner.id === user.id) {
+        if (station.owner.id === user._id) {
             actions = [
                 {
                     id: makeId(),
@@ -338,7 +327,7 @@ export function StationDetails() {
                 }, // TODO
             ]
         } else {
-            const isLiked = user.likedStations.includes(station.id)
+            const isLiked = true
             if (station.type === 'station') {
                 actions = [
                     isLiked
@@ -467,10 +456,11 @@ export function StationDetails() {
                         tracks={tracks}
                         tempIdsRef={tempIdsRef}
                         isStation={isStation}
+                        isOwner={isOwner}
                     />
                     {/* </div> */}
                     {
-                        station?.owner.id === user._id &&
+                        station?.owner?.id === user?._id &&
                         <SearchInDetails openContextMenu={handleOpenMenu} tracks={tracks.length ? true : false} station={station} user={user} />
                     }
                 </section>
