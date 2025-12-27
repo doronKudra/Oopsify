@@ -50,7 +50,7 @@ async function logout() { //✅
     return await httpService.post('auth/logout') //only for clear the cookies
 }
 
-async function setUser(userId) {
+async function setUser() {
     const sessionUser = getLoggedinUser()
     const user = await getById(sessionUser._id)
     store.dispatch({ type: SET_USER, user })
@@ -100,14 +100,13 @@ function saveLoggedinUser({ _id, username, fullname }) {
         fullname
     }
     sessionStorage.setItem(STORAGE_KEY_LOGGEDIN_USER, JSON.stringify(user))
-    setUser(user._id)
+    // setUser(user._id)
     return user
 }
 
 function _getEmptyLikedTrack(user) {
-    console.log('_getEmptyLikedTrack:',)
     return {
-        name: 'Liked Tracks',
+        name: 'Liked Songs',
         tracks: [],
         images: [{ url: '/src/assets/images/liked-songs.png' }],
         id: 'liked-tracks',

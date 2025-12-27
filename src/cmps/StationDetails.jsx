@@ -22,10 +22,8 @@ export function StationDetails() {
     const { stationId } = useParams()
     const { openEditStation } = useModal()
     const user = useSelector((store) => store.userModule.user)
-    console.log('user:',user)
     const station = useSelector((store) => store.stationModule.station)
     const [tracks, setTracks] = useState([])
-    console.log('station:', station)
 
     useEffect(() => {
         if (stationId !== 'liked-tracks') {
@@ -424,7 +422,7 @@ export function StationDetails() {
                                 {isStation ? (
                                     <>
                                         <span className="enhance">
-                                            {user.fullname}
+                                            {station.owner.fullname}
                                         </span>
                                         <span> • </span>
                                         <span>2025</span>
@@ -472,7 +470,7 @@ export function StationDetails() {
                     />
                     {/* </div> */}
                     {
-                        station.owner.id === user._id &&
+                        station?.owner.id === user._id &&
                         <SearchInDetails openContextMenu={handleOpenMenu} tracks={tracks.length ? true : false} station={station} user={user} />
                     }
                 </section>
