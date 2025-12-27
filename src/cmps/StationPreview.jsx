@@ -1,7 +1,12 @@
 import { Link } from 'react-router-dom'
+import { FastAverageColor } from 'fast-average-color'
 
-
-export function StationPreview({ openContextMenu, station, listType }) {
+export function StationPreview({
+    openContextMenu,
+    station,
+    listType,
+    onHoverColor,
+}) {
     function onStationRightClick(ev, station) {
         ev.preventDefault()
         ev.stopPropagation()
@@ -9,13 +14,33 @@ export function StationPreview({ openContextMenu, station, listType }) {
         openContextMenu({
             x: ev.clientX,
             y: ev.clientY,
-            context: { station }
+            context: { station },
         })
     }
-    return (<DynamicCmp onStationRightClick={onStationRightClick} station={station} listType={listType} />)
+    return (
+        <DynamicCmp
+            onStationRightClick={onStationRightClick}
+            station={station}
+            listType={listType}
+            onHoverColor={onHoverColor}
+        />
+    )
 }
 
-function DynamicCmp({ onStationRightClick, station, listType }) {
+function DynamicCmp({ onStationRightClick, station, listType, onHoverColor }) {
+    const fac = new FastAverageColor()
+    async function handleHover() {
+        const url =
+            station?.images?.[0]?.url || station?.tracks?.[0]?.images?.[0]?.url
+
+        if (!url) return
+
+        const fac = new FastAverageColor()
+        const color = await fac.getColorAsync(url)
+
+        onHoverColor?.(color)
+    }
+
     switch (listType) {
         case 'favorites': // small image, pinned, type, creator (for liked tracks show number of tracks)
             return <Link className='sidebar-station-preview-link' to={`/station/${station?.id}`}>
@@ -57,17 +82,28 @@ function DynamicCmp({ onStationRightClick, station, listType }) {
                 </article>
             </Link>
         case 'recent': // small image, title
-            return <Link className='recent-station-preview-link' to={`/station/${station?.id}`}>
-                <article onContextMenu={(ev) => onStationRightClick(ev, station)} className="recent-station-preview-container">
-                    <img className="recent-small-img small-img" src={station?.images?.at(-1)?.url}></img>
-                    <div className="recent-preview-station">
-                        <span className="recent-preview-station-title">
-                            {station?.name?.slice(0, 19)}
-                            {station?.name?.length > 19 && '...'}
-                        </span>
-                    </div>
-
-                </article>
-            </Link>
+            return (
+                <Link
+                    className="recent-station-preview-link"
+                    to={`/station/${station?.id}`}
+                >
+                    <article
+                        onContextMenu={(ev) => onStationRightClick(ev, station)}
+                        className="recent-station-preview-container"
+                        onMouseEnter={handleHover}
+                    >
+                        <img
+                            className="recent-small-img small-img"
+                            src={station?.images?.at(-1)?.url}
+                        ></img>
+                        <div className="recent-preview-station">
+                            <span className="recent-preview-station-title">
+                                {station?.name?.slice(0, 19)}
+                                {station?.name?.length > 19 && '...'}
+                            </span>
+                        </div>
+                    </article>
+                </Link>
+            )
     }
 }
