@@ -156,8 +156,8 @@ export function StationIndex() {
                 background: `
       linear-gradient(
         to bottom,
-        rgba(${homeBg}, 0.3) 0px,
-        rgba(${homeBg}, 0.15) 150px,
+        rgba(${homeBg}, 0.92) 0px,
+        rgba(${homeBg}, 0.25) 150px,
         #121212 300px
       )
     `,
