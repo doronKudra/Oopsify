@@ -52,6 +52,7 @@ async function logout() { //✅
 
 async function setUser(userId) {
     const sessionUser = getLoggedinUser()
+    if(!sessionUser) return
     const user = await getById(sessionUser._id)
     store.dispatch({ type: SET_USER, user })
 }
@@ -100,7 +101,7 @@ function saveLoggedinUser({ _id, username, fullname }) {
         fullname
     }
     sessionStorage.setItem(STORAGE_KEY_LOGGEDIN_USER, JSON.stringify(user))
-    setUser(user._id)
+    // setUser(user._id)
     return user
 }
 
