@@ -11,6 +11,7 @@ export const SET_SCORE = 'SET_SCORE'
 export const SET_LIKED_TRACKS = 'SET_LIKED_TRACKS'
 export const UPDATE_USER = 'UPDATE_USER'
 export const SET_LIKED_STATIONS = 'SET_LIKED_STATIONS'
+export const UPDATE_OWNED_STATION = 'UPDATE_OWNED_STATION'
 
 const initialState = {
     user: null,
@@ -39,6 +40,17 @@ export function userReducer(state = initialState, action) {
                         ...state.user.likedTracks,
                         tracks: action.tracks,
                     },
+                },
+            }
+        case UPDATE_OWNED_STATION:
+            return {
+                ...state,
+                user: {
+                    ...state.user,
+                    likedStations: [
+                        ...state.user.likedStations,
+                        action.station
+                    ],
                 },
             }
         case SET_LIKED_STATIONS:

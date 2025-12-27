@@ -2,7 +2,7 @@ import { userService } from '../../services/user'
 import { store } from '../store'
 
 import { showErrorMsg } from '../../services/event-bus.service'
-import { SET_USER, SET_WATCHED_USER, SET_LIKED_TRACKS, UPDATE_USER, SET_LIKED_STATIONS, } from '../reducers/user.reducer'
+import { SET_USER, SET_WATCHED_USER, SET_LIKED_TRACKS, UPDATE_USER, SET_LIKED_STATIONS, UPDATE_OWNED_STATION } from '../reducers/user.reducer'
 import { stationService } from '../../services/station/station.service.remote'
 
 
@@ -52,6 +52,19 @@ export async function updateUser(user) { //✅
     }
 }
 
+export async function setUserStation(station) { //✅
+    try {
+        const savedStation = await userService.saveStation(station)
+        if (station.id === 'liked-tracks') store.dispatch({ type: SET_LIKED_TRACKS, station: savedStation.tracks })
+        else store.dispatch({ type: UPDATE_OWNED_STATION, station: savedStation })
+
+    } catch (err) {
+        console.error('Cannot update station', err)
+        throw err
+    }
+}
+
+
 
 // export async function addTrackToStation(track, station) {
 //     try {
@@ -66,7 +79,7 @@ export async function updateUser(user) { //✅
 //     store.dispatch({ type: UPDATE_USER_STATION, station: stationToSave })
 // }
 
-export async function toggleLikedTrack(track) {
+export async function toggleLikedTrack(track) { //✅
     const storeUser = store.getState().userModule.user
     if (!storeUser?.likedTracks?.tracks) throw new Error('userActions: no user or likedTracks in toggleLikedTrack')
 
