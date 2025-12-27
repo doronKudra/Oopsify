@@ -98,7 +98,7 @@ export function updateUserLikedStations(stations) {
     return (dispatch) => {
         dispatch({
             type: SET_LIKED_STATIONS,
-            likedStations: [...stations],
+            stations: [...stations],
         })
     }
 }
@@ -117,20 +117,20 @@ export async function toggleLikedStation(clickedStationId) {
     const user = store.getState().userModule.user
     if (!user) return console.log('userActions: no user in toggleLikedStation')
 
-    const likedStations = user.likedStations
-    const isLiked = likedStations.some(stationId => stationId === clickedStationId)
+    const stations = user.stations
+    const isLiked = stations.some(stationId => stationId === clickedStationId)
     let updatedStations
     if (isLiked) {
-        updatedStations = likedStations.filter(
+        updatedStations = stations.filter(
             (stationId) => stationId !== clickedStationId
         )
     } else {
-        updatedStations = [...likedStations, clickedStationId]
+        updatedStations = [...stations, clickedStationId]
     }
     // updateUserLikedStations(updatedStations)
     const userToUpdate = {
         ...user,
-        likedStations: [...updatedStations],
+        stations: [...updatedStations],
     }
     await updateUser(userToUpdate)
 }

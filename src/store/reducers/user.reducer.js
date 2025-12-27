@@ -47,8 +47,8 @@ export function userReducer(state = initialState, action) {
                 ...state,
                 user: {
                     ...state.user,
-                    likedStations: [
-                        ...state.user.likedStations,
+                    stations: [
+                        ...state.user.stations,
                         action.station
                     ],
                 },
@@ -58,8 +58,8 @@ export function userReducer(state = initialState, action) {
                 ...state,
                 user: {
                     ...state.user,
-                    likedStations: [
-                        ...state.user.likedStations,
+                    stations: [
+                        ...state.user.stations,
                         action.id
                     ],
                 },

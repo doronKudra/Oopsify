@@ -71,7 +71,7 @@ export function StationIndex() {
                 }, // TODO
             ]
         } else {
-            const isLiked = user.likedStations.includes(station.id)
+            const isLiked = user.stations.includes(station.id)
             if (station.type === 'station') {
                 actions = [
                     isLiked
