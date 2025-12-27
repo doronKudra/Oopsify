@@ -1,13 +1,10 @@
 import { useSelector } from 'react-redux'
 import { playerActions } from '../store/actions/player.actions'
-import { toggleLiked } from '../store/actions/user.actions'
+import { toggleLikedTrack } from '../store/actions/user.actions'
 import { useLocation } from 'react-router'
 
-export function TrackPreview({ openContextMenu, track, idx, inDetails }) {
-    // console.log('track:', track?.album?.name)
-    const likedTracks = useSelector(
-        (state) => state.userModule.user.likedTracks?.tracks || []
-    )
+export function TrackPreview({ openContextMenu, track, idx, inDetails, onAddTrackInSearch }) {
+    const user = useSelector(state => state.userModule.user)
 
     function getCurrTime(time) {
         const totalSec = Math.floor(time / 1000)
@@ -29,13 +26,14 @@ export function TrackPreview({ openContextMenu, track, idx, inDetails }) {
     }
 
     async function onToggleLiked(track) {
-        await toggleLiked(track)
+        await toggleLikedTrack(track)
     }
 
     function checkLiked(id) {
-        const isLiked = likedTracks.find((likedTrack) => likedTrack.id === id)
-        if (isLiked) return true
-        return false
+        const likedTracks = user?.likedTracks?.tracks
+        if (!likedTracks || !likedTracks.length) return false
+        const isLiked = likedTracks.find(likedTrack => likedTrack.id === id)
+        return isLiked
     }
 
     function onPlay(track) {
@@ -187,7 +185,7 @@ export function TrackPreview({ openContextMenu, track, idx, inDetails }) {
                     </button>
                 </div>
             ) : (
-                <button className="details-add-btn">Add</button>
+                <button onClick={() => onAddTrackInSearch(track)} className="details-add-btn">Add</button>
             )}
         </div>
     )

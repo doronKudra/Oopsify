@@ -1,21 +1,17 @@
 import { useEffect, useRef, useState } from 'react'
-import { store } from '../../store/store.js'
 import { FooterTrackPreview } from './FooterTrackPreview.jsx'
 import { PlayerControls } from './PlayerControls.jsx'
 import { VolumeControl } from './VolumeControl.jsx'
-import { spotifyService } from '../../services/spotifyService.js'
-import { UPDATE_CURRENT_TRACK } from '../../store/reducers/player.reducer.js'
 import { useSelector } from 'react-redux'
 import { YtPlayer } from '../YtPlayer.jsx'
 import { playerActions } from '../../store/actions/player.actions.js'
 import { useContextMenu } from '../OptionMenuProvider.jsx'
 import { makeId } from '../../services/util.service.js'
-import { toggleLiked} from '../../store/actions/user.actions.js'
+import { toggleLikedTrack } from '../../store/actions/user.actions.js'
 
 export function AppFooter() {
 	const track = useSelector(state => state.playerModule.track)
 	const trackList = useSelector(state => state.playerModule.trackList)
-	const trackIdx = useSelector(state => state.playerModule.idx)
 
 	const [isPlaying, setIsPlaying] = useState(false)
 	const [duration, setDuration] = useState(null)
@@ -28,27 +24,6 @@ export function AppFooter() {
 
 	const playerRef = useRef(null)
 	const { openContextMenu } = useContextMenu()
-	function handleOpenMenu({ x, y, context }) {
-		const { track } = context
-		//const isInStation = false // for now
-		const isLiked = true
-		let actions = [
-			{ id: makeId(), icon: 'add', name: 'Add to playlist', callback: () => onAddToStation(track), }, // TODO (add to a different playlist) dropdown
-			isLiked ? { id: makeId(), icon: 'remove', name: 'Remove from your Liked Songs', callback: () => onToggleLiked(track), }
-				: { id: makeId(), icon: 'save', name: 'Save to your Liked Songs', callback: () => onToggleLiked(track), },
-			{ id: makeId(), icon: 'queue', name: 'Add to queue', callback: () => { }, }, // TODO
-			{ id: makeId(), icon: 'radio', name: 'Go to song radio', callback: () => { }, }, // TODO
-			{ id: makeId(), icon: 'artist', name: 'Go to artist', callback: () => { }, }, // TODO
-			{ id: makeId(), icon: 'album', name: 'Go to album', callback: () => { }, }, // TODO - make a dropdown cmp
-			{ id: makeId(), icon: 'share', name: 'Share', callback: () => { }, }, // TODO
-		]
-		openContextMenu({
-			x,
-			y,
-			context,
-			actions,
-		})
-	}
 
 	useEffect(() => {
 		volumeRef.current.style.setProperty('--fill', `${volume}%`)
@@ -61,9 +36,7 @@ export function AppFooter() {
 	}
 
 	function onPlayerStateChange(event) {
-		console.log('event.data:',event.data)
 		if (!playerRef.current) return
-		console.log('event.data:',event.data)
 		if (event.data === window.YT.PlayerState.PLAYING) {
 			setIsPlaying(true)
 
@@ -84,7 +57,6 @@ export function AppFooter() {
 			clearInterval(intervalTimeRef.current)
 
 			if (event.data === window.YT.PlayerState.ENDED) {
-				console.log('track ended')
 				playerActions.playPrevNextTrack(1)
 			}
 		}
@@ -139,7 +111,7 @@ export function AppFooter() {
 	}
 
 	function onAdd() {
-		toggleLiked(track)
+		toggleLikedTrack(track)
 	}
 	function onTilte() {
 		console.log('titling...:')
@@ -148,6 +120,27 @@ export function AppFooter() {
 		console.log('artisting...:')
 	}
 
+	function handleOpenMenu({ x, y, context }) {
+		// const { track } = context
+		//const isInStation = false // for now
+		// const isLiked = true
+		// let actions = [
+		// 	{ id: makeId(), icon: 'add', name: 'Add to playlist', callback: () => onAddToStation(track), }, // TODO (add to a different playlist) dropdown
+		// 	isLiked ? { id: makeId(), icon: 'remove', name: 'Remove from your Liked Songs', callback: () => onToggleLiked(track), }
+		// 		: { id: makeId(), icon: 'save', name: 'Save to your Liked Songs', callback: () => onToggleLiked(track), },
+		// 	{ id: makeId(), icon: 'queue', name: 'Add to queue', callback: () => { }, }, // TODO
+		// 	{ id: makeId(), icon: 'radio', name: 'Go to song radio', callback: () => { }, }, // TODO
+		// 	{ id: makeId(), icon: 'artist', name: 'Go to artist', callback: () => { }, }, // TODO
+		// 	{ id: makeId(), icon: 'album', name: 'Go to album', callback: () => { }, }, // TODO - make a dropdown cmp
+		// 	{ id: makeId(), icon: 'share', name: 'Share', callback: () => { }, }, // TODO
+		// ]
+		// openContextMenu({
+		// 	x,
+		// 	y,
+		// 	context,
+		// 	actions,
+		// })
+	}
 
 	return (
 		<>

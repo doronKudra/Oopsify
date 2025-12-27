@@ -1,67 +1,165 @@
+// import { Link } from 'react-router-dom'
+// import { tracks } from '../services/track/track.service.js'
+// import { showSuccessMsg, showErrorMsg } from '../services/event-bus.service'
+// import { getDemoStation } from '../services/track/track.service.js'
 import { useEffect, useState, useRef } from 'react'
 import { useParams } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
-import { Link } from 'react-router-dom'
-import { tracks } from '../services/track/track.service.js'
-import { showSuccessMsg, showErrorMsg } from '../services/event-bus.service'
-import {
-    loadStation,
-    updateStation,
-    addTrackToStation,
-    removeTrackFromStation,
-} from '../store/actions/station.actions'
-import { getDemoStation } from '../services/track/track.service.js'
+import { useSelector } from 'react-redux'
+import { loadStation, loadLikedTracks, updateStation, addTrackToStation, removeTrackFromStation } from '../store/actions/station.actions'
 import { TrackList } from './TrackList.jsx'
 import { StationControls } from './StationControls.jsx'
 import { FastAverageColor } from 'fast-average-color'
 import { DndContext } from '@dnd-kit/core'
 import { arrayMove } from '@dnd-kit/sortable'
-import {
-    makeId,
-    mixHex,
-    formatSpotifyDuration,
-} from '../services/util.service.js'
+import { makeId, mixHex, formatSpotifyDuration } from '../services/util.service.js'
 import { SearchInDetails } from './SearchInDetails.jsx'
 import { useContextMenu } from './OptionMenuProvider.jsx'
 import { useModal } from './ModalProvider.jsx'
 
-import {
-    toggleLikedStation,
-    updateUserLikedTracks,
-    updateUser,
-    toggleLiked,
-} from '../store/actions/user.actions.js'
+import { toggleLikedStation, toggleLikedTrack } from '../store/actions/user.actions.js'
 
 export function StationDetails() {
     const { stationId } = useParams()
     const { openEditStation } = useModal()
     const user = useSelector((store) => store.userModule.user)
+    const station = useSelector((store) => store.stationModule.station)
+    const [tracks, setTracks] = useState([])
 
-    const stationFromStore = useSelector((store) => store.stationModule.station)
+    useEffect(() => {
+        if (stationId !== 'liked-tracks') {
+            loadStation(stationId) //updates the store's station
+        } else {
+            loadLikedTracks(stationId)
+        }
+    }, [stationId])
 
-    const station =
-        stationId === 'liked-songs' ? user.likedTracks : stationFromStore
-    console.log('station:', station)
+    useEffect(() => {
+        if (station?.tracks) {
+            setTracks(station.tracks) // updates the track's state
+        }
+    }, [station])
+
+
+
+    // const station =
+    // stationId === 'liked-songs' ? user.likedTracks : stationFromStore
     const { openContextMenu } = useContextMenu()
+
+
+    function onAddStation(station) {
+        toggleLikedStation(station.id)
+    }
+
+    function onRemoveStation(station) {
+        toggleLikedStation(station.id)
+    }
+
+    async function onAddToStation(track) {
+        if (stationId === 'liked-tracks') {
+            await toggleLikedTrack(track)
+        } else {
+            const updatedTracks = [...tracks, track]
+            setTracks(updatedTracks)
+            await addTrackToStation(station.id, track)
+        }
+    }
+
+    async function onRemoveFromStation(track) {
+        if (stationId === 'liked-songs') {
+            await toggleLikedTrack(track)
+        } else {
+            const updatedTracks = tracks.filter((t) => t.id !== track.id)
+            setTracks(updatedTracks)
+            await removeTrackFromStation(station, track.id)
+        }
+    }
+
+    async function onToggleLiked(track) {
+        await toggleLikedTrack(track)
+    }
+
+
+    const tempIdsRef = useRef([])
+    if (tempIdsRef.current.length !== tracks.length) {
+        tempIdsRef.current = tracks.map(() => makeId())
+    }
+
+    const [bgColor, setBgColor] = useState({ hex: '#121212' })
+
+    const albumCoverArt =
+        station?.images?.[0]?.url || station?.tracks?.[0]?.images?.[0]?.url
+
+    useEffect(() => {
+        if (!albumCoverArt) return
+        async function fetchColor() {
+            try {
+                const fac = new FastAverageColor()
+                const color = await fac.getColorAsync(albumCoverArt)
+                setBgColor(color)
+            } catch (err) {
+                console.error('Error getting average color:', err)
+            }
+        }
+        fetchColor()
+    }, [albumCoverArt])
+
+    if (!station) return <div>Loading...</div>
+
+    const stationDurationMs = station.tracks.reduce(
+        (sum, t) => sum + (t.duration_ms || 0),
+        0
+    )
+    const stationDuration = formatSpotifyDuration(stationDurationMs)
+
+    async function handleDragEnd(event) {
+        const { active, over } = event
+        if (!over || active.id === over.id) return
+
+        const oldIndex = tempIdsRef.current.indexOf(active.id)
+        const newIndex = tempIdsRef.current.indexOf(over.id)
+
+        const newTrackOrder = arrayMove(tracks, oldIndex, newIndex)
+        // 1. Update UI immediately
+        setTracks(newTrackOrder)
+
+        // 2. Update temp IDs
+        tempIdsRef.current = arrayMove(tempIdsRef.current, oldIndex, newIndex)
+
+        // 3. Persist to backend + Redux
+        const updatedStation = {
+            ...station,
+            tracks: newTrackOrder,
+        }
+        await updateStation(updatedStation)
+    }
+
+    const isStation = station?.type === 'station'
+
+    const dominant = bgColor.hex
+    const base = '#121212'
 
     function handleOpenMenu({ x, y, context }) {
         const { track } = context
+        if (!track) return
         const isInStation = station.tracks.some(({ id }) => id === track.id)
-        const isLiked = user.likedTracks.tracks.some(
-            ({ id }) => id === track.id
-        )
+        const isLiked = user.likedTracks.tracks.some(({ id }) => id === track.id)
+        const isOwner = (station.owner.id === user.id)
         let actions
         if (station.id === 'liked-songs' || station.owner.id === user.id) {
             actions = [
-                !isInStation && {
+                {
                     id: makeId(),
                     icon: 'add',
                     name: 'Add to playlist',
-                    callback: () => {
-                        onAddToStation(track)
-                    },
+                    callback: () => { },
+                    children: stations.map(station => ({
+                        id: makeId(),
+                        icon: '',
+                        name: station.name,
+                        callback: () => addTrackToStation(station.id, track),
+                    }))
                 }, // TODO (add to a different playlist) dropdown
-                isInStation && {
+                isInStation && isOwner && {
                     id: makeId(),
                     icon: 'remove',
                     name: 'Remove from This Playlist',
@@ -69,46 +167,46 @@ export function StationDetails() {
                 },
                 isLiked
                     ? {
-                          id: makeId(),
-                          icon: 'remove',
-                          name: 'Remove from your Liked Songs',
-                          callback: () => onToggleLiked(track),
-                      }
+                        id: makeId(),
+                        icon: 'remove',
+                        name: 'Remove from your Liked Songs',
+                        callback: () => onToggleLiked(track),
+                    }
                     : {
-                          id: makeId(),
-                          icon: 'save',
-                          name: 'Save to your Liked Songs',
-                          callback: () => onToggleLiked(track),
-                      },
+                        id: makeId(),
+                        icon: 'save',
+                        name: 'Save to your Liked Songs',
+                        callback: () => onToggleLiked(track),
+                    },
                 {
                     id: makeId(),
                     icon: 'queue',
                     name: 'Add to queue',
-                    callback: () => {},
+                    callback: () => { },
                 }, // TODO
                 {
                     id: makeId(),
                     icon: 'radio',
                     name: 'Go to song radio',
-                    callback: () => {},
+                    callback: () => { },
                 }, // TODO
                 {
                     id: makeId(),
                     icon: 'artist',
                     name: 'Go to artist',
-                    callback: () => {},
+                    callback: () => { },
                 }, // TODO
                 {
                     id: makeId(),
                     icon: 'album',
                     name: 'Go to album',
-                    callback: () => {},
+                    callback: () => { },
                 }, // TODO - make a dropdown cmp
                 {
                     id: makeId(),
                     icon: 'share',
                     name: 'Share',
-                    callback: () => {},
+                    callback: () => { },
                 }, // TODO
             ]
         } else {
@@ -118,50 +216,56 @@ export function StationDetails() {
                         id: makeId(),
                         icon: 'add',
                         name: 'Add to playlist',
-                        callback: () => onAddToStation(track),
+                        callback: () => { },
+                        children: stations.map(station => ({
+                            id: makeId(),
+                            icon: 'add',
+                            name: station.name,
+                            callback: () => addTrackToStation(station.id, track),
+                        }))
                     }, // TODO (add to a different playlist) dropdown
                     isLiked
                         ? {
-                              id: makeId(),
-                              icon: 'remove',
-                              name: 'Remove from your Liked Songs',
-                              callback: () => onToggleLiked(track),
-                          }
+                            id: makeId(),
+                            icon: 'remove',
+                            name: 'Remove from your Liked Songs',
+                            callback: () => onToggleLiked(track),
+                        }
                         : {
-                              id: makeId(),
-                              icon: 'save',
-                              name: 'Save to your Liked Songs',
-                              callback: () => onToggleLiked(track),
-                          },
+                            id: makeId(),
+                            icon: 'save',
+                            name: 'Save to your Liked Songs',
+                            callback: () => onToggleLiked(track),
+                        },
                     {
                         id: makeId(),
                         icon: 'queue',
                         name: 'Add to queue',
-                        callback: () => {},
+                        callback: () => { },
                     }, // TODO
                     {
                         id: makeId(),
                         icon: 'radio',
                         name: 'Go to song radio',
-                        callback: () => {},
+                        callback: () => { },
                     }, // TODO
                     {
                         id: makeId(),
                         icon: 'artist',
                         name: 'Go to artist',
-                        callback: () => {},
+                        callback: () => { },
                     }, // TODO
                     {
                         id: makeId(),
                         icon: 'album',
                         name: 'Go to album',
-                        callback: () => {},
+                        callback: () => { },
                     }, // TODO - make a dropdown cmp
                     {
                         id: makeId(),
                         icon: 'share',
                         name: 'Share',
-                        callback: () => {},
+                        callback: () => { },
                     }, // TODO
                 ]
             }
@@ -194,13 +298,13 @@ export function StationDetails() {
                     id: makeId(),
                     icon: 'queue',
                     name: 'Add to queue',
-                    callback: () => {},
+                    callback: () => { },
                 }, // TODO
                 {
                     id: makeId(),
                     icon: 'profile',
                     name: 'Add to profile',
-                    callback: () => {},
+                    callback: () => { },
                 },
                 {
                     id: makeId(),
@@ -212,25 +316,25 @@ export function StationDetails() {
                     id: makeId(),
                     icon: 'delete',
                     name: 'Delete',
-                    callback: () => {},
+                    callback: () => { },
                 }, // TODO
                 {
                     id: makeId(),
                     icon: 'private',
                     name: 'Make private',
-                    callback: () => {},
+                    callback: () => { },
                 }, // TODO
                 {
                     id: makeId(),
                     icon: 'folder',
                     name: 'Move to folder',
-                    callback: () => {},
+                    callback: () => { },
                 }, // TODO - make a dropdown cmp
                 {
                     id: makeId(),
                     icon: 'share',
                     name: 'Share',
-                    callback: () => {},
+                    callback: () => { },
                 }, // TODO
             ]
         } else {
@@ -239,40 +343,40 @@ export function StationDetails() {
                 actions = [
                     isLiked
                         ? {
-                              id: makeId(),
-                              icon: 'remove',
-                              name: 'Remove from Your Library',
-                              callback: () => onRemoveStation(station),
-                          }
+                            id: makeId(),
+                            icon: 'remove',
+                            name: 'Remove from Your Library',
+                            callback: () => onRemoveStation(station),
+                        }
                         : {
-                              id: makeId(),
-                              icon: 'save',
-                              name: 'Add to Your Library',
-                              callback: () => onAddStation(station),
-                          },
+                            id: makeId(),
+                            icon: 'save',
+                            name: 'Add to Your Library',
+                            callback: () => onAddStation(station),
+                        },
                     {
                         id: makeId(),
                         icon: 'queue',
                         name: 'Add to queue',
-                        callback: () => {},
+                        callback: () => { },
                     }, // TODO
                     isLiked && {
                         id: makeId(),
                         icon: 'profile',
                         name: 'Add to profile',
-                        callback: () => {},
+                        callback: () => { },
                     }, // TODO
                     {
                         id: makeId(),
                         icon: 'folder',
                         name: isLiked ? 'Move to folder' : 'Add to folder',
-                        callback: () => {},
+                        callback: () => { },
                     }, // TODO
                     {
                         id: makeId(),
                         icon: 'share',
                         name: 'Share',
-                        callback: () => {},
+                        callback: () => { },
                     }, // TODO
                 ]
             }
@@ -284,113 +388,6 @@ export function StationDetails() {
             actions,
         })
     }
-
-    function onAddStation(station) {
-        toggleLikedStation(station.id)
-    }
-
-    function onRemoveStation(station) {
-        toggleLikedStation(station.id)
-    }
-
-    async function onAddToStation(track) {
-        if (stationId === 'liked-songs') {
-            await toggleLiked(track)
-        } else {
-            const updatedTracks = [...localTracks, track]
-            setLocalTracks(updatedTracks)
-            await addTrackToStation(station.id, track)
-        }
-    }
-
-    async function onRemoveFromStation(track) {
-        if (stationId === 'liked-songs') {
-            await toggleLiked(track)
-        } else {
-            const updatedTracks = localTracks.filter((t) => t.id !== track.id)
-            setLocalTracks(updatedTracks)
-            await removeTrackFromStation(station, track.id)
-        }
-    }
-
-    async function onToggleLiked(track) {
-        await toggleLiked(track)
-    }
-
-    useEffect(() => {
-        if (stationId !== 'liked-songs') {
-            loadStation(stationId)
-        }
-    }, [stationId])
-
-    const [localTracks, setLocalTracks] = useState([])
-    useEffect(() => {
-        if (station?.tracks) {
-            console.log('1:', 123456789)
-            setLocalTracks(station.tracks)
-        }
-    }, [station])
-
-    const tempIdsRef = useRef([])
-    if (tempIdsRef.current.length !== localTracks.length) {
-        tempIdsRef.current = localTracks.map(() => makeId())
-    }
-
-    const [bgColor, setBgColor] = useState({ hex: '#121212' })
-
-    const albumCoverArt =
-        station?.images?.[0]?.url || station?.tracks?.[0]?.images?.[0]?.url
-
-    useEffect(() => {
-        if (!albumCoverArt) return
-        async function fetchColor() {
-            try {
-                const fac = new FastAverageColor()
-                const color = await fac.getColorAsync(albumCoverArt)
-                setBgColor(color)
-            } catch (err) {
-                console.error('Error getting average color:', err)
-            }
-        }
-        fetchColor()
-    }, [albumCoverArt])
-
-    if (!station) return <div>Loading...</div>
-
-    const stationDurationMs = station.tracks.reduce(
-        (sum, t) => sum + (t.duration_ms || 0),
-        0
-    )
-    console.log('stationDurationMs:', stationDurationMs)
-    const stationDuration = formatSpotifyDuration(stationDurationMs)
-
-    async function handleDragEnd(event) {
-        const { active, over } = event
-        if (!over || active.id === over.id) return
-
-        const oldIndex = tempIdsRef.current.indexOf(active.id)
-        const newIndex = tempIdsRef.current.indexOf(over.id)
-
-        const newTrackOrder = arrayMove(localTracks, oldIndex, newIndex)
-        // 1. Update UI immediately
-        setLocalTracks(newTrackOrder)
-
-        // 2. Update temp IDs
-        tempIdsRef.current = arrayMove(tempIdsRef.current, oldIndex, newIndex)
-
-        // 3. Persist to backend + Redux
-        const updatedStation = {
-            ...station,
-            tracks: newTrackOrder,
-        }
-        await updateStation(updatedStation)
-    }
-
-    const isStation = station?.type === 'station'
-
-    const dominant = bgColor.hex
-    const base = '#121212'
-
     const colorStop1 = mixHex(dominant, base, 0.4)
     const colorStop2 = mixHex(dominant, base, 0.6)
     const colorStop3 = mixHex(dominant, base, 0.8)
@@ -402,7 +399,7 @@ export function StationDetails() {
                     <section
                         className="station-header station-owner-header"
                         style={{
-                            '--avgColor':dominant,
+                            '--avgColor': dominant,
                             // background: `linear-gradient( to bottom, ${dominant} 0%, ${colorStop1} 100% )`,
                         }}
                         onClick={() => openEditStation()}
@@ -425,7 +422,7 @@ export function StationDetails() {
                                 {isStation ? (
                                     <>
                                         <span className="enhance">
-                                            {user.fullName}
+                                            {station.owner.fullname}
                                         </span>
                                         <span> • </span>
                                         <span>2025</span>
@@ -455,28 +452,27 @@ export function StationDetails() {
                             background: `linear-gradient( to bottom, ${colorStop2} 0%, ${colorStop3} 100% )`,
                         }}
                     > */}
-                        <StationControls
-                            openContextMenu={handleOpenMenuStation}
-                            station={station}
-                        />
+                    <StationControls
+                        openContextMenu={handleOpenMenuStation}
+                        station={station}
+                    />
                     {/* </div> */}
                     {/* <div
                         style={{
                             background: `linear-gradient( to bottom, ${colorStop3} 0px, ${base} 100px, ${base} 100% )`,
                         }}
                     > */}
-                        <TrackList
-                            openContextMenu={handleOpenMenu}
-                            tracks={localTracks}
-                            tempIdsRef={tempIdsRef}
-                            user={user}
-                            isStation={isStation}
-                        />
-                    {/* </div> */}
-                    <SearchInDetails
+                    <TrackList
                         openContextMenu={handleOpenMenu}
-                        tracks={localTracks.length}
+                        tracks={tracks}
+                        tempIdsRef={tempIdsRef}
+                        isStation={isStation}
                     />
+                    {/* </div> */}
+                    {
+                        station?.owner.id === user._id &&
+                        <SearchInDetails openContextMenu={handleOpenMenu} tracks={tracks.length ? true : false} station={station} user={user} />
+                    }
                 </section>
             </DndContext>
         </>

@@ -1,3 +1,5 @@
+import { getDemoStation } from "../actions/station.actions"
+
 export const SET_STATIONS = 'SET_STATIONS'
 export const SET_STATION = 'SET_STATION'
 export const REMOVE_STATION = 'REMOVE_STATION'
@@ -9,7 +11,7 @@ export const SET_SIDEBAR_STATIONS = 'SET_SIDEBAR_STATIONS'
 const initialState = {
     stations: [],
     sidebarStations: [],
-    station: null,
+    station: getDemoStation(),
 }
 
 export function stationReducer(state = initialState, action) {

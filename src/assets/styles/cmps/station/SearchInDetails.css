@@ -1,7 +1,7 @@
 .SearchInDetails {
     min-height: 400px;
     position: relative;
-    background-color: var(--clr2);
+    /* background-color: var(--clr2); */
     margin: 0 19px;
     padding: 24px 16px 40px;
     border-top: 1px solid rgb(128, 128, 128, 0.5);
@@ -46,6 +46,7 @@
             width: 24px;
             height: 24px;
             fill: var(--header3);
+            margin-left: 6px;
 
             &:hover {
                 fill: white;
@@ -97,6 +98,10 @@
     .details-search-svg{
         left: 17px;
     }
+}
+
+.border-top-none{
+    border: 0;
 }
 
 @media (max-width:500px) {

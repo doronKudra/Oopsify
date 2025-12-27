@@ -52,8 +52,8 @@ export function AppHeader() {
 		navigate('login')
 	}
 
-	function getInitial(fullName) {
-		return fullName?.trim()[0].toUpperCase() || '#'
+	function getInitial(fullname) {
+		return fullname?.trim()[0]?.toUpperCase() || '#'
 	}
 
 
@@ -97,9 +97,9 @@ export function AppHeader() {
 				</div>
 			</section>
 
-			{loggedInUser && loggedInUser.fullName ?
+			{loggedInUser && loggedInUser.fullname ?
 				<button className="logged-in-user-btn" onClick={onLogout}>
-					<div className='logged-in-user-icon'>{getInitial(loggedInUser.fullName)}</div>
+					<div className='logged-in-user-icon'>{getInitial(loggedInUser.fullname)}</div>
 				</button>
 				:
 				<button onClick={() => navigate('/login')} className="login-btn">Log in</button>
