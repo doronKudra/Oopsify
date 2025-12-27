@@ -142,22 +142,26 @@ export function StationDetails() {
 
     function handleOpenMenu({ x, y, context }) {
         const { track } = context
+        if (!track) return
         const isInStation = station.tracks.some(({ id }) => id === track.id)
-        const isLiked = user.likedTracks.tracks.some(
-            ({ id }) => id === track.id
-        )
+        const isLiked = user.likedTracks.tracks.some(({ id }) => id === track.id)
+        const isOwner = (station.owner.id === user.id)
         let actions
         if (station.id === 'liked-songs' || station.owner.id === user.id) {
             actions = [
-                !isInStation && {
+                {
                     id: makeId(),
                     icon: 'add',
                     name: 'Add to playlist',
-                    callback: () => {
-                        onAddToStation(track)
-                    },
+                    callback: () => { },
+                    children: stations.map(station => ({
+                        id: makeId(),
+                        icon: '',
+                        name: station.name,
+                        callback: () => addTrackToStation(station.id, track),
+                    }))
                 }, // TODO (add to a different playlist) dropdown
-                isInStation && {
+                isInStation && isOwner && {
                     id: makeId(),
                     icon: 'remove',
                     name: 'Remove from This Playlist',
@@ -214,7 +218,13 @@ export function StationDetails() {
                         id: makeId(),
                         icon: 'add',
                         name: 'Add to playlist',
-                        callback: () => onAddToStation(track),
+                        callback: () => { },
+                        children: stations.map(station => ({
+                            id: makeId(),
+                            icon: 'add',
+                            name: station.name,
+                            callback: () => addTrackToStation(station.id, track),
+                        }))
                     }, // TODO (add to a different playlist) dropdown
                     isLiked
                         ? {
