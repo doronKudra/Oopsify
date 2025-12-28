@@ -6,7 +6,7 @@
     flex-direction: column;
     position: relative;
     background-color: #121212;
-    
+
     > section {
         overflow: hidden;
     }
@@ -25,7 +25,6 @@
     button {
         margin-inline-end: 0;
     }
-    
 }
 
 .station-index::before {
@@ -38,7 +37,7 @@
         var(--homeBg) 0px,
         color-mix(in srgb, var(--homeBg) 50%, #121212) 150px,
         #121212 300px
-    ); 
+    );
     transition: background 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -46,7 +45,6 @@
     position: relative;
     z-index: 1;
 }
-
 
 .station-list-header {
     display: flex;
@@ -146,4 +144,63 @@ a.recent-station-preview-link {
 img.recent-small-img {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
+}
+
+.carousel-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.carousel {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    gap: 16px;
+    padding: 8px 0;
+    scrollbar-width: none;
+}
+
+.carousel::-webkit-scrollbar {
+    display: none;
+}
+
+.carousel-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+
+    background: rgba(0, 0, 0, 0.6);
+    border: none;
+    color: white;
+    font-size: 22px;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease, background 0.2s ease;
+}
+
+.carousel-btn.left {
+    left: 0;
+}
+
+.carousel-btn.right {
+    right: 0;
+}
+
+.carousel-wrapper:hover .carousel-btn {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.carousel-btn:hover {
+    background: rgba(0, 0, 0, 0.8);
 }
