@@ -9,6 +9,7 @@ export const ADD_STATION_MSG = 'ADD_STATION_MSG'
 export const SET_SIDEBAR_STATIONS = 'SET_SIDEBAR_STATIONS'
 export const ADD_SIDEBAR_STATION = 'ADD_SIDEBAR_STATION'
 export const REMOVE_SIDEBAR_STATION = 'REMOVE_SIDEBAR_STATION'
+export const ADD_TRACK = 'ADD_TRACK'
 
 const initialState = {
     stations: [],
@@ -45,6 +46,8 @@ export function stationReducer(state = initialState, action) {
             if (action.msg && state.station) {
                 return { ...state, station: { ...state.station, msgs: [...state.station.msgs || [], action.msg] } }
             }
+        case ADD_TRACK:
+            return { ...state, station: { ...state.station, tracks: [...state.station.tracks || [], action.track] }}
         default:
             return state
     }

@@ -8,7 +8,7 @@ export const stationService = {
     save,
     remove,
     addStationMsg,
-    // addTrack,
+    addTrack,
 }
 
 async function query(filterBy = null) {
@@ -38,7 +38,7 @@ async function addStationMsg(stationId, txt) {
     return savedMsg
 }
 
-// async function addTrack(stationId, track){
-//     const addedTrack = await httpService.post(`station/${stationId}`, {track})
-//     return addedTrack
-// }
+async function addTrack(stationId, track){
+    const addedTrack = await httpService.post(`station/${stationId}/track`, track)
+    return addedTrack
+}

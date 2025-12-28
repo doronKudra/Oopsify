@@ -1,7 +1,7 @@
 import { store } from '../store'
 import { stationService } from '../../services/station'
 import { userService } from '../../services/user'
-import { ADD_STATION, REMOVE_STATION, SET_STATIONS, SET_STATION, UPDATE_STATION, SET_SIDEBAR_STATIONS, } from '../reducers/station.reducer'
+import { ADD_STATION, REMOVE_STATION, SET_STATIONS, SET_STATION, UPDATE_STATION, SET_SIDEBAR_STATIONS, ADD_TRACK} from '../reducers/station.reducer'
 import { updateUser } from './user.actions'
 
 
@@ -38,7 +38,7 @@ export async function loadSidebarStations(filterBy) {
 export async function loadStation(stationId) {
     console.log('from load station', stationId)
     try {
-        store.dispatch({ type: SET_STATION, station:null })
+        store.dispatch({ type: SET_STATION, station: null })
         const station = await stationService.getById(stationId)
         console.log('from load station, new station: ', station)
         store.dispatch({ type: SET_STATION, station })
@@ -62,10 +62,10 @@ export async function removeStation(stationId) {
 
 export async function addStation() {
     try {
-        
+
         const station = stationService.getEmptyStation()
         const savedStation = await stationService.save(station)
-        console.log('station:',station, 'savedStation:',savedStation )
+        console.log('station:', station, 'savedStation:', savedStation)
 
         // const stationToStore = JSON.parse(JSON.stringify(savedStation))
 
@@ -98,14 +98,11 @@ export async function updateStation(station) {
     }
 }
 
-export async function addTrackToStation(station, track) {
-    try {        
-        const updatedStation = {
-            ...station,
-            tracks: [...station.tracks, track]
-        }
-        const savedStation = await stationService.save(updatedStation)
-        store.dispatch({ type: UPDATE_STATION, station: savedStation })
+export async function addTrackToStation(stationId, track) {
+    try {
+        const savedStation = await stationService.addTrack(stationId, track)
+
+        store.dispatch({ type: ADD_TRACK, track: track})
 
         return savedStation
     } catch (err) {

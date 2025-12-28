@@ -24,8 +24,8 @@ export function StationDetails() {
     const { openEditStation } = useModal()
     const user = useSelector((store) => store.userModule.user)
     const station = useSelector((store) => store.stationModule.station)
-    const [tracks, setTracks] = useState([])
     const isOwner = (station?.owner?._id === user?._id)
+    const tracks = station?.tracks || []
     useEffect(() => {
         if (stationId !== 'liked-tracks') {
             loadStation(stationId) //updates the store's station
@@ -34,15 +34,6 @@ export function StationDetails() {
             loadLikedTracks(stationId)
         }
     }, [stationId])
-
-    useEffect(() => {
-        if (station?.tracks) {
-            setTracks(station.tracks) // updates the track's state
-        }
-    }, [station])
-
-
-
     // const station =
     // stationId === 'liked-songs' ? user.likedTracks : stationFromStore
     const { openContextMenu } = useContextMenu()
@@ -60,9 +51,7 @@ export function StationDetails() {
         if (stationId === 'liked-tracks') {
             await toggleLikedTrack(track)
         } else {
-            const updatedTracks = [...tracks, track]
-            setTracks(updatedTracks)
-            await addTrackToStation(station, track)
+            await addTrackToStation(stationId, track)
         }
     }
 
@@ -70,9 +59,7 @@ export function StationDetails() {
         if (stationId === 'liked-songs') {
             await toggleLikedTrack(track)
         } else {
-            const updatedTracks = tracks.filter((t) => t._id !== track._id)
-            setTracks(updatedTracks)
-            await removeTrackFromStation(station, track._id)
+            await removeTrackFromStation(stationId, track._id)
         }
     }
 
@@ -481,7 +468,7 @@ export function StationDetails() {
                     {/* </div> */}
                     {
                         station?.owner?._id === user?._id &&
-                        <SearchInDetails openContextMenu={handleOpenMenu} tracks={tracks.length ? true : false} station={station} user={user} />
+                        <SearchInDetails onAddToStation={onAddToStation} openContextMenu={handleOpenMenu} tracks={tracks.length ? true : false} station={station} user={user} />
                     }
                 </section>
             </DndContext>
