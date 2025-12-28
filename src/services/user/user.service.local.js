@@ -39,7 +39,7 @@ async function update(userToUpdate) {
 
     // When admin updates other user's details, do not update loggedinUser
     const loggedinUser = getLoggedinUser()
-    if (loggedinUser.id === user.id) saveLoggedinUser(user)
+    if (loggedinUser._id === user._id) saveLoggedinUser(user)
 
     return user
 }
@@ -71,7 +71,7 @@ async function signup(user) {
             tracks: user.likedTracks?.tracks || [],
             owner: {
                 username: user.username,
-                id: user.id,
+                _id: user._id,
             },
             images: [{ url: '/src/assets/images/liked-songs.png' }],
             id: 'liked-songs',
@@ -95,7 +95,7 @@ function getLoggedinUser() {
 
 async function saveLoggedinUser(user) {
     const loggedinUser = {
-        id: user.id,
+        _id: user._id,
         fullname: user.fullname,
         username: user.username,
         password: user.password,
@@ -106,7 +106,7 @@ async function saveLoggedinUser(user) {
             tracks: user.likedTracks.tracks,
             owner: {
                 username: user.fullname,
-                id: user.id,
+                _id: user._id,
             },
             images: [{ url: '/src/assets/images/liked-songs.png' }],
             id: 'liked-songs',

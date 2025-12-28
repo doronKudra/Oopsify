@@ -66,10 +66,10 @@ export function SideBar() {
     }
 
     function onAddStation(station) {
-        toggleLikedStation(station.id)
+        toggleLikedStation(station._id)
     }
     function onRemoveStation(station) {
-        toggleLikedStation(station.id)
+        toggleLikedStation(station._id)
     }
 
     useEffect(() => {

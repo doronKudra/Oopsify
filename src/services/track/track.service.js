@@ -4,7 +4,7 @@ export const tracks = normalizeTracks(rawTracks)
 
 export function normalizeTracks(tracks) {
     return tracks.map((track) => ({
-        id: track.id,
+        _id: track.id,
         name: track.name,
         artist: track.artists?.[0]?.name || null,
         album: track.album?.name || null,
@@ -18,7 +18,7 @@ export function normalizeTracks(tracks) {
 export function getDemoStation() {
     const tracks = normalizeTracks(rawTracks)
     return {
-        id: 'demo_station_001',
+        _id: 'demo_station_001',
         name: 'Demo Album',
         artist: 'Eminem',
         description: 'A sample station built from normalized tracks',

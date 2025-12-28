@@ -47,11 +47,11 @@ export function StationDetails() {
 
 
     function onAddStation(station) {
-        toggleLikedStation(station.id)
+        toggleLikedStation(station._id)
     }
 
     function onRemoveStation(station) {
-        toggleLikedStation(station.id)
+        toggleLikedStation(station._id)
     }
 
     async function onAddToStation(track) {
@@ -155,7 +155,7 @@ export function StationDetails() {
                         id: makeId(),
                         icon: '',
                         name: station.name,
-                        callback: () => addTrackToStation(station.id, track),
+                        callback: () => addTrackToStation(station._id, track),
                     }))
                 }, // TODO (add to a different playlist) dropdown
                 isInStation && isOwner && (station._id !== 'liked-tracks') && {
@@ -220,7 +220,7 @@ export function StationDetails() {
                             id: makeId(),
                             icon: 'add',
                             name: station.name,
-                            callback: () => addTrackToStation(station.id, track),
+                            callback: () => addTrackToStation(station._id, track),
                         }))
                     }, // TODO (add to a different playlist) dropdown
                     isLiked
@@ -337,7 +337,7 @@ export function StationDetails() {
                 }, // TODO
             ]
         } else {
-            const isLiked = user.likedStations.includes(station.id)
+            const isLiked = user.likedStations.includes(station._id)
             if (station.type === 'station') {
                 actions = [
                     isLiked

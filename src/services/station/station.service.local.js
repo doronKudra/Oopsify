@@ -39,7 +39,7 @@ async function save(station) {
     let savedStation
 
     if (station._id) {
-        const existingStation = await storageService.get(STORAGE_KEY, station.id)
+        const existingStation = await storageService.get(STORAGE_KEY, station._id)
 
         const mergedTracks = mergeTracks(
             existingStation?.tracks,
@@ -76,8 +76,8 @@ async function save(station) {
 
 async function addTrack(stationId, track) {
     const station = await getById(stationId)
-    const trackMap = new Map((station.tracks || []).map(t => [t.id, t]))
-    trackMap.set(track.id, track)
+    const trackMap = new Map((station.tracks || []).map(t => [t._id, t]))
+    trackMap.set(track._id, track)
 
     const updatedStation = {
         ...station,
@@ -105,11 +105,11 @@ function mergeTracks(existingTracks = [], incomingTracks = []) {
     const trackMap = new Map()
 
     existingTracks.forEach(track => {
-        trackMap.set(track.id, track)
+        trackMap.set(track._id, track)
     })
 
     incomingTracks.forEach(track => {
-        trackMap.set(track.id, track)
+        trackMap.set(track._id, track)
     })
 
     return Array.from(trackMap.values())

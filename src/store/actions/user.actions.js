@@ -72,8 +72,8 @@ export async function toggleLikedTrack(track) {
 
     const likedTracks = storeUser.likedTracks
     const tracks = likedTracks.tracks
-    const updatedTracks = tracks.some(t => t.id === track.id)
-        ? tracks.filter(t => t.id !== track.id)
+    const updatedTracks = tracks.some(t => t._id === track._id)
+        ? tracks.filter(t => t._id !== track._id)
         : [track, ...tracks]
     const updatedLikedTracks = { ...likedTracks, tracks: updatedTracks }
 
@@ -127,10 +127,10 @@ export async function toggleLikedStation(clickedStationId) {
 //     if (!user) return console.log('userActions: no user in toggleLiked')
 
 //     const likedTracks = user.likedTracks.tracks
-//     const isLiked = likedTracks.some((track) => track.id === track.id)
+//     const isLiked = likedTracks.some((track) => track._id === track._id)
 //     let updatedTracks
 
-//     if (isLiked) updatedTracks = likedTracks.filter(track => track.id !== track.id)
+//     if (isLiked) updatedTracks = likedTracks.filter(track => track._id !== track._id)
 //     else updatedTracks = [...likedTracks, clickedTrack]
 
 //     store.dispatch({ type: SET_LIKED_TRACKS, updatedTracks })
