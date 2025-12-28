@@ -36,8 +36,11 @@ export async function loadSidebarStations(filterBy) {
 }
 
 export async function loadStation(stationId) {
+    console.log('from load station', stationId)
     try {
+        store.dispatch({ type: SET_STATION, station:null })
         const station = await stationService.getById(stationId)
+        console.log('from load station, new station: ', station)
         store.dispatch({ type: SET_STATION, station })
     } catch (err) {
         console.error('Cannot load station', err)
@@ -57,25 +60,26 @@ export async function removeStation(stationId) {
     }
 }
 
-export async function addStation({ username, id}) {
+export async function addStation() {
     try {
-        console.log(username)
-        const station = stationService.getEmptyStation({ username, id })
+        
+        const station = stationService.getEmptyStation()
         const savedStation = await stationService.save(station)
+        console.log('station:',station, 'savedStation:',savedStation )
 
-        const stationToStore = JSON.parse(JSON.stringify(savedStation))
+        // const stationToStore = JSON.parse(JSON.stringify(savedStation))
 
-        store.dispatch({ type: ADD_STATION, station: stationToStore })
+        store.dispatch({ type: ADD_STATION, station: savedStation })
 
         const user = store.getState().userModule.user
-        if (user && !user.likedStations.includes(stationToStore._id)) {
+        if (user && !user.stations.includes(savedStation._id)) {
             await updateUser({
                 ...user,
-                likedStations: [...user.likedStations, stationToStore._id],
+                stations: [...user.stations, savedStation._id],
             })
         }
 
-        return stationToStore
+        return savedStation
     } catch (err) {
         console.error('Cannot add station', err)
         throw err

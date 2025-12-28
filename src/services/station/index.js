@@ -5,11 +5,10 @@ import { stationService as local } from './station.service.local'
 import { stationService as remote } from './station.service.remote'
 import { userService } from '../user'
 
-function getEmptyStation(owner) {
+function getEmptyStation() {
 	return {
 		name: 'My Playlist',
         description: '',
-        owner,
         images: [],
         tracks: [],
 	}

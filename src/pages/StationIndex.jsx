@@ -136,10 +136,10 @@ export function StationIndex() {
     }
 
     function onAddStation(station) {
-        toggleLikedStation(station._id)
+        toggleLikedStation(station)
     }
     function onRemoveStation(station) {
-        toggleLikedStation(station._id)
+        toggleLikedStation(station)
     }
 
     function handleHoverColor(color) {

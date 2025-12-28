@@ -8,20 +8,21 @@ export const UPDATE_STATION = 'UPDATE_STATION'
 export const ADD_STATION_MSG = 'ADD_STATION_MSG'
 export const SET_SIDEBAR_STATIONS = 'SET_SIDEBAR_STATIONS'
 export const ADD_SIDEBAR_STATION = 'ADD_SIDEBAR_STATION'
+export const REMOVE_SIDEBAR_STATION = 'REMOVE_SIDEBAR_STATION'
 
 const initialState = {
     stations: [],
     sidebarStations: [],
-    station: getDemoStation(),
+    station: null,
 }
 
 export function stationReducer(state = initialState, action) {
     let stations
     switch (action.type) {
         case SET_STATIONS:
-            return { ...state, stations: action.stations }
-        case SET_SIDEBAR_STATIONS: // load user stations use this reducer
-            return { ...state, sidebarStations: action.stations }
+            return { ...state, stations: [...action.stations] }
+        case SET_SIDEBAR_STATIONS: // load user stations use this reducer\
+            return { ...state, sidebarStations: [...action.stations] }
         case SET_STATION:
             return { ...state, station: action.station }
         case REMOVE_STATION:
@@ -32,6 +33,9 @@ export function stationReducer(state = initialState, action) {
             return { ...state, stations: [...state.stations, action.station] }
         case ADD_SIDEBAR_STATION:
             return { ...state, sidebarStations: [...state.sidebarStations, action.station] }
+        case REMOVE_SIDEBAR_STATION:
+            let sidebarStations = state.sidebarStations.filter(station => station._id !== action.stationId)
+            return { ...state, sidebarStations: sidebarStations }
         case UPDATE_STATION:
             stations = state.stations.map(station =>
                 station._id === action.station._id ? { ...action.station } : station)

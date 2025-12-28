@@ -34,7 +34,7 @@ export function SearchPage() {
     }
 
     function onArtist(id) {
-        console.log('id:', id)
+        
     }
 
 

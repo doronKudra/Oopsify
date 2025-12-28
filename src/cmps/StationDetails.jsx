@@ -16,11 +16,11 @@ import { SearchInDetails } from './SearchInDetails.jsx'
 import { useContextMenu } from './OptionMenuProvider.jsx'
 import { useModal } from './ModalProvider.jsx'
 import { setUserStation } from '../store/actions/user.actions.js'
-
 import { toggleLikedStation, toggleLikedTrack } from '../store/actions/user.actions.js'
 
 export function StationDetails() {
     const { stationId } = useParams()
+    console.log(stationId)
     const { openEditStation } = useModal()
     const user = useSelector((store) => store.userModule.user)
     const station = useSelector((store) => store.stationModule.station)
@@ -29,6 +29,7 @@ export function StationDetails() {
     useEffect(() => {
         if (stationId !== 'liked-tracks') {
             loadStation(stationId) //updates the store's station
+            console.log(station)
         } else {
             loadLikedTracks(stationId)
         }
@@ -48,11 +49,11 @@ export function StationDetails() {
 
 
     function onAddStation(station) {
-        toggleLikedStation(station._id)
+        toggleLikedStation(station)
     }
 
     function onRemoveStation(station) {
-        toggleLikedStation(station._id)
+        toggleLikedStation(station)
     }
 
     async function onAddToStation(track) {
@@ -127,7 +128,6 @@ export function StationDetails() {
         tempIdsRef.current = arrayMove(tempIdsRef.current, oldIndex, newIndex)
 
         // 3. Persist to backend + Redux
-        console.log(updateStation)
         const updatedStation = {
             ...station,
             tracks: newTrackOrder,
@@ -153,12 +153,12 @@ export function StationDetails() {
                     icon: 'add',
                     name: 'Add to playlist',
                     callback: () => { },
-                    children: stations.map(station => ({
-                        id: makeId(),
-                        icon: '',
-                        name: station.name,
-                        callback: () => addTrackToStation(station._id, track),
-                    }))
+                    // children: stations.map(station => ({
+                    //     id: makeId(),
+                    //     icon: '',
+                    //     name: station.name,
+                    //     callback: () => addTrackToStation(station._id, track),
+                    // }))
                 }, // TODO (add to a different playlist) dropdown
                 isInStation && isOwner && (station._id !== 'liked-tracks') && {
                     id: makeId(),
@@ -219,12 +219,12 @@ export function StationDetails() {
                         icon: 'add',
                         name: 'Add to playlist',
                         callback: () => { },
-                        children: stations.map(station => ({
-                            id: makeId(),
-                            icon: 'add',
-                            name: station.name,
-                            callback: () => addTrackToStation(station._id, track),
-                        }))
+                        // children: stations.map(station => ({
+                        //     id: makeId(),
+                        //     icon: 'add',
+                        //     name: station.name,
+                        //     callback: () => addTrackToStation(station._id, track),
+                        // }))
                     }, // TODO (add to a different playlist) dropdown
                     isLiked
                         ? {
