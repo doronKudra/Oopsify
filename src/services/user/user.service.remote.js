@@ -1,6 +1,7 @@
 import { SET_USER } from '../../store/reducers/user.reducer'
 import { store } from '../../store/store'
 import { httpService } from '../http.service'
+import { useNavigate } from 'react-router'
 
 const STORAGE_KEY_LOGGEDIN_USER = 'loggedinUser'
 
@@ -56,6 +57,7 @@ async function logout() {
 async function setUser() {
     try {
         const sessionUser = getLoggedinUser()
+        if(!sessionUser) return
         const user = await getById(sessionUser._id)
         store.dispatch({ type: SET_USER, user })
     } catch (err) {
