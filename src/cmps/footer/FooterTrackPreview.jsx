@@ -1,15 +1,14 @@
-import { useState } from 'react'
 import { useSelector } from 'react-redux'
 import defaultImg from '../../assets/images/default-img.png'
+import { useContextMenu } from '../OptionMenuProvider.jsx'
+import { makeId } from '../../services/util.service.js'
 
-export function FooterTrackPreview({
-    openContextMenu,
-    track,
-    onAdd,
-    onTilte,
-    onArtist,
-}) {
+
+export function FooterTrackPreview({ track, onAdd, onTilte, onArtist }) {
     const user = useSelector(state => state.userModule.user)
+
+    const { openContextMenu } = useContextMenu()
+
 
     function checkLiked(id) {
         if (!user) return
@@ -17,16 +16,42 @@ export function FooterTrackPreview({
         if (isLiked) return true
         return false
     }
+
     function onPreviewRightClick(ev, track) {
         ev.preventDefault()
         ev.stopPropagation()
 
-        openContextMenu({
+        handleOpenMenu({
             x: ev.clientX,
             y: ev.clientY,
             context: { track },
         })
     }
+
+    function handleOpenMenu({ x, y, context }) {
+        const { track } = context
+        const isInStation = false // for now
+        const isLiked = true
+        let actions = [
+            //
+            { id: makeId(), icon: 'add', name: 'Add to playlist' }, // TODO (add to a different playlist) dropdown
+            isLiked ? { id: makeId(), icon: 'remove', name: 'Remove from your Liked Songs', callback: () => onAdd(track) }
+                : { id: makeId(), icon: 'save', name: 'Save to your Liked Songs', callback: () => onAdd(track) },
+            { id: makeId(), icon: 'queue', name: 'Add to queue', callback: () => { }, }, // TODO
+            { id: makeId(), icon: 'radio', name: 'Go to song radio', callback: () => { }, }, // TODO
+            { id: makeId(), icon: 'artist', name: 'Go to artist', callback: () => { }, }, // TODO
+            { id: makeId(), icon: 'album', name: 'Go to album', callback: () => { }, }, // TODO - make a dropdown cmp
+            { id: makeId(), icon: 'share', name: 'Share', callback: () => { }, }, // TODO
+        ]
+        openContextMenu({
+            x,
+            y,
+            context,
+            actions,
+        })
+    }
+
+
     if (!track) return <section className="footer-track-preview"></section>
     return (
         <section className="footer-track-preview">
