@@ -19,7 +19,7 @@ async function query(filterBy = {}) {
     if (filterBy?.likedStations) {
         let likedStations = filterBy.likedStations
         stations = stations.filter((station) =>
-            likedStations.includes(station.id)
+            stations.includes(station._id)
         )
     }
     console.log('stations:',stations)
@@ -38,7 +38,7 @@ async function remove(stationId) {
 async function save(station) {
     let savedStation
 
-    if (station.id) {
+    if (station._id) {
         const existingStation = await storageService.get(STORAGE_KEY, station.id)
 
         const mergedTracks = mergeTracks(

@@ -59,7 +59,7 @@ export function SearchPage() {
             <div className="track-container">
                 {items && items.length && currentType === 'track' ?
                     items.map((track, idx) => (
-                        <TrackPreview key={track.id} track={track} isLiked={true} idx={idx} />
+                        <TrackPreview key={track._id} track={track} isLiked={true} idx={idx} />
                     ))
                     : <div> No Results </div>
                 }

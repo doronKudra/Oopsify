@@ -32,7 +32,7 @@ export function TrackPreview({ openContextMenu, track, idx, inDetails, onAddTrac
     function checkLiked(id) {
         const likedTracks = user?.likedTracks?.tracks
         if (!likedTracks || !likedTracks.length) return false
-        const isLiked = likedTracks.find(likedTrack => likedTrack.id === id)
+        const isLiked = likedTracks.find(likedTrack => likedTrack._id === id)
         return isLiked
     }
 
@@ -102,7 +102,7 @@ export function TrackPreview({ openContextMenu, track, idx, inDetails, onAddTrac
                         onClick={() => onToggleLiked(track)}
                         onPointerDown={(ev) => ev.stopPropagation()}
                     >
-                        {checkLiked(track.id) ? (
+                        {checkLiked(track._id) ? (
                             // GREEN CHECK ICON
                             <svg
                                 className="track-list-like-icon"

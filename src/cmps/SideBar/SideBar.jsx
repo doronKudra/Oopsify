@@ -21,7 +21,7 @@ export function SideBar() {
     function handleOpenMenu({ x, y, context }) {
         const { station } = context
         let actions
-        if ((station.owner.id === user._id)) {
+        if ((station.owner._id === user._id)) {
             actions = [
                 { id: makeId(), icon: 'queue', name: 'Add to queue', callback: () => {} }, // TODO
                 { id: makeId(), icon: 'profile', name: 'Add to profile', callback: () => {} }, // TODO
@@ -35,7 +35,7 @@ export function SideBar() {
             ]
         }
         else {
-            const isLiked = user.likedStations.includes(station.id)
+            const isLiked = user.stations.includes(station._id)
             const isPinned = false
             if (station.type === 'station') {
                 actions = [

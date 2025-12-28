@@ -6,8 +6,8 @@ import { userService } from '../../services/user'
 export function SideBarHeader() {
     const navigate = useNavigate()
     async function onAddStation() {
-        const savedStation = await addStation(userService.getLoggedinUser())
-        navigate(`/station/${savedStation.id}`)
+        const savedStation = await addStation(user)
+        navigate(`/station/${savedStation._id}`)
     }
 
     return (

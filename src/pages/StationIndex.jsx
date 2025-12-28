@@ -25,7 +25,7 @@ export function StationIndex() {
     function handleOpenMenu({ x, y, context }) {
         const { station } = context
         let actions
-        if (station.owner.id === user.id) {
+        if (station.owner._id === user._id) {
             actions = [
                 {
                     id: makeId(),
@@ -71,7 +71,7 @@ export function StationIndex() {
                 }, // TODO
             ]
         } else {
-            const isLiked = user.likedStations.includes(station.id)
+            const isLiked = user.stations.includes(station._id)
             if (station.type === 'station') {
                 actions = [
                     isLiked
