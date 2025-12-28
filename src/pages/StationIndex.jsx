@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 
 import { loadStations } from '../store/actions/station.actions.js'
 
@@ -32,12 +32,14 @@ export function StationIndex() {
                     icon: 'queue',
                     name: 'Add to queue',
                     callback: () => {},
+                    border: true,
                 }, // TODO
                 {
                     id: makeId(),
                     icon: 'profile',
                     name: 'Add to profile',
                     callback: () => {},
+                    border: true,
                 },
                 {
                     id: makeId(),
@@ -50,6 +52,7 @@ export function StationIndex() {
                     icon: 'delete',
                     name: 'Delete',
                     callback: () => {},
+                    border: true,
                 }, // TODO
                 {
                     id: makeId(),
@@ -92,12 +95,14 @@ export function StationIndex() {
                         icon: 'queue',
                         name: 'Add to queue',
                         callback: () => {},
+                        border: true,
                     }, // TODO
                     isLiked && {
                         id: makeId(),
                         icon: 'profile',
                         name: 'Add to profile',
                         callback: () => {},
+                        border: true,
                     }, // TODO
                     {
                         id: makeId(),

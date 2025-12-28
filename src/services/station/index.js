@@ -8,9 +8,7 @@ function getEmptyStation(owner) {
 	return {
 		name: 'My Playlist',
         description: '',
-		likedByUsers: [],
         owner,
-		songs: [],
         images: [],
         tracks: [],
 	}

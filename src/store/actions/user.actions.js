@@ -54,6 +54,7 @@ export async function updateUser(user) { //✅
 
 export async function setUserStation(station) { //✅
     try {
+        console.log(station)
         const savedStation = await userService.saveStation(station)
         if (station.id === 'liked-tracks') store.dispatch({ type: SET_LIKED_TRACKS, station: savedStation.tracks })
         else store.dispatch({ type: UPDATE_OWNED_STATION, station: savedStation })
@@ -98,7 +99,7 @@ export function updateUserLikedStations(stations) {
     return (dispatch) => {
         dispatch({
             type: SET_LIKED_STATIONS,
-            stations: [...stations],
+            likedStations: [...stations],
         })
     }
 }
@@ -117,20 +118,20 @@ export async function toggleLikedStation(clickedStationId) {
     const user = store.getState().userModule.user
     if (!user) return console.log('userActions: no user in toggleLikedStation')
 
-    const stations = user.stations
-    const isLiked = stations.some(stationId => stationId === clickedStationId)
+    const likedStations = user.likedStations
+    const isLiked = likedStations.some(stationId => stationId === clickedStationId)
     let updatedStations
     if (isLiked) {
-        updatedStations = stations.filter(
+        updatedStations = likedStations.filter(
             (stationId) => stationId !== clickedStationId
         )
     } else {
-        updatedStations = [...stations, clickedStationId]
+        updatedStations = [...likedStations, clickedStationId]
     }
     // updateUserLikedStations(updatedStations)
     const userToUpdate = {
         ...user,
-        stations: [...updatedStations],
+        likedStations: [...updatedStations],
     }
     await updateUser(userToUpdate)
 }

@@ -146,7 +146,7 @@ export function StationDetails() {
         const isInStation = station.tracks.some(({ id }) => id === track.id)
         const isLiked = user.likedTracks.tracks.some(({ id }) => id === track.id)
         let actions
-        if (station.id === 'liked-songs' || station.owner.id === user._id) {
+        if (station.id === 'liked-tracks' || station.owner.id === user._id) {
             actions = [
                 {
                     id: makeId(),
@@ -154,7 +154,7 @@ export function StationDetails() {
                     name: 'Add to playlist',
                     callback: () => { },
                 }, // TODO (add to a different playlist) dropdown
-                isInStation && isOwner && {
+                isInStation && isOwner && (station.id !== 'liked-tracks') && {
                     id: makeId(),
                     icon: 'remove',
                     name: 'Remove from This Playlist',
@@ -178,6 +178,7 @@ export function StationDetails() {
                     icon: 'queue',
                     name: 'Add to queue',
                     callback: () => { },
+                    border: true,
                 }, // TODO
                 {
                     id: makeId(),
@@ -231,6 +232,7 @@ export function StationDetails() {
                         icon: 'queue',
                         name: 'Add to queue',
                         callback: () => { },
+                        border: true,
                     }, // TODO
                     {
                         id: makeId(),
@@ -288,12 +290,14 @@ export function StationDetails() {
                     icon: 'queue',
                     name: 'Add to queue',
                     callback: () => { },
+                    border: true,
                 }, // TODO
                 {
                     id: makeId(),
                     icon: 'profile',
                     name: 'Add to profile',
                     callback: () => { },
+                    border: true,
                 },
                 {
                     id: makeId(),
@@ -306,6 +310,7 @@ export function StationDetails() {
                     icon: 'delete',
                     name: 'Delete',
                     callback: () => { },
+                    border: true,
                 }, // TODO
                 {
                     id: makeId(),
@@ -348,12 +353,14 @@ export function StationDetails() {
                         icon: 'queue',
                         name: 'Add to queue',
                         callback: () => { },
+                        border: true,
                     }, // TODO
                     isLiked && {
                         id: makeId(),
                         icon: 'profile',
                         name: 'Add to profile',
                         callback: () => { },
+                        border: true,
                     }, // TODO
                     {
                         id: makeId(),

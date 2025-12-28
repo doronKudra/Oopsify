@@ -14,6 +14,7 @@ export const userService = {
     saveStation,
     getLoggedinUser,
     saveLoggedinUser,
+    // addStation,
     // getUsers,
 }
 
@@ -76,6 +77,15 @@ async function update(userToUpdate) { //✅
 async function saveStation(station) {
     console.log('station:', station)
     const savedStation = await httpService.put(`station/${station.id}`, station)
+    // } else {
+    // savedStation = await httpService.post('station', station)
+    // }
+    return savedStation
+}
+
+async function addStationToUser(station) {
+    console.log('station:', station)
+    const savedStation = await httpService.post('station', station)
     // } else {
     // savedStation = await httpService.post('station', station)
     // }

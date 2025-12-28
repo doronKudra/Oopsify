@@ -1,12 +1,12 @@
 import { Link, NavLink } from 'react-router-dom'
 import { useNavigate } from 'react-router'
 import { addStation } from '../../store/actions/station.actions.js'
-import { updateUser } from '../../store/actions/user.actions.js'
+import { setUserStation } from '../../store/actions/user.actions.js'
 
-export function SideBarHeader() {
+export function SideBarHeader(user) {
     const navigate = useNavigate()
     async function onAddStation() {
-        const savedStation = await setUserStation(userService.getLoggedinUser())
+        const savedStation = await setUserStation(await addStation(user))
         navigate(`/station/${savedStation.id}`)
     }
 
