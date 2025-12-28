@@ -16,7 +16,6 @@ import { SearchInDetails } from './SearchInDetails.jsx'
 import { useContextMenu } from './OptionMenuProvider.jsx'
 import { useModal } from './ModalProvider.jsx'
 import { setUserStation } from '../store/actions/user.actions.js'
-
 import { toggleLikedStation, toggleLikedTrack } from '../store/actions/user.actions.js'
 
 export function StationDetails() {
