@@ -12,6 +12,7 @@ export const stationService = {
 }
 
 async function query(filterBy = null) {
+    console.log(filterBy)
     return httpService.get(`station`, filterBy)
 }
 

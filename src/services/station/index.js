@@ -18,7 +18,7 @@ function getEmptyStation(owner) {
 function getDefaultFilter() {
     const user = userService.getLoggedinUser()
     return {
-        stationsId: user.stations
+        stationsId: user?.stations
     }
 }
 

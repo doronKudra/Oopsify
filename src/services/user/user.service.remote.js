@@ -18,6 +18,7 @@ export const userService = {
     // getUsers,
 }
 
+// _createLoggedinUser()
 setUser()
 
 async function signup(userCred) {
@@ -125,3 +126,36 @@ function _getEmptyLikedTrack(user) {
         },
     }
 }
+
+// async function _createLoggedinUser() {
+//     if (getLoggedinUser()) return
+//     const users = []
+//     const user = {
+//         id: makeId(),
+//         fullname: 'Mustafa Adminsky',
+//         username: 'admin',
+//         password: 'admin',
+//         imgUrl: 'https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png',
+//         stations: [
+//             '3xqcAMgjHGrv3ElA51zZRj',
+//             '7gb4GZz7iIHGilXxD7638E',
+//             '4DJztJkufdlND0Hvg4nGkK',
+//             '3E0RgJpQug1ibE2jTGI0Hk',
+//             '2O3jLuM3inA4vw5fZdGz9W',
+//         ],
+//         likedTracks: {
+//             name: 'Liked Songs',
+//             tracks: [],
+//             owner: {
+//                 username: 'admin',
+//                 id: 'admin',
+//             },
+//             images: [{ url: '/src/assets/images/liked-songs.png' }],
+//             id: 'liked-songs',
+//             type: 'station',
+//         },
+//     }
+//     users.push(user)
+//     localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(users))
+//     login({ username: 'admin', password: 'admin' })
+// }
