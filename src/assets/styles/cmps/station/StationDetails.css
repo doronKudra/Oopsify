@@ -26,6 +26,13 @@
     z-index: 0;
 }
 
+.details-track-image{
+    border-radius: 8px;
+    min-width: 110px;
+    width: 100%;
+    max-width: 235px;
+}
+
 .station-header::after {
     content: '';
     position: absolute;

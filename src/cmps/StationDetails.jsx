@@ -104,7 +104,7 @@ export function StationDetails() {
         fetchColor()
     }, [albumCoverArt])
 
-    if (!station) return <div>Loading...</div>
+    if (!station) return <section className="station-details"></section>
 
     const stationDurationMs = station.tracks.reduce(
         (sum, t) => sum + (t.duration_ms || 0),
@@ -412,7 +412,7 @@ export function StationDetails() {
                         }}
                         onClick={() => openEditStation()}
                     >
-                        <img src={albumCoverArt} alt="Cover" />
+                        <img className='details-track-image' src={albumCoverArt} alt="Cover" />
                         <div className="station-header-title">
                             <p className="header-type">
                                 {isStation ? 'Public Playlist' : 'Album'}

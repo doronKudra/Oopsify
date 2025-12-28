@@ -14,7 +14,8 @@ export const SET_LIKED_STATIONS = 'SET_LIKED_STATIONS'
 export const UPDATE_OWNED_STATION = 'UPDATE_OWNED_STATION'
 
 const initialState = {
-    user: null,
+    // user: userService.getLoggedinUser(),
+    user:null,
     users: [],
     watchedUser: null,
 }

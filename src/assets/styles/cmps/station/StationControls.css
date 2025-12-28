@@ -1,6 +1,7 @@
 /* Buttons row */
 .btn-container {
     display: flex;
+    width: 100%;
     align-items: center;
     gap: 12px;
     padding: 19px;
@@ -18,12 +19,10 @@
 }
 
 .list-btn {
-    flex: 1;
     display: flex;
-    align-items: center;
+    align-self: center;
     gap: 8px;
-    justify-content: right;
-    margin: 0;
+    margin-left: auto !important;
 }
 
 .list-btn svg {
