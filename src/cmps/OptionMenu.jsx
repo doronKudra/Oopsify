@@ -66,7 +66,7 @@ export function ContextMenu({ actions, context, position, onClose }) { // dynami
         <div onClick={ev => ev.stopPropagation()} style={{ position: 'fixed', top: position.y, left: position.x}} className="context-menu-content">
             <ul>
                 {actions.map(action =>
-                    (action.name && <li key={action.id}>
+                    (action.name && <li key={action._id}>
                         <button className="context-menu-option" style={{ borderBottom: action.border ? '1px solid #3e3e3e' : ''}} onClick={() => onSelectMenuItem(action.callback)}>
                             {transformToSvg(action.icon)}
                             <span>{action.name}</span>

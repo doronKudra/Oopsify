@@ -7,7 +7,7 @@ export function SideBarHeader(user) {
     const navigate = useNavigate()
     async function onAddStation() {
         const savedStation = await addStation(user)
-        navigate(`/station/${savedStation.id}`)
+        navigate(`/station/${savedStation._id}`)
     }
 
     return (

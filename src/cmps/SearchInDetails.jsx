@@ -36,7 +36,7 @@ export function SearchInDetails({ openContextMenu, tracks: isTracksInDetails, st
     }
 
     function onAddTrackInSearch(track) {
-        if (station.id === "liked-tracks") toggleLikedTrack(track)
+        if (station._id === "liked-tracks") toggleLikedTrack(track)
     }
 
     if (!isShown) {
@@ -75,7 +75,7 @@ export function SearchInDetails({ openContextMenu, tracks: isTracksInDetails, st
 
                     {tracks && tracks.length ?
                         tracks.map((track, idx) => (
-                            <TrackPreview openContextMenu={openContextMenu} key={track.id} track={track} idx={idx} isStation={false} inDetails={true} onAddTrackInSearch={onAddTrackInSearch} />
+                            <TrackPreview openContextMenu={openContextMenu} key={track._id} track={track} idx={idx} isStation={false} inDetails={true} onAddTrackInSearch={onAddTrackInSearch} />
                         )) : ''}
                     {txt ? <div> No Results </div> : ""}
                 </div>

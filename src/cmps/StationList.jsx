@@ -28,7 +28,7 @@ export function StationList({
             )}
             <ul className={listType + '-station-list'}>
                 {displayStations.map((station) => (
-                    <li key={station.id}>
+                    <li key={station._id}>
                         <StationPreview
                             openContextMenu={openContextMenu}
                             station={station}

@@ -45,7 +45,7 @@ export function LikedTracks({ user, listType }) {
     // return <section>
     //         <ul className={listType + "-station-list"}>
     //             {station && 
-    //                 <li key={station.id}>
+    //                 <li key={station._id}>
     //                     <StationPreview station={station} listType={listType}/>
     //                 </li>
     //             }

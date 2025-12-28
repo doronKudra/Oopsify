@@ -38,7 +38,7 @@ function onTrackList(tracks) {
 
 //FOR PREVIEW TO SHOW PLAYING SONG STYLE
 function isTrackPlaying(id) { // for lists display
-    const isPlaying = store.getState().playerModule.track.id === id
+    const isPlaying = store.getState().playerModule.track._id === id
     return isPlaying
 }
 
