@@ -98,9 +98,13 @@ export async function updateStation(station) {
     }
 }
 
-export async function addTrackToStation(stationId, track) {
-    try {
-        const savedStation = await stationService.addTrack(stationId, track)
+export async function addTrackToStation(station, track) {
+    try {        
+        const updatedStation = {
+            ...station,
+            tracks: [...station.tracks, track]
+        }
+        const savedStation = await stationService.save(updatedStation)
         store.dispatch({ type: UPDATE_STATION, station: savedStation })
 
         return savedStation

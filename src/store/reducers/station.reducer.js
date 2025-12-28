@@ -21,7 +21,7 @@ export function stationReducer(state = initialState, action) {
     switch (action.type) {
         case SET_STATIONS:
             return { ...state, stations: [...action.stations] }
-        case SET_SIDEBAR_STATIONS: // load user stations use this reducer\
+        case SET_SIDEBAR_STATIONS: // load user stations use this reducer
             return { ...state, sidebarStations: [...action.stations] }
         case SET_STATION:
             return { ...state, station: action.station }

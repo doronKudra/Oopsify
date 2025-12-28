@@ -25,6 +25,7 @@ async function remove(stationId) {
 async function save(station) {
     var savedStation
     if (station._id) {
+        console.log(station)
         savedStation = await httpService.put(`station/${station._id}`, station)
     } else {
         savedStation = await httpService.post('station', station)
@@ -36,3 +37,8 @@ async function addStationMsg(stationId, txt) {
     const savedMsg = await httpService.post(`station/${stationId}/msg`, { txt })
     return savedMsg
 }
+
+// async function addTrack(stationId, track){
+//     const addedTrack = await httpService.post(`station/${stationId}`, {track})
+//     return addedTrack
+// }

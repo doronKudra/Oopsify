@@ -89,7 +89,7 @@ export async function toggleLikedTrack(track) { //✅
         : [track, ...tracks]
     const userToSave = {...storeUser, likedTracks:{...likedTracks, tracks: updatedTracks} }
 
-    await userService.save(userToSave)
+    await userService.update(userToSave)
     store.dispatch({ type: SET_LIKED_TRACKS, tracks: updatedTracks })
 }
 

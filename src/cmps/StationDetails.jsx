@@ -62,7 +62,7 @@ export function StationDetails() {
         } else {
             const updatedTracks = [...tracks, track]
             setTracks(updatedTracks)
-            await addTrackToStation(station._id, track)
+            await addTrackToStation(station, track)
         }
     }
 
@@ -143,16 +143,17 @@ export function StationDetails() {
     function handleOpenMenu({ x, y, context }) {
         const { track } = context
         if (!track) return
-        const isInStation = station.tracks.some(({ id }) => id === track._id)
-        const isLiked = user.likedTracks.tracks.some(({ id }) => id === track._id)
+        console.log(track)
+        const isInStation = station.tracks.some(({ _id }) => _id === track._id)
+        const isLiked = user.likedTracks.tracks.some(({ _id }) => _id === track._id)
         let actions
-        if (station._id === 'liked-tracks' || station.owner._id === user._id) {
+        if (station._id === 'liked-tracks' || (station.owner && station.owner._id === user._id)) {
             actions = [
-                {
+                !isInStation && {
                     id: makeId(),
                     icon: 'add',
-                    name: 'Add to playlist',
-                    callback: () => { },
+                    name: 'Add to This Playlist',
+                    callback: () => {onAddToStation(track)},
                     // children: stations.map(station => ({
                     //     id: makeId(),
                     //     icon: '',
