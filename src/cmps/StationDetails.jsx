@@ -104,7 +104,7 @@ export function StationDetails() {
         fetchColor()
     }, [albumCoverArt])
 
-    if (!station) return <div>Loading...</div>
+    if (!station) return <section className="station-details"></section>
 
     const stationDurationMs = station.tracks.reduce(
         (sum, t) => sum + (t.duration_ms || 0),
