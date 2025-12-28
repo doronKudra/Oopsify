@@ -393,7 +393,7 @@ export function StationDetails() {
                         }}
                         onClick={() => openEditStation()}
                     >
-                        <img src={albumCoverArt} alt="Cover" />
+                        <img className='details-track-image' src={albumCoverArt} alt="Cover" />
                         <div className="station-header-title">
                             <p className="header-type">
                                 {isStation ? 'Public Playlist' : 'Album'}
