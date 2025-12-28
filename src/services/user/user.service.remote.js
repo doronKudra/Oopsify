@@ -24,7 +24,6 @@ setUser()
 
 async function signup(userCred) {
     // ✅
-    console.log('singup.....:')
     try {
         let user = await httpService.post('auth/signup', userCred)
         user.likedTracks = _getEmptyLikedTrack(user)
@@ -74,7 +73,6 @@ async function getById(userId) {
 
 async function update(userToUpdate) {
     //✅
-    console.log('userToUpdate:', userToUpdate)
     const user = await httpService.put(`user/${userToUpdate._id}`, userToUpdate)
 
     // When admin updates other user's details, do not update loggedinUser
@@ -84,7 +82,6 @@ async function update(userToUpdate) {
 }
 
 async function saveStation(station) {
-    console.log('station:', station)
     const savedStation = await httpService.put(
         `station/${station._id}`,
         station

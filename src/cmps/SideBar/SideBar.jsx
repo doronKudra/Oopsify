@@ -10,6 +10,7 @@ import { useContextMenu } from '../OptionMenuProvider.jsx'
 import { makeId } from '../../services/util.service.js'
 import { toggleLikedStation } from '../../store/actions/user.actions.js'
 import { useModal } from '../ModalProvider.jsx'
+import { useEffectUpdate } from '../../customHooks/useEffectUpdate.js'
 
 export function SideBar() {
     const user = useSelector(storeState => storeState.userModule.user)
@@ -17,7 +18,6 @@ export function SideBar() {
     const stations = useSelector(storeState => storeState.stationModule.sidebarStations)
     const { openContextMenu } = useContextMenu()
     const { openEditStation } = useModal()
-    console.log('user:',user)
     function handleOpenMenu({ x, y, context }) {
         const { station } = context
         let actions
@@ -41,7 +41,7 @@ export function SideBar() {
                 actions = [
                     { id: makeId(), icon: 'queue', name: 'Add to queue', callback: () => {},border: true, }, // TODO
                     (isLiked && { id: makeId(), icon: 'profile', name: 'Add to profile', callback: () => {},border: true, }),// TODO
-                    { id: makeId(), icon: 'remove', name: 'Remove from Your Library', callback: () => onRemoveStation(station),border: true, },
+                    {id: makeId(), icon: 'remove', name: 'Remove from Your Library', callback: () => onRemoveStation(station),border: true, },
                     { id: makeId(), icon: 'new-playlist', name: 'Create playlist', callback: () => {} },// TODO
                     { id: makeId(), icon: 'add', name: 'Create folder', callback: () => {},border: true,},// TODO
                     { id: makeId(), icon: 'folder', name: 'Move to folder', callback: () => {} },// TODO
@@ -62,25 +62,27 @@ export function SideBar() {
     }
 
     function onPinStation(station) {
-        console.log('pinned')
+        
     }
 
-    function onAddStation(station) {
-        toggleLikedStation(station._id)
-    }
     function onRemoveStation(station) {
-        toggleLikedStation(station._id)
+        toggleLikedStation(station)
     }
 
-    useEffect(() => {
+    useEffectUpdate(() => {
+        if (!user || !user?.stations) {
+            return
+        }
         loadSidebarStations(filterBy)
     }, [filterBy])
 
     useEffect(() => {
-        if (!user?.stations) return
+        if (!user || !user?.stations) {
+            return
+        }
         setFilterBy(prev => ({
             ...prev,
-            stations: user.stations
+            stationsId: user.stations
         }))
     }, [user?.stations])
 

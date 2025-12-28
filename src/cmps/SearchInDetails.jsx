@@ -6,8 +6,6 @@ import { useSelector } from "react-redux"
 import {  toggleLikedTrack } from "../store/actions/user.actions.js"
 
 export function SearchInDetails({ openContextMenu, tracks: isTracksInDetails, station }) {
-    console.log('station:',station)
-    console.log('openContextMenu:',openContextMenu)
     // const user = useSelector(state => state.userModule.user)
 
     const [txt, setTxt] = useState('')

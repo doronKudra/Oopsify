@@ -22,7 +22,6 @@ async function query(filterBy = {}) {
             stations.includes(station._id)
         )
     }
-    console.log('stations:',stations)
     return stations
 }
 

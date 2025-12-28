@@ -12,8 +12,7 @@ export const stationService = {
 }
 
 async function query(filterBy = null) {
-    console.log(filterBy)
-    return httpService.get(`station`, filterBy)
+    return httpService.get(`station`,  filterBy)
 }
 
 function getById(stationId) {
@@ -24,14 +23,12 @@ async function remove(stationId) {
     return httpService.delete(`station/${stationId}`)
 }
 async function save(station) {
-    console.log('station:', station)
     var savedStation
-    // if (station._id) {
-        console.log('saving...:')
+    if (station._id) {
         savedStation = await httpService.put(`station/${station._id}`, station)
-    // } else {
-    // savedStation = await httpService.post('station', station)
-    // }
+    } else {
+        savedStation = await httpService.post('station', station)
+    }
     return savedStation
 }
 
