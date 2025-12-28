@@ -114,10 +114,10 @@ export function AppFooter() {
 		toggleLikedTrack(track)
 	}
 	function onTilte() {
-		console.log('titling...:')
+		
 	}
 	function onArtist() {
-		console.log('artisting...:')
+		
 	}
 
 	function handleOpenMenu({ x, y, context }) {

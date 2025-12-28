@@ -10,15 +10,14 @@ import { useContextMenu } from '../OptionMenuProvider.jsx'
 import { makeId } from '../../services/util.service.js'
 import { toggleLikedStation } from '../../store/actions/user.actions.js'
 import { useModal } from '../ModalProvider.jsx'
+import { useEffectUpdate } from '../../customHooks/useEffectUpdate.js'
 
 export function SideBar() {
     const user = useSelector(storeState => storeState.userModule.user)
     const [filterBy, setFilterBy] = useState(stationService.getDefaultFilter())
     const stations = useSelector(storeState => storeState.stationModule.sidebarStations)
-    console.log('stations',stations)
     const { openContextMenu } = useContextMenu()
     const { openEditStation } = useModal()
-    console.log('user:',user)
     function handleOpenMenu({ x, y, context }) {
         const { station } = context
         let actions
@@ -63,22 +62,27 @@ export function SideBar() {
     }
 
     function onPinStation(station) {
-        console.log('pinned')
+        
     }
 
     function onRemoveStation(station) {
         toggleLikedStation(station)
     }
 
-    useEffect(() => {
+    useEffectUpdate(() => {
+        if (!user || !user?.stations) {
+            return
+        }
         loadSidebarStations(filterBy)
     }, [filterBy])
 
     useEffect(() => {
-        if (!user?.stations) return
+        if (!user || !user?.stations) {
+            return
+        }
         setFilterBy(prev => ({
             ...prev,
-            stations: user.stations
+            stationsId: user.stations
         }))
     }, [user?.stations])
 
