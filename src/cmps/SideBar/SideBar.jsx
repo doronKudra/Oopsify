@@ -15,6 +15,7 @@ export function SideBar() {
     const user = useSelector(storeState => storeState.userModule.user)
     const [filterBy, setFilterBy] = useState(stationService.getDefaultFilter())
     const stations = useSelector(storeState => storeState.stationModule.sidebarStations)
+    console.log('stations',stations)
     const { openContextMenu } = useContextMenu()
     const { openEditStation } = useModal()
     console.log('user:',user)
@@ -41,7 +42,7 @@ export function SideBar() {
                 actions = [
                     { id: makeId(), icon: 'queue', name: 'Add to queue', callback: () => {},border: true, }, // TODO
                     (isLiked && { id: makeId(), icon: 'profile', name: 'Add to profile', callback: () => {},border: true, }),// TODO
-                    { id: makeId(), icon: 'remove', name: 'Remove from Your Library', callback: () => onRemoveStation(station),border: true, },
+                    {id: makeId(), icon: 'remove', name: 'Remove from Your Library', callback: () => onRemoveStation(station),border: true, },
                     { id: makeId(), icon: 'new-playlist', name: 'Create playlist', callback: () => {} },// TODO
                     { id: makeId(), icon: 'add', name: 'Create folder', callback: () => {},border: true,},// TODO
                     { id: makeId(), icon: 'folder', name: 'Move to folder', callback: () => {} },// TODO
@@ -65,11 +66,8 @@ export function SideBar() {
         console.log('pinned')
     }
 
-    function onAddStation(station) {
-        toggleLikedStation(station._id)
-    }
     function onRemoveStation(station) {
-        toggleLikedStation(station._id)
+        toggleLikedStation(station)
     }
 
     useEffect(() => {

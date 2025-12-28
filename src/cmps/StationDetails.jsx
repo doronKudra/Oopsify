@@ -152,12 +152,12 @@ export function StationDetails() {
                     icon: 'add',
                     name: 'Add to playlist',
                     callback: () => { },
-                    children: stations.map(station => ({
-                        id: makeId(),
-                        icon: '',
-                        name: station.name,
-                        callback: () => addTrackToStation(station._id, track),
-                    }))
+                    // children: stations.map(station => ({
+                    //     id: makeId(),
+                    //     icon: '',
+                    //     name: station.name,
+                    //     callback: () => addTrackToStation(station._id, track),
+                    // }))
                 }, // TODO (add to a different playlist) dropdown
                 isInStation && isOwner && (station._id !== 'liked-tracks') && {
                     id: makeId(),
@@ -218,12 +218,12 @@ export function StationDetails() {
                         icon: 'add',
                         name: 'Add to playlist',
                         callback: () => { },
-                        children: stations.map(station => ({
-                            id: makeId(),
-                            icon: 'add',
-                            name: station.name,
-                            callback: () => addTrackToStation(station._id, track),
-                        }))
+                        // children: stations.map(station => ({
+                        //     id: makeId(),
+                        //     icon: 'add',
+                        //     name: station.name,
+                        //     callback: () => addTrackToStation(station._id, track),
+                        // }))
                     }, // TODO (add to a different playlist) dropdown
                     isLiked
                         ? {
