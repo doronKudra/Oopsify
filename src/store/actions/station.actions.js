@@ -57,8 +57,9 @@ export async function removeStation(stationId) {
     }
 }
 
-export async function addStation({ username, id }) {
+export async function addStation({ username, id}) {
     try {
+        console.log(username)
         const station = stationService.getEmptyStation({ username, id })
         const savedStation = await stationService.save(station)
 

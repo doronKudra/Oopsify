@@ -3,6 +3,7 @@ const { DEV, VITE_LOCAL } = import.meta.env
 import { getRandomIntInclusive, makeId } from '../util.service'
 import { stationService as local } from './station.service.local'
 import { stationService as remote } from './station.service.remote'
+import { userService } from '../user'
 
 function getEmptyStation(owner) {
 	return {
@@ -15,8 +16,9 @@ function getEmptyStation(owner) {
 }
 
 function getDefaultFilter() {
+    const user = userService.getLoggedinUser()
     return {
-        
+        stationsId: user.stations
     }
 }
 

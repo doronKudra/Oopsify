@@ -6,7 +6,7 @@ import { setUserStation } from '../../store/actions/user.actions.js'
 export function SideBarHeader(user) {
     const navigate = useNavigate()
     async function onAddStation() {
-        const savedStation = await setUserStation(await addStation(user))
+        const savedStation = await addStation(user)
         navigate(`/station/${savedStation.id}`)
     }
 

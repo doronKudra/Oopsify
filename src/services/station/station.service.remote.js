@@ -8,7 +8,7 @@ export const stationService = {
     addStationMsg
 }
 
-async function query(filterBy = { txt: '', minSpeed: 0 }) {
+async function query(filterBy = null) {
     return httpService.get(`station`, filterBy)
 }
 
@@ -24,7 +24,7 @@ async function save(station) {
     var savedStation
     // if (station._id) {
         console.log('saving...:')
-        savedStation = await httpService.put(`station/${station.id}`, station)
+        savedStation = await httpService.put(`station/${station._id}`, station)
     // } else {
         // savedStation = await httpService.post('station', station)
     // }
@@ -35,3 +35,4 @@ async function addStationMsg(stationId, txt) {
     const savedMsg = await httpService.post(`station/${stationId}/msg`, {txt})
     return savedMsg
 }
+

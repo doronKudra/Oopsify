@@ -17,7 +17,7 @@ export function SideBar() {
     const stations = useSelector(storeState => storeState.stationModule.sidebarStations)
     const { openContextMenu } = useContextMenu()
     const { openEditStation } = useModal()
-
+    console.log('user:',user)
     function handleOpenMenu({ x, y, context }) {
         const { station } = context
         let actions
@@ -66,10 +66,10 @@ export function SideBar() {
     }
 
     function onAddStation(station) {
-        toggleLikedStation(station.id)
+        toggleLikedStation(station)
     }
     function onRemoveStation(station) {
-        toggleLikedStation(station.id)
+        toggleLikedStation(station)
     }
 
     useEffect(() => {

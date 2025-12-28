@@ -2,8 +2,9 @@ import { userService } from '../../services/user'
 import { store } from '../store'
 
 import { showErrorMsg } from '../../services/event-bus.service'
-import { SET_USER, SET_WATCHED_USER, SET_LIKED_TRACKS, UPDATE_USER, SET_LIKED_STATIONS, UPDATE_OWNED_STATION } from '../reducers/user.reducer'
+import { SET_USER, SET_WATCHED_USER, SET_LIKED_TRACKS, UPDATE_USER ,SET_LIKED_STATIONS, UPDATE_OWNED_STATION } from '../reducers/user.reducer'
 import { stationService } from '../../services/station/station.service.remote'
+import { ADD_SIDEBAR_STATION} from '../reducers/station.reducer'
 
 
 export async function login(credentials) { //✅
@@ -89,20 +90,13 @@ export async function toggleLikedTrack(track) { //✅
     const updatedTracks = tracks.some(t => t.id === track.id)
         ? tracks.filter(t => t.id !== track.id)
         : [track, ...tracks]
-    const updatedLikedTracks = { ...likedTracks, tracks: updatedTracks }
+    const userToSave = {...storeUser, likedTracks:{...likedTracks, tracks: updatedTracks} }
 
-    await stationService.save(updatedLikedTracks)
+    await userService.save(userToSave)
     store.dispatch({ type: SET_LIKED_TRACKS, tracks: updatedTracks })
 }
 
-export function updateUserLikedStations(stations) {
-    return (dispatch) => {
-        dispatch({
-            type: SET_LIKED_STATIONS,
-            likedStations: [...stations],
-        })
-    }
-}
+
 
 
 // export function updateUserLikedTracks(tracks) {
@@ -114,26 +108,27 @@ export function updateUserLikedStations(stations) {
 //     }
 // }
 
-export async function toggleLikedStation(clickedStationId) {
+export async function toggleLikedStation(station) {
     const user = store.getState().userModule.user
     if (!user) return console.log('userActions: no user in toggleLikedStation')
 
-    const likedStations = user.likedStations
-    const isLiked = likedStations.some(stationId => stationId === clickedStationId)
+    const likedStations = user.stations
+    const isLiked = likedStations.some(stationId => stationId === station._id)
     let updatedStations
     if (isLiked) {
         updatedStations = likedStations.filter(
-            (stationId) => stationId !== clickedStationId
+            (stationId) => stationId !== station._id
         )
     } else {
-        updatedStations = [...likedStations, clickedStationId]
+        updatedStations = [...likedStations, station._id]
     }
     // updateUserLikedStations(updatedStations)
     const userToUpdate = {
         ...user,
-        likedStations: [...updatedStations],
+        stations: [...updatedStations],
     }
     await updateUser(userToUpdate)
+    store.dispatch({ type: ADD_SIDEBAR_STATION, station }) // sidebar stations sit in store
 }
 
 // export async function toggleLiked(clickedTrack) {

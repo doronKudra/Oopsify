@@ -48,11 +48,11 @@ export function StationDetails() {
 
 
     function onAddStation(station) {
-        toggleLikedStation(station.id)
+        toggleLikedStation(station)
     }
 
     function onRemoveStation(station) {
-        toggleLikedStation(station.id)
+        toggleLikedStation(station)
     }
 
     async function onAddToStation(track) {
