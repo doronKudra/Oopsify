@@ -13,16 +13,16 @@ export function UserDetails() {
   const user = useSelector(storeState => storeState.userModule.watchedUser)
 
   useEffect(() => {
-    loadUser(params.id)
+    loadUser(params._id)
 
-    socketService.emit(SOCKET_EMIT_USER_WATCH, params.id)
+    socketService.emit(SOCKET_EMIT_USER_WATCH, params._id)
     socketService.on(SOCKET_EVENT_USER_UPDATED, onUserUpdate)
 
     return () => {
       socketService.off(SOCKET_EVENT_USER_UPDATED, onUserUpdate)
     }
 
-  }, [params.id])
+  }, [params._id])
 
   function onUserUpdate(user) {
     showSuccessMsg(`This user ${user.fullname} just got updated from socket, new score: ${user.score}`)

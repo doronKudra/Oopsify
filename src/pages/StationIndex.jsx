@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 
 import { loadStations } from '../store/actions/station.actions.js'
 
@@ -25,19 +25,21 @@ export function StationIndex() {
     function handleOpenMenu({ x, y, context }) {
         const { station } = context
         let actions
-        if (station.owner.id === user.id) {
+        if (station.owner._id === user._id) {
             actions = [
                 {
                     id: makeId(),
                     icon: 'queue',
                     name: 'Add to queue',
                     callback: () => {},
+                    border: true,
                 }, // TODO
                 {
                     id: makeId(),
                     icon: 'profile',
                     name: 'Add to profile',
                     callback: () => {},
+                    border: true,
                 },
                 {
                     id: makeId(),
@@ -50,6 +52,7 @@ export function StationIndex() {
                     icon: 'delete',
                     name: 'Delete',
                     callback: () => {},
+                    border: true,
                 }, // TODO
                 {
                     id: makeId(),
@@ -71,7 +74,7 @@ export function StationIndex() {
                 }, // TODO
             ]
         } else {
-            const isLiked = user.stations.includes(station.id)
+            const isLiked = user.stations.includes(station._id)
             if (station.type === 'station') {
                 actions = [
                     isLiked
@@ -92,12 +95,14 @@ export function StationIndex() {
                         icon: 'queue',
                         name: 'Add to queue',
                         callback: () => {},
+                        border: true,
                     }, // TODO
                     isLiked && {
                         id: makeId(),
                         icon: 'profile',
                         name: 'Add to profile',
                         callback: () => {},
+                        border: true,
                     }, // TODO
                     {
                         id: makeId(),
@@ -131,10 +136,10 @@ export function StationIndex() {
     }
 
     function onAddStation(station) {
-        toggleLikedStation(station.id)
+        toggleLikedStation(station._id)
     }
     function onRemoveStation(station) {
-        toggleLikedStation(station.id)
+        toggleLikedStation(station._id)
     }
 
     function handleHoverColor(color) {

@@ -25,7 +25,7 @@ export function StationDetails() {
     const user = useSelector((store) => store.userModule.user)
     const station = useSelector((store) => store.stationModule.station)
     const [tracks, setTracks] = useState([])
-    const isOwner = (station?.owner?.id === user?._id)
+    const isOwner = (station?.owner?._id === user?._id)
     useEffect(() => {
         if (stationId !== 'liked-tracks') {
             loadStation(stationId) //updates the store's station
@@ -48,11 +48,11 @@ export function StationDetails() {
 
 
     function onAddStation(station) {
-        toggleLikedStation(station.id)
+        toggleLikedStation(station._id)
     }
 
     function onRemoveStation(station) {
-        toggleLikedStation(station.id)
+        toggleLikedStation(station._id)
     }
 
     async function onAddToStation(track) {
@@ -61,7 +61,7 @@ export function StationDetails() {
         } else {
             const updatedTracks = [...tracks, track]
             setTracks(updatedTracks)
-            await addTrackToStation(station.id, track)
+            await addTrackToStation(station._id, track)
         }
     }
 
@@ -69,9 +69,9 @@ export function StationDetails() {
         if (stationId === 'liked-songs') {
             await toggleLikedTrack(track)
         } else {
-            const updatedTracks = tracks.filter((t) => t.id !== track.id)
+            const updatedTracks = tracks.filter((t) => t._id !== track._id)
             setTracks(updatedTracks)
-            await removeTrackFromStation(station, track.id)
+            await removeTrackFromStation(station, track._id)
         }
     }
 
@@ -114,10 +114,10 @@ export function StationDetails() {
 
     async function handleDragEnd(event) {
         const { active, over } = event
-        if (!over || active.id === over.id) return
+        if (!over || active._id === over._id) return
 
-        const oldIndex = tempIdsRef.current.indexOf(active.id)
-        const newIndex = tempIdsRef.current.indexOf(over.id)
+        const oldIndex = tempIdsRef.current.indexOf(active._id)
+        const newIndex = tempIdsRef.current.indexOf(over._id)
 
         const newTrackOrder = arrayMove(tracks, oldIndex, newIndex)
         // 1. Update UI immediately
@@ -143,18 +143,24 @@ export function StationDetails() {
     function handleOpenMenu({ x, y, context }) {
         const { track } = context
         if (!track) return
-        const isInStation = station.tracks.some(({ id }) => id === track.id)
-        const isLiked = user.likedTracks.tracks.some(({ id }) => id === track.id)
+        const isInStation = station.tracks.some(({ id }) => id === track._id)
+        const isLiked = user.likedTracks.tracks.some(({ id }) => id === track._id)
         let actions
-        if (station.id === 'liked-songs' || station.owner.id === user._id) {
+        if (station._id === 'liked-tracks' || station.owner._id === user._id) {
             actions = [
                 {
                     id: makeId(),
                     icon: 'add',
                     name: 'Add to playlist',
                     callback: () => { },
+                    children: stations.map(station => ({
+                        id: makeId(),
+                        icon: '',
+                        name: station.name,
+                        callback: () => addTrackToStation(station._id, track),
+                    }))
                 }, // TODO (add to a different playlist) dropdown
-                isInStation && isOwner && {
+                isInStation && isOwner && (station._id !== 'liked-tracks') && {
                     id: makeId(),
                     icon: 'remove',
                     name: 'Remove from This Playlist',
@@ -178,6 +184,7 @@ export function StationDetails() {
                     icon: 'queue',
                     name: 'Add to queue',
                     callback: () => { },
+                    border: true,
                 }, // TODO
                 {
                     id: makeId(),
@@ -212,6 +219,12 @@ export function StationDetails() {
                         icon: 'add',
                         name: 'Add to playlist',
                         callback: () => { },
+                        children: stations.map(station => ({
+                            id: makeId(),
+                            icon: 'add',
+                            name: station.name,
+                            callback: () => addTrackToStation(station._id, track),
+                        }))
                     }, // TODO (add to a different playlist) dropdown
                     isLiked
                         ? {
@@ -231,6 +244,7 @@ export function StationDetails() {
                         icon: 'queue',
                         name: 'Add to queue',
                         callback: () => { },
+                        border: true,
                     }, // TODO
                     {
                         id: makeId(),
@@ -281,19 +295,21 @@ export function StationDetails() {
     function handleOpenMenuStation({ x, y, context }) {
         const { station } = context
         let actions
-        if (station.owner.id === user._id) {
+        if (station.owner._id === user._id) {
             actions = [
                 {
                     id: makeId(),
                     icon: 'queue',
                     name: 'Add to queue',
                     callback: () => { },
+                    border: true,
                 }, // TODO
                 {
                     id: makeId(),
                     icon: 'profile',
                     name: 'Add to profile',
                     callback: () => { },
+                    border: true,
                 },
                 {
                     id: makeId(),
@@ -306,6 +322,7 @@ export function StationDetails() {
                     icon: 'delete',
                     name: 'Delete',
                     callback: () => { },
+                    border: true,
                 }, // TODO
                 {
                     id: makeId(),
@@ -327,7 +344,7 @@ export function StationDetails() {
                 }, // TODO
             ]
         } else {
-            const isLiked = true
+            const isLiked = user.likedStations.includes(station._id)
             if (station.type === 'station') {
                 actions = [
                     isLiked
@@ -348,12 +365,14 @@ export function StationDetails() {
                         icon: 'queue',
                         name: 'Add to queue',
                         callback: () => { },
+                        border: true,
                     }, // TODO
                     isLiked && {
                         id: makeId(),
                         icon: 'profile',
                         name: 'Add to profile',
                         callback: () => { },
+                        border: true,
                     }, // TODO
                     {
                         id: makeId(),
@@ -460,7 +479,7 @@ export function StationDetails() {
                     />
                     {/* </div> */}
                     {
-                        station?.owner?.id === user?._id &&
+                        station?.owner?._id === user?._id &&
                         <SearchInDetails openContextMenu={handleOpenMenu} tracks={tracks.length ? true : false} station={station} user={user} />
                     }
                 </section>

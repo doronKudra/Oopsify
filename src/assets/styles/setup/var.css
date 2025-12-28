@@ -8,7 +8,7 @@
   --header2: rgb(42,42,42);  /* BGC for header inputs on hover */
   --header3: rgb(179,179,179);  /* BGC for header inputs on hover */
   /* --clr1-light: color-mix(in lab, var(--clr1), white 15%); */
-
+  --homebg: #121212;
   --success: rgb(41, 189, 73);
   --error: rgb(216, 59, 59);
 }

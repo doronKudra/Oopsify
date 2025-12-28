@@ -17,14 +17,14 @@ export function SideBar() {
     const stations = useSelector(storeState => storeState.stationModule.sidebarStations)
     const { openContextMenu } = useContextMenu()
     const { openEditStation } = useModal()
-
+    console.log('user:',user)
     function handleOpenMenu({ x, y, context }) {
         const { station } = context
         let actions
-        if ((station.owner.id === user._id)) {
+        if ((station.owner._id === user._id)) {
             actions = [
-                { id: makeId(), icon: 'queue', name: 'Add to queue', callback: () => {} }, // TODO
-                { id: makeId(), icon: 'profile', name: 'Add to profile', callback: () => {} }, // TODO
+                { id: makeId(), icon: 'queue', name: 'Add to queue', callback: () => {}}, // TODO
+                { id: makeId(), icon: 'profile', name: 'Add to profile', callback: () => {},border: true,}, // TODO
                 { id: makeId(), icon: 'edit', name: 'Edit details', callback: () => {openEditStation()} },
                 { id: makeId(), icon: 'delete', name: 'Delete', callback: () => {} }, // TODO
                 { id: makeId(), icon: 'new-playlist', name: 'Create playlist', callback: () => {} }, // TODO
@@ -35,15 +35,15 @@ export function SideBar() {
             ]
         }
         else {
-            const isLiked = user.stations.includes(station.id)
+            const isLiked = user.stations.includes(station._id)
             const isPinned = false
             if (station.type === 'station') {
                 actions = [
-                    { id: makeId(), icon: 'queue', name: 'Add to queue', callback: () => {} }, // TODO
-                    (isLiked && { id: makeId(), icon: 'profile', name: 'Add to profile', callback: () => {} }),// TODO
-                    { id: makeId(), icon: 'remove', name: 'Remove from Your Library', callback: () => onRemoveStation(station) },
+                    { id: makeId(), icon: 'queue', name: 'Add to queue', callback: () => {},border: true, }, // TODO
+                    (isLiked && { id: makeId(), icon: 'profile', name: 'Add to profile', callback: () => {},border: true, }),// TODO
+                    { id: makeId(), icon: 'remove', name: 'Remove from Your Library', callback: () => onRemoveStation(station),border: true, },
                     { id: makeId(), icon: 'new-playlist', name: 'Create playlist', callback: () => {} },// TODO
-                    { id: makeId(), icon: 'add', name: 'Create folder', callback: () => {} },// TODO
+                    { id: makeId(), icon: 'add', name: 'Create folder', callback: () => {},border: true,},// TODO
                     { id: makeId(), icon: 'folder', name: 'Move to folder', callback: () => {} },// TODO
                     isPinned ?
                         { id: makeId(), icon: 'unpin', name: 'Unpin playlist', callback: ({ station }) => onPinStation(station) } :// TODO
@@ -66,10 +66,10 @@ export function SideBar() {
     }
 
     function onAddStation(station) {
-        toggleLikedStation(station.id)
+        toggleLikedStation(station._id)
     }
     function onRemoveStation(station) {
-        toggleLikedStation(station.id)
+        toggleLikedStation(station._id)
     }
 
     useEffect(() => {
@@ -88,7 +88,7 @@ export function SideBar() {
         <div className="route-scroll sidebar-scroll">
             <aside className='sidebar-container'>
                 <header className='sidebar-actions'>
-                    <SideBarHeader />
+                    <SideBarHeader user={user} />
                     <SideBarFilter />
                 </header>
                 <LikedTracks user={user} listType={'favorites'} />

@@ -71,11 +71,11 @@ async function search(txt, type = 'track', limit = 15) {
 
 function clearStation({ id, name, owner, followers, images, description, tracks }) {
     return {
-        id,
+        _id : id,
         name,
         type: 'station',
         owner: {
-            id: owner.id,
+            _id: owner.id,
             name: owner.display_name,
             type: owner.type,
         },
@@ -89,21 +89,21 @@ function clearStation({ id, name, owner, followers, images, description, tracks 
 
 function clearTrack({ id, name, type, album, artists, duration_ms, popularity, images }) {
     return {
-        id,
+        _id: id,
         name,
         type,
         duration: duration_ms,
         images: album?.images || images,
         ...(album && {
             album: {
-                id: album.id,
+                _id: album.id,
                 name: album.name,
                 images: album.images,
                 type: album.type,
             }
         }),
         artists: artists.map(a => ({
-            id: a.id,
+            _id: a.id,
             name: a.name,
             type: a.type
         })),
@@ -119,7 +119,7 @@ function clearAlbum({ id, name, type, artists, images, release_date, total_track
         images,
         releaseDate: release_date,
         artists: artists.map(a => ({
-            id: a.id,
+            _id: a.id,
             name: a.name,
             type: a.type,
         })),

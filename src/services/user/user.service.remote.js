@@ -1,6 +1,7 @@
 import { SET_USER } from '../../store/reducers/user.reducer'
 import { store } from '../../store/store'
 import { httpService } from '../http.service'
+import { useNavigate } from 'react-router'
 
 const STORAGE_KEY_LOGGEDIN_USER = 'loggedinUser'
 
@@ -14,14 +15,15 @@ export const userService = {
     saveStation,
     getLoggedinUser,
     saveLoggedinUser,
+    // addStation,
     // getUsers,
 }
 
-
+// _createLoggedinUser()
 setUser()
 
-
-async function signup(userCred) { // ✅
+async function signup(userCred) {
+    // ✅
     console.log('singup.....:')
     try {
         let user = await httpService.post('auth/signup', userCred)
@@ -34,7 +36,8 @@ async function signup(userCred) { // ✅
     }
 }
 
-async function login(userCred) { // ✅
+async function login(userCred) {
+    // ✅
     try {
         const user = await httpService.post('auth/login', userCred)
         if (!user) throw new Error('Invalid login')
@@ -45,25 +48,32 @@ async function login(userCred) { // ✅
     }
 }
 
-async function logout() { //✅
+async function logout() {
+    //✅
     sessionStorage.removeItem(STORAGE_KEY_LOGGEDIN_USER)
     return await httpService.post('auth/logout') //only for clear the cookies
 }
 
 async function setUser() {
-    const sessionUser = getLoggedinUser()
-    if(!sessionUser) return
-    const user = await getById(sessionUser._id)
-    store.dispatch({ type: SET_USER, user })
+    try {
+        const sessionUser = getLoggedinUser()
+        if(!sessionUser) return
+        const user = await getById(sessionUser._id)
+        store.dispatch({ type: SET_USER, user })
+    } catch (err) {
+        console.error('Login failed', err)
+        throw err
+    }
 }
 
-async function getById(userId) { //✅
+async function getById(userId) {
+    //✅
     const user = await httpService.get(`user/${userId}`)
     return user
 }
 
-
-async function update(userToUpdate) { //✅
+async function update(userToUpdate) {
+    //✅
     console.log('userToUpdate:', userToUpdate)
     const user = await httpService.put(`user/${userToUpdate._id}`, userToUpdate)
 
@@ -75,19 +85,20 @@ async function update(userToUpdate) { //✅
 
 async function saveStation(station) {
     console.log('station:', station)
-    const savedStation = await httpService.put(`station/${station.id}`, station)
+    const savedStation = await httpService.put(
+        `station/${station._id}`,
+        station
+    )
     // } else {
     // savedStation = await httpService.post('station', station)
     // }
     return savedStation
 }
 
-
-
-function remove(userId) { //? requireAuth
+function remove(userId) {
+    //? requireAuth
     return httpService.delete(`user/${userId}`)
 }
-
 
 function getLoggedinUser() {
     const user = JSON.parse(sessionStorage.getItem(STORAGE_KEY_LOGGEDIN_USER))
@@ -98,7 +109,7 @@ function saveLoggedinUser({ _id, username, fullname }) {
     const user = {
         _id,
         username,
-        fullname
+        fullname,
     }
     sessionStorage.setItem(STORAGE_KEY_LOGGEDIN_USER, JSON.stringify(user))
     // setUser(user._id)
@@ -114,6 +125,39 @@ function _getEmptyLikedTrack(user) {
         owner: {
             name: user.fullname,
             id: user._id,
-        }
+        },
     }
 }
+
+// async function _createLoggedinUser() {
+//     if (getLoggedinUser()) return
+//     const users = []
+//     const user = {
+//         id: makeId(),
+//         fullname: 'Mustafa Adminsky',
+//         username: 'admin',
+//         password: 'admin',
+//         imgUrl: 'https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png',
+//         stations: [
+//             '3xqcAMgjHGrv3ElA51zZRj',
+//             '7gb4GZz7iIHGilXxD7638E',
+//             '4DJztJkufdlND0Hvg4nGkK',
+//             '3E0RgJpQug1ibE2jTGI0Hk',
+//             '2O3jLuM3inA4vw5fZdGz9W',
+//         ],
+//         likedTracks: {
+//             name: 'Liked Songs',
+//             tracks: [],
+//             owner: {
+//                 username: 'admin',
+//                 id: 'admin',
+//             },
+//             images: [{ url: '/src/assets/images/liked-songs.png' }],
+//             id: 'liked-songs',
+//             type: 'station',
+//         },
+//     }
+//     users.push(user)
+//     localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(users))
+//     login({ username: 'admin', password: 'admin' })
+// }

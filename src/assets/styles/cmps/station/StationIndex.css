@@ -38,8 +38,8 @@
         var(--homeBg) 0px,
         color-mix(in srgb, var(--homeBg) 50%, #121212) 150px,
         #121212 300px
-    );
-    transition: background-color 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    ); 
+    transition: background 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .station-index > * {

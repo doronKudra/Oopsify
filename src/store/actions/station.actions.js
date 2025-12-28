@@ -57,8 +57,9 @@ export async function removeStation(stationId) {
     }
 }
 
-export async function addStation({ username, id }) {
+export async function addStation({ username, id}) {
     try {
+        console.log(username)
         const station = stationService.getEmptyStation({ username, id })
         const savedStation = await stationService.save(station)
 
@@ -67,10 +68,10 @@ export async function addStation({ username, id }) {
         store.dispatch({ type: ADD_STATION, station: stationToStore })
 
         const user = store.getState().userModule.user
-        if (user && !user.stations.filter((station) => {station.id === stationToStore.id})) {
+        if (user && !user.likedStations.includes(stationToStore._id)) {
             await updateUser({
                 ...user,
-                stations: [...user.stations, stationToStore],
+                likedStations: [...user.likedStations, stationToStore._id],
             })
         }
 
@@ -109,7 +110,7 @@ export async function removeTrackFromStation(station, trackId) {
     try {
         const updatedStation = {
             ...station,
-            tracks: station.tracks.filter(t => t.id !== trackId),
+            tracks: station.tracks.filter(t => t._id !== trackId),
         }
 
         const savedStation = await stationService.save(updatedStation)
