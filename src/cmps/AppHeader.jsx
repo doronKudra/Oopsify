@@ -75,6 +75,24 @@ export function AppHeader() {
         return fullname?.trim()[0]?.toUpperCase() || '#'
     }
 
+    function onLogout() {
+        logout()
+        setIsUserMenuOpen(false)
+        navigate('/')
+    }
+
+    useEffect(() => {
+        function handleClickOutside() {
+            setIsUserMenuOpen(false)
+        }
+
+        if (isUserMenuOpen) {
+            window.addEventListener('click', handleClickOutside)
+        }
+
+        return () => window.removeEventListener('click', handleClickOutside)
+    }, [isUserMenuOpen])
+
     return (
         <header className="app-header">
             <svg
@@ -192,26 +210,42 @@ export function AppHeader() {
                 </div>
             </section>
 
-            {loggedInUser && loggedInUser.fullname ? (
-                <button
-                    className="logged-in-user-btn"
-                    onClick={(ev) => {
-                        ev.stopPropagation()
-                        setIsUserMenuOpen((prev) => !prev)
-                    }}
-                >
-                    <div className="logged-in-user-icon">
-                        {getInitial(loggedInUser.fullname)}
+            <div className="user-menu-wrapper">
+                {loggedInUser && loggedInUser.fullname ? (
+                    <button
+                        className="logged-in-user-btn"
+                        onClick={(ev) => {
+                            ev.stopPropagation()
+                            setIsUserMenuOpen((prev) => !prev)
+                        }}
+                    >
+                        <div className="logged-in-user-icon">
+                            {getInitial(loggedInUser.fullname)}
+                        </div>
+                    </button>
+                ) : (
+                    <button
+                        onClick={() => navigate('/login')}
+                        className="login-btn"
+                    >
+                        Log in
+                    </button>
+                )}
+
+                {isUserMenuOpen && (
+                    <div
+                        className="user-modal"
+                        onClick={(ev) => ev.stopPropagation()}
+                    >
+                        <button>Account</button>
+                        <button>Profile</button>
+                        <button>Support</button>
+                        <button>Download</button>
+                        <button>Settings</button>
+                        <button onClick={onLogout}>Logout</button>
                     </div>
-                </button>
-            ) : (
-                <button
-                    onClick={() => navigate('/login')}
-                    className="login-btn"
-                >
-                    Log in
-                </button>
-            )}
+                )}
+            </div>
         </header>
     )
 }

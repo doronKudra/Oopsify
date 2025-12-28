@@ -91,7 +91,7 @@
         border-left: 1px solid var(--header3);
 
         &:hover {
-            >* {
+            > * {
                 fill: white;
             }
         }
@@ -101,7 +101,7 @@
         right: 50px;
 
         &:hover {
-            >* {
+            > * {
                 fill: white;
             }
         }
@@ -145,7 +145,7 @@
     border-radius: 150px;
     height: 100%;
     width: 100px;
-     &:hover {
+    &:hover {
         background-color: #fff;
         transition: transform 0.1s;
         /* background-color: #1f1f1f; */
@@ -159,9 +159,11 @@
 }
 
 .logged-in-user-btn {
-    height: 100%;
+    height: 48px;
+    width: 48px;
     aspect-ratio: 1;
-    background-color: #1f1f1f;
+    background-color:#1a1a1a;
+;
     border-radius: 50%;
     display: flex;
     justify-content: center;
@@ -186,12 +188,55 @@
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background-color: #1db954;
+    background-color: #1db954; /* Spotify green */
     color: #1f1f1f;
     font-weight: 700;
     font-size: 15px;
     display: flex;
     align-items: center;
     justify-content: center;
-    line-height: 14px;
+    line-height: 1;
+}
+
+
+.user-menu-wrapper {
+    position: relative;
+}
+
+.user-modal {
+    position: absolute;
+    top: 100%; 
+    right: 0;
+    z-index: 999;
+}
+
+.user-modal {
+    display: flex;
+    flex-direction: column;
+    background: #242424; /* lighter than #181818 */
+    padding: 12px;
+    border-radius: 8px;
+    gap: 4px;
+    min-width: 180px;
+}
+
+
+.user-modal button {
+    background: none;
+    border: none;
+    color: white;
+    text-align: left;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.user-modal button:last-child {
+    border-top: 1px solid #444;
+    margin-top: 6px;
+    padding-top: 10px;
+}
+
+.user-modal button:hover {
+    background: #2a2a2a;
 }
