@@ -3,7 +3,6 @@ import { StationPreview } from './StationPreview'
 
 import { makeId } from '../services/util.service'
 import { removeStation, addStation } from '../store/actions/station.actions.js'
-import { updateUserLikedStations } from '../store/actions/user.actions.js'
 import { useSelector } from 'react-redux'
 
 export function StationList({
