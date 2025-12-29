@@ -1,5 +1,3 @@
-import { SET_USER } from '../../store/reducers/user.reducer'
-import { store } from '../../store/store'
 import { httpService } from '../http.service'
 import { useNavigate } from 'react-router'
 
@@ -20,7 +18,7 @@ export const userService = {
 }
 
 // _createLoggedinUser()
-setUser()
+// setUser()
 
 async function signup(userCred) {
     // ✅
@@ -53,17 +51,16 @@ async function logout() {
     return await httpService.post('auth/logout') //only for clear the cookies
 }
 
-async function setUser() {
-    try {
-        const sessionUser = getLoggedinUser()
-        if(!sessionUser) return
-        const user = await getById(sessionUser._id)
-        store.dispatch({ type: SET_USER, user })
-    } catch (err) {
-        console.error('Login failed', err)
-        throw err
-    }
-}
+// async function setUser() {
+//     try {
+//         const sessionUser = getLoggedinUser()
+//         if(!sessionUser) return
+//         const user = await getById(sessionUser._id)
+//     } catch (err) {
+//         console.error('Login failed', err)
+//         throw err
+//     }
+// }
 
 async function getById(userId) {
     //✅
@@ -102,12 +99,7 @@ function getLoggedinUser() {
     return user
 }
 
-function saveLoggedinUser({ _id, username, fullname }) {
-    const user = {
-        _id,
-        username,
-        fullname,
-    }
+function saveLoggedinUser(user) {
     sessionStorage.setItem(STORAGE_KEY_LOGGEDIN_USER, JSON.stringify(user))
     // setUser(user._id)
     return user
@@ -142,17 +134,17 @@ function _getEmptyLikedTrack(user) {
 //             '3E0RgJpQug1ibE2jTGI0Hk',
 //             '2O3jLuM3inA4vw5fZdGz9W',
 //         ],
-//         likedTracks: {
-//             name: 'Liked Songs',
-//             tracks: [],
-//             owner: {
-//                 username: 'admin',
-//                 id: 'admin',
-//             },
-//             images: [{ url: '/src/assets/images/liked-songs.png' }],
-//             id: 'liked-songs',
-//             type: 'station',
-//         },
+        // likedTracks: {
+        //     name: 'Liked Songs',
+        //     tracks: [],
+        //     owner: {
+        //         username: 'admin',
+        //         id: 'admin',
+        //     },
+        //     images: [{ url: '/src/assets/images/liked-songs.png' }],
+        //     id: 'liked-songs',
+        //     type: 'station',
+        // },
 //     }
 //     users.push(user)
 //     localStorage.setItem(STORAGE_KEY_USER, JSON.stringify(users))
