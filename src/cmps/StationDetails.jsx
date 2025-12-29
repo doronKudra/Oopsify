@@ -29,9 +29,10 @@ export function StationDetails() {
     useEffect(() => {
         if (stationId !== 'liked-tracks') {
             loadStation(stationId) //updates the store's station
-            console.log(station)
+            console.log('if')
         } else {
             loadLikedTracks(stationId)
+            console.log('else')
         }
     }, [stationId])
     // const station =
@@ -59,6 +60,7 @@ export function StationDetails() {
         if (stationId === 'liked-songs') {
             await toggleLikedTrack(track)
         } else {
+            console.log(track._id)
             await removeTrackFromStation(stationId, track._id)
         }
     }

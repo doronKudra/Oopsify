@@ -10,6 +10,7 @@ export const SET_SIDEBAR_STATIONS = 'SET_SIDEBAR_STATIONS'
 export const ADD_SIDEBAR_STATION = 'ADD_SIDEBAR_STATION'
 export const REMOVE_SIDEBAR_STATION = 'REMOVE_SIDEBAR_STATION'
 export const ADD_TRACK = 'ADD_TRACK'
+export const REMOVE_TRACK = 'REMOVE_TRACK'
 
 const initialState = {
     stations: [],
@@ -48,6 +49,9 @@ export function stationReducer(state = initialState, action) {
             }
         case ADD_TRACK:
             return { ...state, station: { ...state.station, tracks: [...state.station.tracks || [], action.track] }}
+        case REMOVE_TRACK:
+            let updatedTracks = state.station.tracks.filter(track => track._id !== action.trackId)
+            return { ...state, station: { ...state.station, tracks: [...updatedTracks]}}
         default:
             return state
     }

@@ -9,6 +9,7 @@ export const stationService = {
     remove,
     addStationMsg,
     addTrack,
+    removeTrack,
 }
 
 async function query(filterBy = null) {
@@ -41,4 +42,8 @@ async function addStationMsg(stationId, txt) {
 async function addTrack(stationId, track){
     const addedTrack = await httpService.post(`station/${stationId}/track`, track)
     return addedTrack
+}
+
+async function removeTrack(stationId, trackId){
+    return httpService.delete(`station/${stationId}/${trackId}`)
 }

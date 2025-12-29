@@ -73,7 +73,8 @@ export function SideBar() {
         if (!user || !user?.stations) {
             return
         }
-        loadSidebarStations(filterBy)
+        
+        loadSidebarStations(filterBy) 
     }, [filterBy])
 
     useEffect(() => {

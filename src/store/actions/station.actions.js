@@ -1,7 +1,7 @@
 import { store } from '../store'
 import { stationService } from '../../services/station'
 import { userService } from '../../services/user'
-import { ADD_STATION, REMOVE_STATION, SET_STATIONS, SET_STATION, UPDATE_STATION, SET_SIDEBAR_STATIONS, ADD_TRACK} from '../reducers/station.reducer'
+import { ADD_STATION, REMOVE_STATION, SET_STATIONS, SET_STATION, UPDATE_STATION, SET_SIDEBAR_STATIONS, ADD_TRACK,REMOVE_TRACK} from '../reducers/station.reducer'
 import { updateUser } from './user.actions'
 
 
@@ -9,6 +9,7 @@ export function loadLikedTracks() {
     try {
         const storeUser = store.getState().userModule.user
         const likedTracks = storeUser?.likedTracks
+        console.log('storeUser',storeUser)
         store.dispatch({ type: SET_STATION, station: likedTracks })
     } catch (err) {
 
@@ -100,30 +101,26 @@ export async function updateStation(station) {
 
 export async function addTrackToStation(stationId, track) {
     try {
-        const savedStation = await stationService.addTrack(stationId, track)
+        const addedTrack = await stationService.addTrack(stationId, track)
 
         store.dispatch({ type: ADD_TRACK, track: track})
 
-        return savedStation
+        return addedTrack
     } catch (err) {
         console.error('Cannot add track to station', err)
         throw err
     }
 }
 
-export async function removeTrackFromStation(station, trackId) {
+export async function removeTrackFromStation(stationId, trackId) {
     try {
-        const updatedStation = {
-            ...station,
-            tracks: station.tracks.filter(t => t._id !== trackId),
-        }
+        const removedTrackId = await stationService.removeTrack(stationId, trackId)
 
-        const savedStation = await stationService.save(updatedStation)
-        store.dispatch({ type: UPDATE_STATION, station: savedStation })
+        store.dispatch({ type: REMOVE_TRACK, trackId: trackId})
 
-        return savedStation
+        return removedTrackId
     } catch (err) {
-        console.error('Cannot remove track from station', err)
+        console.error('Cannot remove track to station', err)
         throw err
     }
 }

@@ -15,8 +15,6 @@ export function StationList({
     let displayStations = [...stations]
     if (listType === 'recent') displayStations = displayStations.slice(0, 8)
     if (!displayStations?.length) return
-    console.log('displayStations:', displayStations)
-    console.log('listType:', listType)
 
     const carouselRef = useRef(null)
 
