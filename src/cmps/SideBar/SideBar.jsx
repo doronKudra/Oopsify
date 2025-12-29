@@ -4,20 +4,23 @@ import { SideBarHeader } from './SideBarHeader.jsx'
 import { SideBarFilter } from './SideBarFilter.jsx'
 import { StationList } from '../StationList.jsx'
 import { stationService } from '../../services/station/index.js'
-import { loadSidebarStations } from '../../store/actions/station.actions.js'
+import { loadSidebarStations, removeStation } from '../../store/actions/station.actions.js'
 import { LikedTracks } from '../LikedTracks.jsx'
 import { useContextMenu } from '../OptionMenuProvider.jsx'
 import { makeId } from '../../services/util.service.js'
 import { toggleLikedStation } from '../../store/actions/user.actions.js'
 import { useModal } from '../ModalProvider.jsx'
 import { useEffectUpdate } from '../../customHooks/useEffectUpdate.js'
+import { useNavigate } from 'react-router-dom'
 
 export function SideBar() {
     const user = useSelector(storeState => storeState.userModule.user)
     const [filterBy, setFilterBy] = useState(stationService.getDefaultFilter())
     const stations = useSelector(storeState => storeState.stationModule.sidebarStations)
+    const currentStation = useSelector(storeState => storeState.stationModule.station)
     const { openContextMenu } = useContextMenu()
     const { openEditStation } = useModal()
+    const navigate = useNavigate()
     function handleOpenMenu({ x, y, context }) {
         const { station } = context
         let actions
@@ -26,7 +29,7 @@ export function SideBar() {
                 { id: makeId(), icon: 'queue', name: 'Add to queue', callback: () => {}}, // TODO
                 { id: makeId(), icon: 'profile', name: 'Add to profile', callback: () => {},border: true,}, // TODO
                 { id: makeId(), icon: 'edit', name: 'Edit details', callback: () => {openEditStation()} },
-                { id: makeId(), icon: 'delete', name: 'Delete', callback: () => {} }, // TODO
+                { id: makeId(), icon: 'delete', name: 'Delete', callback: () => {onDeleteStation(station)} }, // TODO
                 { id: makeId(), icon: 'new-playlist', name: 'Create playlist', callback: () => {} }, // TODO
                 { id: makeId(), icon: 'add', name: 'Create folder', callback: () => {} }, // TODO
                 { id: makeId(), icon: 'private', name: 'Make private', callback: () => {} }, // TODO
@@ -69,6 +72,14 @@ export function SideBar() {
         toggleLikedStation(station)
     }
 
+    async function onDeleteStation(station){
+        toggleLikedStation(station)
+        await removeStation(station._id)
+        if(currentStation._id === station._id){
+            navigate('/')
+        }
+    }
+
     useEffectUpdate(() => {
         if (!user || !user?.stations) {
             return
@@ -87,6 +98,7 @@ export function SideBar() {
         }))
     }, [user?.stations])
 
+    
     return (
         <div className="route-scroll sidebar-scroll">
             <aside className='sidebar-container'>

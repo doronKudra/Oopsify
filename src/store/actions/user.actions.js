@@ -85,14 +85,27 @@ export async function toggleLikedTrack(track) { //✅
     const likedTracks = storeUser.likedTracks
     const tracks = likedTracks.tracks
     const updatedTracks = tracks.some(t => t._id === track._id)
-        ? tracks.filter(t => t._id !== track._id)
-        : [track, ...tracks]
+        ? tracks.filter(t => t._id !== track._id) // remove
+        : [ ...tracks,track] // add
     const userToSave = {...storeUser, likedTracks:{...likedTracks, tracks: updatedTracks} }
 
     await userService.update(userToSave)
     store.dispatch({ type: SET_LIKED_TRACKS, tracks: updatedTracks })
 }
 
+// export async function toggleLiked(clickedTrack) {
+//     const user = store.getState().userModule.user
+//     if (!user) return console.log('userActions: no user in toggleLiked')
+
+//     const likedTracks = user.likedTracks.tracks
+//     const isLiked = likedTracks.some((track) => track._id === track._id)
+//     let updatedTracks
+
+//     if (isLiked) updatedTracks = likedTracks.filter(track => track._id !== track._id)
+//     else updatedTracks = [...likedTracks, clickedTrack]
+
+//     store.dispatch({ type: SET_LIKED_TRACKS, updatedTracks })
+// }
 
 
 
@@ -128,19 +141,7 @@ export async function toggleLikedStation(station) {
     await updateUser(userToUpdate)
 }
 
-// export async function toggleLiked(clickedTrack) {
-//     const user = store.getState().userModule.user
-//     if (!user) return console.log('userActions: no user in toggleLiked')
 
-//     const likedTracks = user.likedTracks.tracks
-//     const isLiked = likedTracks.some((track) => track._id === track._id)
-//     let updatedTracks
-
-//     if (isLiked) updatedTracks = likedTracks.filter(track => track._id !== track._id)
-//     else updatedTracks = [...likedTracks, clickedTrack]
-
-//     store.dispatch({ type: SET_LIKED_TRACKS, updatedTracks })
-// }
 
 export async function loadUser(userId) { // dont know why... maybe for userDetails?
     try {

@@ -3,9 +3,9 @@
 // import { showSuccessMsg, showErrorMsg } from '../services/event-bus.service'
 // import { getDemoStation } from '../services/track/track.service.js'
 import { useEffect, useState, useRef } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams,useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { loadStation, loadLikedTracks, updateStation, addTrackToStation, removeTrackFromStation } from '../store/actions/station.actions'
+import { loadStation, loadLikedTracks, updateStation,removeStation, addTrackToStation, removeTrackFromStation } from '../store/actions/station.actions'
 import { TrackList } from './TrackList.jsx'
 import { StationControls } from './StationControls.jsx'
 import { FastAverageColor } from 'fast-average-color'
@@ -18,14 +18,16 @@ import { useModal } from './ModalProvider.jsx'
 import { setUserStation } from '../store/actions/user.actions.js'
 import { toggleLikedStation, toggleLikedTrack } from '../store/actions/user.actions.js'
 
+
+
 export function StationDetails() {
     const { stationId } = useParams()
-    console.log(stationId)
     const { openEditStation } = useModal()
     const user = useSelector((store) => store.userModule.user)
     const station = useSelector((store) => store.stationModule.station)
     const isOwner = (station?.owner?._id === user?._id)
-    const tracks = station?.tracks || []
+    const tracks = stationId === 'liked-tracks' ? user?.likedTracks?.tracks : (station?.tracks || [])
+    const navigate = useNavigate()
     useEffect(() => {
         if (stationId !== 'liked-tracks') {
             loadStation(stationId) //updates the store's station
@@ -46,6 +48,12 @@ export function StationDetails() {
 
     function onRemoveStation(station) {
         toggleLikedStation(station)
+    }
+
+    async function onDeleteStation(stationId){
+        toggleLikedStation(station)
+        await removeStation(stationId)
+        navigate('/')
     }
 
     async function onAddToStation(track) {
@@ -290,7 +298,7 @@ export function StationDetails() {
                 {
                     id: makeId(),
                     icon: 'queue',
-                    name: 'Add to queue',
+                    name: 'Add to queue', // free
                     callback: () => { },
                     border: true,
                 }, // TODO
@@ -311,7 +319,7 @@ export function StationDetails() {
                     id: makeId(),
                     icon: 'delete',
                     name: 'Delete',
-                    callback: () => { },
+                    callback: () => onDeleteStation(stationId),
                     border: true,
                 }, // TODO
                 {
