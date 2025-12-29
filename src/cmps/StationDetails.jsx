@@ -24,14 +24,17 @@ import {
     toggleLikedStation,
     toggleLikedTrack,
 } from '../store/actions/user.actions.js'
+import { playerActions } from '../store/actions/player.actions.js'
 
 
 
 export function StationDetails() {
+    
     const { stationId } = useParams()
     const { openEditStation } = useModal()
     const user = useSelector((store) => store.userModule.user)
     const station = useSelector((store) => store.stationModule.station)
+    const sidebarStations = useSelector((store) => store.stationModule.sidebarStations)
     const isOwner = (station?.owner?._id === user?._id)
     const tracks = stationId === 'liked-tracks' ? user?.likedTracks?.tracks : (station?.tracks || [])
     const navigate = useNavigate()
@@ -48,12 +51,12 @@ export function StationDetails() {
     // stationId === 'liked-songs' ? user.likedTracks : stationFromStore
     const { openContextMenu } = useContextMenu()
 
-    function onAddStation(station) {
-        toggleLikedStation(station)
+    async function onAddStation(station) {
+        await toggleLikedStation(station)
     }
 
-    function onRemoveStation(station) {
-        toggleLikedStation(station)
+    async function onRemoveStation(station) {
+        await toggleLikedStation(station)
     }
 
     async function onDeleteStation(stationId){
@@ -77,6 +80,11 @@ export function StationDetails() {
             console.log(track._id)
             await removeTrackFromStation(stationId, track._id)
         }
+    }
+
+    function onAddStationToQueue(tracks){
+        console.log(tracks)
+        playerActions.onAddStationToList(tracks)
     }
 
     async function onToggleLiked(track) {
@@ -307,13 +315,14 @@ export function StationDetails() {
     function handleOpenMenuStation({ x, y, context }) {
         const { station } = context
         let actions
+        const isLiked = sidebarStations.some(({ _id }) => _id === station._id)
         if (station.owner._id === user._id) {
             actions = [
                 {
                     id: makeId(),
                     icon: 'queue',
                     name: 'Add to queue', // free
-                    callback: () => { },
+                    callback: () => playerActions.onAddStationToList(tracks),
                     border: true,
                 }, // TODO
                 {
@@ -356,7 +365,6 @@ export function StationDetails() {
                 }, // TODO
             ]
         } else {
-            const isLiked = user.likedStations.includes(station._id)
             if (station.type === 'station') {
                 actions = [
                     isLiked
@@ -376,7 +384,7 @@ export function StationDetails() {
                         id: makeId(),
                         icon: 'queue',
                         name: 'Add to queue',
-                        callback: () => {},
+                        callback: () => onAddStationToQueue(tracks),
                         border: true,
                     }, // TODO
                     isLiked && {
@@ -512,6 +520,9 @@ export function StationDetails() {
                     <StationControls
                         openContextMenu={handleOpenMenuStation}
                         station={station}
+                        onAddStation={onAddStation}
+                        onRemoveStation={onRemoveStation}
+                        user={user}
                     />
                     {/* </div> */}
                     {/* <div

@@ -12,6 +12,7 @@ import { toggleLikedStation } from '../../store/actions/user.actions.js'
 import { useModal } from '../ModalProvider.jsx'
 import { useEffectUpdate } from '../../customHooks/useEffectUpdate.js'
 import { useNavigate } from 'react-router-dom'
+// import { playerActions } from '../store/actions/player.actions.js'
 
 export function SideBar() {
     const user = useSelector(storeState => storeState.userModule.user)
@@ -29,7 +30,7 @@ export function SideBar() {
                 { id: makeId(), icon: 'queue', name: 'Add to queue', callback: () => {}}, // TODO
                 { id: makeId(), icon: 'profile', name: 'Add to profile', callback: () => {},border: true,}, // TODO
                 { id: makeId(), icon: 'edit', name: 'Edit details', callback: () => {openEditStation()} },
-                { id: makeId(), icon: 'delete', name: 'Delete', callback: () => {onDeleteStation(station)} }, // TODO
+                { id: makeId(), icon: 'delete', name: 'Delete', callback: () => {onDeleteStation(station)} },   
                 { id: makeId(), icon: 'new-playlist', name: 'Create playlist', callback: () => {} }, // TODO
                 { id: makeId(), icon: 'add', name: 'Create folder', callback: () => {} }, // TODO
                 { id: makeId(), icon: 'private', name: 'Make private', callback: () => {} }, // TODO

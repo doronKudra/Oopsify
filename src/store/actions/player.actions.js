@@ -1,6 +1,6 @@
 import { utilService } from "../../services/util.service"
 import { youtubeService } from "../../services/youtubeService"
-import { ADD_TRACK_TO_LIST, SET_LIST_IDX, SET_TRACK_LIST, UPDATE_CURRENT_TRACK } from "../reducers/player.reducer"
+import { ADD_TRACK_TO_LIST, SET_LIST_IDX, SET_TRACK_LIST, UPDATE_CURRENT_TRACK,ADD_STATION_TO_LIST } from "../reducers/player.reducer"
 import { store } from "../store"
 
 
@@ -13,6 +13,7 @@ export const playerActions = {
     onShuffle,
     onAddTrackToList,
     playPrevNextTrack,
+    onAddStationToList,
 }
 
 //FOR PREVIEW
@@ -28,6 +29,11 @@ async function onTrackToPlay(track) {
 //ADD TRACK TO THE END OF THE LIST
 function onAddTrackToList(track) {
     store.dispatch({ type: ADD_TRACK_TO_LIST, track: track })
+}
+
+function onAddStationToList(tracks){
+    store.dispatch({ type: ADD_STATION_TO_LIST, tracks: tracks})
+    onTrackToPlay(tracks[0])
 }
 
 //REPLACE THE CURRENT PLAYLIST
