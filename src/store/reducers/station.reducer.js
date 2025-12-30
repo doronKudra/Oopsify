@@ -48,7 +48,7 @@ export function stationReducer(state = initialState, action) {
                 return { ...state, station: { ...state.station, msgs: [...state.station.msgs || [], action.msg] } }
             }
         case ADD_TRACK:
-            return { ...state, station: { ...state.station, tracks: [...state.station.tracks || [], action.track] }}
+            return { ...state, station: { ...state.station, tracks: [...action.tracks] }}
         case REMOVE_TRACK:
             let updatedTracks = state.station.tracks.filter(track => track._id !== action.trackId)
             return { ...state, station: { ...state.station, tracks: [...updatedTracks]}}

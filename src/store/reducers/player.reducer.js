@@ -6,12 +6,15 @@ export const SET_LIST_IDX = 'SET_LIST_IDX'
 export const ADD_TRACK_TO_LIST = 'ADD_TRACK_TO_LIST'
 export const ADD_STATION_TO_LIST = 'ADD_STATION_TO_LIST'
 export const SET_STATION_SELECTED = 'SET_STATION_SELECTED'
+export const SET_PLAYING = 'SET_PLAYING'
+export const SET_STATION_ID = 'SET_STATION_ID'
+
 
 const initialState = {
     track: null,
     trackList: [],
-    idx: 0, //?
-    stationSelected: stationId,
+    idx: 0,
+    stationId: null,
     isPlaying: false,
 }
 
@@ -26,13 +29,16 @@ export function playerReducer(state = initialState, action) {
 
         case SET_LIST_IDX:
             return { ...state, idx: action.idx }
+
         case ADD_TRACK_TO_LIST:
             return { ...state, trackList: [...state.trackList, action.track] }
+            
         case ADD_STATION_TO_LIST:
             return {
                 ...state,
                 trackList: [...state.trackList, ...action.tracks],
             }
+
         case SET_STATION_SELECTED:
             return {
                 ...state,
@@ -40,6 +46,15 @@ export function playerReducer(state = initialState, action) {
                     ...state.stationSelected,
                     ...action.stationSelected,
                 },
+            }
+        
+        case SET_PLAYING:
+            return {
+                ...state, isPlaying: action.isPlaying
+            }
+        case SET_STATION_ID:
+            return {
+                ...state, stationId: action.stationId
             }
 
         default:

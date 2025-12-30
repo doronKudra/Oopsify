@@ -11,6 +11,7 @@ function getEmptyStation() {
         description: '',
         images: [],
         tracks: [],
+        type: 'station',
 	}
 }
 

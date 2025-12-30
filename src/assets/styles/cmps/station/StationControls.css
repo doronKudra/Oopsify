@@ -39,6 +39,10 @@
     width: 32px;
 }
 
+.liked-icon-marked{
+    fill: #1ed760;
+}
+
 /* Hover effect */
 .control-btn:hover .icon-control {
     color: #fff;

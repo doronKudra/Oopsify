@@ -201,6 +201,7 @@
 
 .user-menu-wrapper {
     position: relative;
+    height: 100%;
 }
 
 .user-modal {

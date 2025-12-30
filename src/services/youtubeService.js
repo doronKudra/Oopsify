@@ -18,6 +18,6 @@ async function search(artistName, txt) {
     url.searchParams.set('key', key)
 
     const data = await fetch(url).then(res => res.json())
-    if (!data.items[0]) alert('Track is not found, please try another track or wait sometime')
+    if (!data.items[0]) return "7q2B4M5EiBkqrlsNW8lB7N"
     return data.items[0]?.id.videoId
 }
