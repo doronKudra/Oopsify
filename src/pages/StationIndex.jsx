@@ -148,11 +148,20 @@ export function StationIndex() {
             return
         }
 
-        const [r, g, b] = color.value 
+        const [r, g, b] = color.value
         const rgb = `${r}, ${g}, ${b}`
 
         setHomeBg(rgb)
     }
+
+function shuffleAndFilterList(list) {
+    return [...list]
+        .filter(station => station.tracks?.length > 0)
+        .sort(() => Math.random() - 0.5)
+}
+
+    const recommendedStations = shuffleAndFilterList(stations)
+    const discoverStations = shuffleAndFilterList(stations)
 
     return (
         <main
@@ -176,13 +185,13 @@ export function StationIndex() {
             />
             <StationList
                 openContextMenu={handleOpenMenu}
-                stations={stations}
+                stations={recommendedStations}
                 listType={'index'}
                 listTitle={'Recommended Stations'}
             />
             <StationList
                 openContextMenu={handleOpenMenu}
-                stations={stations}
+                stations={discoverStations}
                 listType={'index'}
                 listTitle={'Discover Picks for you'}
             />
