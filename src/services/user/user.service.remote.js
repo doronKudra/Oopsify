@@ -75,6 +75,7 @@ async function update(userToUpdate) {
     // When admin updates other user's details, do not update loggedinUser
     const loggedinUser = getLoggedinUser() // Might not work because its defined in the main service???
     if (loggedinUser && loggedinUser._id === user._id) saveLoggedinUser(user)
+    console.log('user',user)
     return user
 }
 

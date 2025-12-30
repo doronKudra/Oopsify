@@ -29,6 +29,7 @@ export async function loadStations(filterBy) { //station index
 export async function loadSidebarStations(filterBy) {
     try {
         const stations = await stationService.query(filterBy)
+        console.log(stations)
         store.dispatch({ type: SET_SIDEBAR_STATIONS, stations })
     } catch (err) {
         console.error('Cannot load stations', err)
