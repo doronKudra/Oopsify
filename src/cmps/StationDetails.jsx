@@ -52,8 +52,6 @@ export function StationDetails() {
         setTracks(station?.tracks || [])
     },[station])
     
-    // const station =
-    // stationId === 'liked-songs' ? user.likedTracks : stationFromStore
     const { openContextMenu } = useContextMenu()
 
     async function onAddStation(station) {
@@ -136,13 +134,10 @@ export function StationDetails() {
         const newIndex = tempIdsRef.current.indexOf(over.id)
 
         const newTrackOrder = arrayMove(tracks, oldIndex, newIndex)
-        // 1. Update UI immediately
         setTracks(newTrackOrder)
         console.log(tracks)
-        // 2. Update temp IDs
         tempIdsRef.current = arrayMove(tempIdsRef.current, oldIndex, newIndex)
 
-        // 3. Persist to backend + Redux
         const updatedStation = {
             ...station,
             tracks: newTrackOrder,

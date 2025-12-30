@@ -14,7 +14,7 @@ export const stationService = {
 }
 
 async function query(filterBy = null) {
-    return httpService.get(`station`,  filterBy)
+    return httpService.get(`station`, { params: filterBy })
 }
 
 function getById(stationId) {
@@ -26,12 +26,13 @@ async function remove(stationId) {
 }
 async function save(station) {
     var savedStation
+
     if (station._id) {
-        console.log(station)
         savedStation = await httpService.put(`station/${station._id}`, station)
     } else {
         savedStation = await httpService.post('station', station)
     }
+    console.log(savedStation)
     return savedStation
 }
 
@@ -40,13 +41,13 @@ async function addStationMsg(stationId, txt) {
     return savedMsg
 }
 
-async function addTrack(stationId, track){
+async function addTrack(stationId, track) {
     const updatedStation = await httpService.post(`station/${stationId}/track`, track)
     console.log(updatedStation)
     return updatedStation
 }
 
-async function removeTrack(stationId, trackId){
+async function removeTrack(stationId, trackId) {
     return httpService.delete(`station/${stationId}/${trackId}`)
 }
 

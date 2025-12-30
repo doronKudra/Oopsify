@@ -55,7 +55,7 @@ export async function setUserStation(station) { //✅
     try {
         const savedStation = await userService.saveStation(station)
         if (station.id === 'liked-tracks') store.dispatch({ type: SET_LIKED_TRACKS, station: savedStation.tracks })
-        else store.dispatch({ type: UPDATE_OWNED_STATION, station: savedStation })
+        else store.dispatch({ type: UPDATE_OWNED_STATION, station: savedStation._id })
 
     } catch (err) {
         console.error('Cannot update station', err)
