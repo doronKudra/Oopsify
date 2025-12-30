@@ -3,9 +3,16 @@
 // import { showSuccessMsg, showErrorMsg } from '../services/event-bus.service'
 // import { getDemoStation } from '../services/track/track.service.js'
 import { useEffect, useState, useRef } from 'react'
-import { useParams,useNavigate } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux'
-import { loadStation, loadLikedTracks, updateStation,removeStation, addTrackToStation, removeTrackFromStation } from '../store/actions/station.actions'
+import {
+    loadStation,
+    loadLikedTracks,
+    updateStation,
+    removeStation,
+    addTrackToStation,
+    removeTrackFromStation,
+} from '../store/actions/station.actions'
 import { TrackList } from './TrackList.jsx'
 import { StationControls } from './StationControls.jsx'
 import { FastAverageColor } from 'fast-average-color'
@@ -26,16 +33,16 @@ import {
 } from '../store/actions/user.actions.js'
 import { playerActions } from '../store/actions/player.actions.js'
 
-
-
 export function StationDetails() {
     
     const { stationId } = useParams()
     const { openEditStation } = useModal()
     const user = useSelector((store) => store.userModule.user)
     const station = useSelector((store) => store.stationModule.station)
-    const sidebarStations = useSelector((store) => store.stationModule.sidebarStations)
-    const isOwner = (station?.owner?._id === user?._id)
+    const sidebarStations = useSelector(
+        (store) => store.stationModule.sidebarStations
+    )
+    const isOwner = station?.owner?._id === user?._id
     const [tracks,setTracks] = useState(stationId === 'liked-tracks' ? user?.likedTracks?.tracks : (station?.tracks || []))
     const navigate = useNavigate()
     useEffect(() => {
@@ -62,7 +69,7 @@ export function StationDetails() {
         await toggleLikedStation(station)
     }
 
-    async function onDeleteStation(stationId){
+    async function onDeleteStation(stationId) {
         toggleLikedStation(station)
         await removeStation(stationId)
         navigate('/')
@@ -85,9 +92,9 @@ export function StationDetails() {
         }
     }
 
-    function onAddStationToQueue(tracks){
+    function onAddStationToQueue(tracks) {
         console.log(tracks)
-        playerActions.onAddStationToList(tracks)
+        playerActions.onPlayStation(tracks)
     }
 
     async function onToggleLiked(track) {
@@ -145,7 +152,7 @@ export function StationDetails() {
         await setUserStation(updatedStation)
     }
 
-    const isStation = station?.type === 'station'
+    const isStation = !station?.type || station?.type === 'station'
 
     const dominant = bgColor.hex
     const base = '#121212'
@@ -322,7 +329,7 @@ export function StationDetails() {
                     id: makeId(),
                     icon: 'queue',
                     name: 'Add to queue', // free
-                    callback: () => playerActions.onAddStationToList(tracks),
+                    callback: () => playerActions.onPlayStation(tracks),
                     border: true,
                 }, // TODO
                 {

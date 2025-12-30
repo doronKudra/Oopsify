@@ -15,19 +15,21 @@ import { useNavigate } from 'react-router-dom'
 import { playerActions } from '../../store/actions/player.actions.js'
 
 export function SideBar() {
-    const user = useSelector(storeState => storeState.userModule.user)
+    const user = useSelector((storeState) => storeState.userModule.user)
     const [filterBy, setFilterBy] = useState(stationService.getDefaultFilter())
     const stations = useSelector(storeState => storeState.stationModule.sidebarStations)
     const currentStation = useSelector(storeState => storeState.stationModule.station)
     const { openContextMenu } = useContextMenu()
     const { openEditStation } = useModal()
     const navigate = useNavigate()
+    const isOpen = useState(false)
+
     function handleOpenMenu({ x, y, context }) {
         const { station } = context
         let actions
-        if ((station.owner._id === user._id)) {
+        if (station.owner._id === user._id) {
             actions = [
-                { id: makeId(), icon: 'queue', name: 'Add to queue', callback: () => playerActions.onAddStationToList(station.tracks)}, // TODO
+                { id: makeId(), icon: 'queue', name: 'Add to queue', callback: () => playerActions.onPlayStation(station.tracks)}, // TODO
                 { id: makeId(), icon: 'profile', name: 'Add to profile', callback: () => {},border: true,}, // TODO
                 { id: makeId(), icon: 'edit', name: 'Edit details', callback: () => {openEditStation()} },
                 { id: makeId(), icon: 'delete', name: 'Delete', callback: () => {onDeleteStation(station)} },   
@@ -43,17 +45,65 @@ export function SideBar() {
             const isPinned = false
             if (station.type === 'station') {
                 actions = [
-                    { id: makeId(), icon: 'queue', name: 'Add to queue', callback: () => playerActions.onAddStationToList(station.tracks),border: true, }, // TODO
-                    (isLiked && { id: makeId(), icon: 'profile', name: 'Add to profile', callback: () => {},border: true, }),// TODO
-                    {id: makeId(), icon: 'remove', name: 'Remove from Your Library', callback: () => onRemoveStation(station),border: true, },
-                    { id: makeId(), icon: 'new-playlist', name: 'Create playlist', callback: () => {} },// TODO
-                    { id: makeId(), icon: 'add', name: 'Create folder', callback: () => {},border: true,},// TODO
-                    { id: makeId(), icon: 'folder', name: 'Move to folder', callback: () => {} },// TODO
-                    isPinned ?
-                        { id: makeId(), icon: 'unpin', name: 'Unpin playlist', callback: () => onPinStation(station) } :// TODO
-                        { id: makeId(), icon: 'pin', name: 'Pin playlist', callback: () => onPinStation(station) },// TODO
-                    { id: makeId(), icon: 'share', name: 'Share', callback: () => {} },// TODO
-
+                    {
+                        id: makeId(),
+                        icon: 'queue',
+                        name: 'Add to queue',
+                        callback: () => {},
+                        border: true,
+                    }, // TODO
+                    isLiked && {
+                        id: makeId(),
+                        icon: 'profile',
+                        name: 'Add to profile',
+                        callback: () => {},
+                        border: true,
+                    }, // TODO
+                    {
+                        id: makeId(),
+                        icon: 'remove',
+                        name: 'Remove from Your Library',
+                        callback: () => onRemoveStation(station),
+                        border: true,
+                    },
+                    {
+                        id: makeId(),
+                        icon: 'new-playlist',
+                        name: 'Create playlist',
+                        callback: () => {},
+                    }, // TODO
+                    {
+                        id: makeId(),
+                        icon: 'add',
+                        name: 'Create folder',
+                        callback: () => {},
+                        border: true,
+                    }, // TODO
+                    {
+                        id: makeId(),
+                        icon: 'folder',
+                        name: 'Move to folder',
+                        callback: () => {},
+                    }, // TODO
+                    isPinned
+                        ? {
+                              id: makeId(),
+                              icon: 'unpin',
+                              name: 'Unpin playlist',
+                              callback: ({ station }) => onPinStation(station),
+                          } // TODO
+                        : {
+                              id: makeId(),
+                              icon: 'pin',
+                              name: 'Pin playlist',
+                              callback: ({ station }) => onPinStation(station),
+                          }, // TODO
+                    {
+                        id: makeId(),
+                        icon: 'share',
+                        name: 'Share',
+                        callback: () => {},
+                    }, // TODO
                 ]
             }
         }
@@ -61,13 +111,11 @@ export function SideBar() {
             x,
             y,
             context,
-            actions
+            actions,
         })
     }
 
-    function onPinStation(station) {
-        
-    }
+    function onPinStation(station) {}
 
     function onRemoveStation(station) {
         toggleLikedStation(station)
@@ -79,6 +127,10 @@ export function SideBar() {
         if(currentStation._id === station._id){
             navigate('/')
         }
+    }
+
+    function toggleSidebar() {
+        
     }
 
     useEffectUpdate(() => {
@@ -93,18 +145,20 @@ export function SideBar() {
         if (!user || !user?.stations) {
             return
         }
-        setFilterBy(prev => ({
+        setFilterBy((prev) => ({
             ...prev,
-            stationsId: user.stations
+            stationsId: user.stations,
         }))
     }, [user?.stations])
 
     
     return (
         <div className="route-scroll sidebar-scroll">
-            <aside className='sidebar-container'>
-                <header className='sidebar-actions'>
-                    <SideBarHeader user={user} />
+            <aside
+                className={`sidebar-container ${isOpen ? 'open' : 'closed'}`}
+            >
+                <header className="sidebar-actions">
+                    <SideBarHeader user={user} toggleSidebar={toggleSidebar}/>
                     <SideBarFilter />
                 </header>
                 <LikedTracks user={user} listType={'favorites'} />

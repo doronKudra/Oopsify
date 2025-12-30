@@ -1,5 +1,7 @@
+import { useNavigate } from "react-router"
 
 export function SearchGenres() {
+    const navigate = useNavigate()
 
     const genres = [
         { name: 'Music', bgc: '#dc148c', url: 'https://i.scdn.co/image/ab67fb8200005caf474a477debc822a3a45c5acb' },
@@ -46,13 +48,17 @@ export function SearchGenres() {
         { name: 'Documentary', bgc: '#503750', url: 'https://i.scdn.co/image/ab6765630000ba8a2f514cde3ee9501e7ada4cf4' },
     ]
 
+    function onGenre(genre) {
+       navigate(`/search?txt=genre:${genre.name}&type=track`)
+    }
+
     return (
         <div className="search-genres">
             <div className="search-genres-header" >
                 <h1>Browse all</h1>
             </div>
             {genres.map((genre, idx) => (
-                <section key={genre.name + idx} className="genre-preview" style={{ backgroundColor: genre.bgc }}>
+                <section onClick={()=>onGenre(genre)} key={genre.name + idx} className="genre-preview" style={{ backgroundColor: genre.bgc }}>
                     <h2>{genre.name}</h2>
                     <img src={genre.url} alt="" />
                 </section>

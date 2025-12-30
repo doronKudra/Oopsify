@@ -5,15 +5,17 @@ import { VolumeControl } from './VolumeControl.jsx'
 import { useSelector } from 'react-redux'
 import { YtPlayer } from '../YtPlayer.jsx'
 import { playerActions } from '../../store/actions/player.actions.js'
-import { useContextMenu } from '../OptionMenuProvider.jsx'
-import { makeId } from '../../services/util.service.js'
+// import { useContextMenu } from '../OptionMenuProvider.jsx'
 import { toggleLikedTrack } from '../../store/actions/user.actions.js'
+import { store } from '../../store/store.js'
+import { SET_PLAYING } from '../../store/reducers/player.reducer.js'
 
 export function AppFooter() {
 	const track = useSelector(state => state.playerModule.track)
 	const trackList = useSelector(state => state.playerModule.trackList)
 
-	const [isPlaying, setIsPlaying] = useState(false)
+	const isPlaying = useSelector(state => state.playerModule.isPlaying)
+	// const [isPlaying, setIsPlaying] = useState(false)
 	const [duration, setDuration] = useState(null)
 	const [currTime, setCurrTime] = useState(null)
 	const [volume, setVolume] = useState(50)
@@ -23,11 +25,18 @@ export function AppFooter() {
 	const volumeRef = useRef(null)
 
 	const playerRef = useRef(null)
-	const { openContextMenu } = useContextMenu()
+	// const { openContextMenu } = useContextMenu()
 
 	useEffect(() => {
 		volumeRef.current.style.setProperty('--fill', `${volume}%`)
 	}, [])
+
+	useEffect(() => {
+		if (playerRef.current) {
+			if (isPlaying) playerRef.current.playVideo()
+			else playerRef.current.pauseVideo()
+		}
+	}, [isPlaying])
 
 	function onReady({ target }) {
 		playerRef.current = target
@@ -38,7 +47,7 @@ export function AppFooter() {
 	function onPlayerStateChange(event) {
 		if (!playerRef.current) return
 		if (event.data === window.YT.PlayerState.PLAYING) {
-			setIsPlaying(true)
+			playerActions.onPlaying(true)
 
 			const dur = playerRef.current.getDuration()
 			if (dur) setDuration(dur)
@@ -53,7 +62,7 @@ export function AppFooter() {
 			event.data === window.YT.PlayerState.PAUSED ||
 			event.data === window.YT.PlayerState.ENDED
 		) {
-			setIsPlaying(false)
+			playerActions.onPlaying(false)
 			clearInterval(intervalTimeRef.current)
 
 			if (event.data === window.YT.PlayerState.ENDED) {
@@ -64,13 +73,15 @@ export function AppFooter() {
 
 
 	function onPause() {
-		if (!playerRef.current) return
-		playerRef.current.pauseVideo()
+		store.dispatch({ type: SET_PLAYING, isPlaying: false })
+		// if (!playerRef.current) return
+		// playerRef.current.pauseVideo()
 	}
 
 	function onPlay() {
-		if (!playerRef.current) return
-		playerRef.current.playVideo()
+		store.dispatch({ type: SET_PLAYING, isPlaying: true })
+		// if (!playerRef.current) return
+		// playerRef.current.playVideo()
 	}
 
 	function onProgressBar(value, isMouseUp) {
@@ -98,7 +109,8 @@ export function AppFooter() {
 		const newVolume = volume ? 0 : lastVolume.current
 		lastVolume.current = volume
 		setVolume(newVolume)
-		playerRef.current.setVolume(newVolume)
+		if (playerRef.current) playerRef.current.setVolume(value)
+		// playerRef.current.setVolume(newVolume)
 		volumeRef.current.style.setProperty('--fill', `${newVolume}%`)
 	}
 
@@ -106,7 +118,7 @@ export function AppFooter() {
 		const value = target.value
 		lastVolume.current = value
 		setVolume(value)
-		playerRef.current.setVolume(value)
+		if (playerRef.current) playerRef.current.setVolume(value)
 		volumeRef.current.style.setProperty('--fill', `${value}%`)
 	}
 
@@ -114,39 +126,19 @@ export function AppFooter() {
 		toggleLikedTrack(track)
 	}
 	function onTilte() {
-		
+
 	}
 	function onArtist() {
-		
+
 	}
 
-	function handleOpenMenu({ x, y, context }) {
-		// const { track } = context
-		//const isInStation = false // for now
-		// const isLiked = true
-		// let actions = [
-		// 	{ id: makeId(), icon: 'add', name: 'Add to playlist', callback: () => onAddToStation(track), }, // TODO (add to a different playlist) dropdown
-		// 	isLiked ? { id: makeId(), icon: 'remove', name: 'Remove from your Liked Songs', callback: () => onToggleLiked(track), }
-		// 		: { id: makeId(), icon: 'save', name: 'Save to your Liked Songs', callback: () => onToggleLiked(track), },
-		// 	{ id: makeId(), icon: 'queue', name: 'Add to queue', callback: () => { }, }, // TODO
-		// 	{ id: makeId(), icon: 'radio', name: 'Go to song radio', callback: () => { }, }, // TODO
-		// 	{ id: makeId(), icon: 'artist', name: 'Go to artist', callback: () => { }, }, // TODO
-		// 	{ id: makeId(), icon: 'album', name: 'Go to album', callback: () => { }, }, // TODO - make a dropdown cmp
-		// 	{ id: makeId(), icon: 'share', name: 'Share', callback: () => { }, }, // TODO
-		// ]
-		// openContextMenu({
-		// 	x,
-		// 	y,
-		// 	context,
-		// 	actions,
-		// })
-	}
+
 
 	return (
 		<>
 			{track && <YtPlayer videoId={track.videoId} onReady={onReady} onPlayerStateChange={onPlayerStateChange} />}
 			<footer className="app-footer">
-				<FooterTrackPreview openContextMenu={handleOpenMenu} track={track} onAdd={onAdd} onTilte={onTilte} onArtist={onArtist} />
+				<FooterTrackPreview track={track} onAdd={onAdd} onTilte={onTilte} onArtist={onArtist} />
 				<PlayerControls
 					trackList={trackList}
 					isPlaying={isPlaying}
