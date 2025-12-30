@@ -22,7 +22,7 @@ export function SideBar() {
     const { openContextMenu } = useContextMenu()
     const { openEditStation } = useModal()
     const navigate = useNavigate()
-    const isOpen = useState(false)
+    const [isOpen, setIsOpen] = useState(false)
 
     function handleOpenMenu({ x, y, context }) {
         const { station } = context
