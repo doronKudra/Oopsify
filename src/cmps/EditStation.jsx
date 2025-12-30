@@ -19,11 +19,10 @@ export function EditStation({ closeModal }) {
             ...station,
             name,
             description,
+            imageFile, // 👈 important
         }
-        const formData = new FormData()
-        if(imageFile) formData.append('image', imageFile)
 
-        await updateStation(updatedStation, formData)
+        await updateStation(updatedStation)
         closeModal()
     }
 
