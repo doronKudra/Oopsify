@@ -14,8 +14,8 @@ export function AppFooter() {
 	const track = useSelector(state => state.playerModule.track)
 	const trackList = useSelector(state => state.playerModule.trackList)
 
-	// const isPlaying = useSelector(state => state.playerModule)
-	const [isPlaying, setIsPlaying] = useState(false)
+	const isPlaying = useSelector(state => state.playerModule.isPlaying)
+	// const [isPlaying, setIsPlaying] = useState(false)
 	const [duration, setDuration] = useState(null)
 	const [currTime, setCurrTime] = useState(null)
 	const [volume, setVolume] = useState(50)
@@ -32,8 +32,11 @@ export function AppFooter() {
 	}, [])
 
 	useEffect(() => {
-		store.dispatch({type:SET_PLAYING, isPlaying})
-	},[isPlaying])
+		if (playerRef.current) {
+			if (isPlaying) playerRef.current.playVideo()
+			else playerRef.current.pauseVideo()
+		}
+	}, [isPlaying])
 
 	function onReady({ target }) {
 		playerRef.current = target
@@ -44,7 +47,7 @@ export function AppFooter() {
 	function onPlayerStateChange(event) {
 		if (!playerRef.current) return
 		if (event.data === window.YT.PlayerState.PLAYING) {
-			setIsPlaying(true)
+			playerActions.onPlaying(true)
 
 			const dur = playerRef.current.getDuration()
 			if (dur) setDuration(dur)
@@ -59,7 +62,7 @@ export function AppFooter() {
 			event.data === window.YT.PlayerState.PAUSED ||
 			event.data === window.YT.PlayerState.ENDED
 		) {
-			setIsPlaying(false)
+			playerActions.onPlaying(false)
 			clearInterval(intervalTimeRef.current)
 
 			if (event.data === window.YT.PlayerState.ENDED) {
@@ -70,13 +73,15 @@ export function AppFooter() {
 
 
 	function onPause() {
-		if (!playerRef.current) return
-		playerRef.current.pauseVideo()
+		store.dispatch({ type: SET_PLAYING, isPlaying: false })
+		// if (!playerRef.current) return
+		// playerRef.current.pauseVideo()
 	}
 
 	function onPlay() {
-		if (!playerRef.current) return
-		playerRef.current.playVideo()
+		store.dispatch({ type: SET_PLAYING, isPlaying: true })
+		// if (!playerRef.current) return
+		// playerRef.current.playVideo()
 	}
 
 	function onProgressBar(value, isMouseUp) {
