@@ -16,8 +16,9 @@ export function StationControls({
     const isLiked = sidebarStations.some(({ _id }) => _id === station._id)
 
     const playingStationId = useSelector((store) => store.playerModule.stationId)
+    const isPlaying = useSelector(state => state.playerModule.isPlaying)
 
-    const isThisStationPlaying = playingStationId === station._id && playerState.isPlaying
+    const isThisStationPlaying = playingStationId === station._id && isPlaying
 
     function onStationRightClick(ev, station) {
         openContextMenu({
@@ -28,14 +29,14 @@ export function StationControls({
     }
 
     function onPlayPauseBtn() {
-        const isPlaying = store.getState().playerModule.isPlaying
-        playerActions.onPlaying(!isPlaying)
-        // if (isThisStationPlaying) {
-        //     playerActions.setStationPlaying(false)
-        //     // playerActions.pauseTrack() // 
-        // } else {
-        //     playerActions.onPlayStation(station)
-        // }
+        if (isThisStationPlaying) {
+            const isPlaying = store.getState().playerModule.isPlaying
+            playerActions.onPlaying(!isPlaying)
+            // playerActions.setStationPlaying(false)
+            // playerActions.pauseTrack() // 
+        } else {
+            playerActions.onPlayStation(station)
+        }
     }
 
     const hasImg = station?.images?.[0]?.url

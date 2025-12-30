@@ -37,7 +37,6 @@ export async function loadSidebarStations(filterBy) {
 }
 
 export async function loadStation(stationId) {
-    console.log('from load station', stationId)
     try {
         store.dispatch({ type: SET_STATION, station: null })
         const station = await stationService.getById(stationId)

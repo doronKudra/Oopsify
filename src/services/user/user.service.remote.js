@@ -79,10 +79,7 @@ async function update(userToUpdate) {
 }
 
 async function saveStation(station) {
-    const savedStation = await httpService.put(
-        `station/${station._id}`,
-        station
-    )
+    const savedStation = await httpService.put(`station/${station._id}`,station)
     // } else {
     // savedStation = await httpService.post('station', station)
     // }
