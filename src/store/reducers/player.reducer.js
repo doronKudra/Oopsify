@@ -19,7 +19,6 @@ export function playerReducer(state = initialState, action) {
     switch (action.type) {
         case UPDATE_CURRENT_TRACK:
             return { ...state, track: action.track }
-
         case SET_TRACK_LIST:
             return { ...state, trackList: action.trackList, idx: 0 }
         case SET_LIST_IDX:

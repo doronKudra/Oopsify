@@ -36,17 +36,22 @@ export function StationDetails() {
     const station = useSelector((store) => store.stationModule.station)
     const sidebarStations = useSelector((store) => store.stationModule.sidebarStations)
     const isOwner = (station?.owner?._id === user?._id)
-    const tracks = stationId === 'liked-tracks' ? user?.likedTracks?.tracks : (station?.tracks || [])
+    const [tracks,setTracks] = useState(stationId === 'liked-tracks' ? user?.likedTracks?.tracks : (station?.tracks || []))
     const navigate = useNavigate()
     useEffect(() => {
         if (stationId !== 'liked-tracks') {
             loadStation(stationId) //updates the store's station
-            console.log('if')
         } else {
             loadLikedTracks(stationId)
-            console.log('else')
         }
+        
     }, [stationId])
+
+    useEffect(() => {
+        console.log(tracks)
+        setTracks(station?.tracks || [])
+    },[station])
+    
     // const station =
     // stationId === 'liked-songs' ? user.likedTracks : stationFromStore
     const { openContextMenu } = useContextMenu()
@@ -125,15 +130,15 @@ export function StationDetails() {
 
     async function handleDragEnd(event) {
         const { active, over } = event
-        if (!over || active._id === over._id) return
+        if (!over || active.id === over.id) return
 
-        const oldIndex = tempIdsRef.current.indexOf(active._id)
-        const newIndex = tempIdsRef.current.indexOf(over._id)
+        const oldIndex = tempIdsRef.current.indexOf(active.id)
+        const newIndex = tempIdsRef.current.indexOf(over.id)
 
         const newTrackOrder = arrayMove(tracks, oldIndex, newIndex)
         // 1. Update UI immediately
         setTracks(newTrackOrder)
-
+        console.log(tracks)
         // 2. Update temp IDs
         tempIdsRef.current = arrayMove(tempIdsRef.current, oldIndex, newIndex)
 

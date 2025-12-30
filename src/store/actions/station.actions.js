@@ -90,7 +90,20 @@ export async function addStation() {
 
 export async function updateStation(station) {
     try {
-        const savedStation = await stationService.save(station)
+        const formData = new FormData()
+
+        formData.append('name', station.name)
+        formData.append('description', station.description)
+
+        if (station.imageFile) {
+            formData.append('image', station.imageFile)
+        }
+
+        const savedStation = await stationService.updateWithImage(
+            station._id,
+            formData
+        )
+
         store.dispatch({ type: UPDATE_STATION, station: savedStation })
         return savedStation
     } catch (err) {
@@ -101,11 +114,11 @@ export async function updateStation(station) {
 
 export async function addTrackToStation(stationId, track) {
     try {
-        const addedTrack = await stationService.addTrack(stationId, track)
+        const updatedStation = await stationService.addTrack(stationId, track)
+        console.log('newTracks',updatedStation.tracks)
+        store.dispatch({ type: ADD_TRACK, tracks:updatedStation.tracks})
 
-        store.dispatch({ type: ADD_TRACK, track})
-
-        return addedTrack
+        return updatedStation.tracks
     } catch (err) {
         console.error('Cannot add track to station', err)
         throw err

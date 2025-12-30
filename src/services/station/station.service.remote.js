@@ -10,6 +10,7 @@ export const stationService = {
     addStationMsg,
     addTrack,
     removeTrack,
+    updateWithImage,
 }
 
 async function query(filterBy = null) {
@@ -40,10 +41,15 @@ async function addStationMsg(stationId, txt) {
 }
 
 async function addTrack(stationId, track){
-    const addedTrack = await httpService.post(`station/${stationId}/track`, track)
-    return addedTrack
+    const updatedStation = await httpService.post(`station/${stationId}/track`, track)
+    console.log(updatedStation)
+    return updatedStation
 }
 
 async function removeTrack(stationId, trackId){
     return httpService.delete(`station/${stationId}/${trackId}`)
+}
+
+async function updateWithImage(stationId, formData) {
+    return await httpService.put(`station/${stationId}`, formData)
 }

@@ -12,7 +12,7 @@ import { toggleLikedStation } from '../../store/actions/user.actions.js'
 import { useModal } from '../ModalProvider.jsx'
 import { useEffectUpdate } from '../../customHooks/useEffectUpdate.js'
 import { useNavigate } from 'react-router-dom'
-// import { playerActions } from '../store/actions/player.actions.js'
+import { playerActions } from '../../store/actions/player.actions.js'
 
 export function SideBar() {
     const user = useSelector(storeState => storeState.userModule.user)
@@ -27,7 +27,7 @@ export function SideBar() {
         let actions
         if ((station.owner._id === user._id)) {
             actions = [
-                { id: makeId(), icon: 'queue', name: 'Add to queue', callback: () => {}}, // TODO
+                { id: makeId(), icon: 'queue', name: 'Add to queue', callback: () => playerActions.onAddStationToList(station.tracks)}, // TODO
                 { id: makeId(), icon: 'profile', name: 'Add to profile', callback: () => {},border: true,}, // TODO
                 { id: makeId(), icon: 'edit', name: 'Edit details', callback: () => {openEditStation()} },
                 { id: makeId(), icon: 'delete', name: 'Delete', callback: () => {onDeleteStation(station)} },   
@@ -43,15 +43,15 @@ export function SideBar() {
             const isPinned = false
             if (station.type === 'station') {
                 actions = [
-                    { id: makeId(), icon: 'queue', name: 'Add to queue', callback: () => {},border: true, }, // TODO
+                    { id: makeId(), icon: 'queue', name: 'Add to queue', callback: () => playerActions.onAddStationToList(station.tracks),border: true, }, // TODO
                     (isLiked && { id: makeId(), icon: 'profile', name: 'Add to profile', callback: () => {},border: true, }),// TODO
                     {id: makeId(), icon: 'remove', name: 'Remove from Your Library', callback: () => onRemoveStation(station),border: true, },
                     { id: makeId(), icon: 'new-playlist', name: 'Create playlist', callback: () => {} },// TODO
                     { id: makeId(), icon: 'add', name: 'Create folder', callback: () => {},border: true,},// TODO
                     { id: makeId(), icon: 'folder', name: 'Move to folder', callback: () => {} },// TODO
                     isPinned ?
-                        { id: makeId(), icon: 'unpin', name: 'Unpin playlist', callback: ({ station }) => onPinStation(station) } :// TODO
-                        { id: makeId(), icon: 'pin', name: 'Pin playlist', callback: ({ station }) => onPinStation(station) },// TODO
+                        { id: makeId(), icon: 'unpin', name: 'Unpin playlist', callback: () => onPinStation(station) } :// TODO
+                        { id: makeId(), icon: 'pin', name: 'Pin playlist', callback: () => onPinStation(station) },// TODO
                     { id: makeId(), icon: 'share', name: 'Share', callback: () => {} },// TODO
 
                 ]
