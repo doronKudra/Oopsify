@@ -14,6 +14,7 @@ export function StationControls({
         (store) => store.stationModule.sidebarStations
     )
     const isLiked = sidebarStations.some(({ _id }) => _id === station._id)
+    // console.log('isLiked:', isLiked)
 
     const playingStationId = useSelector((store) => store.playerModule.stationId)
     const isPlaying = useSelector(state => state.playerModule.isPlaying)

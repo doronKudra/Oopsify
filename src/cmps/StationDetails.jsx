@@ -57,7 +57,6 @@ export function StationDetails() {
     }, [stationId])
 
     useEffect(() => {
-        console.log(tracks)
         setTracks(station?.tracks || [])
     },[station])
     
