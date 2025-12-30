@@ -43,10 +43,7 @@ export function StationDetails() {
         (store) => store.stationModule.sidebarStations
     )
     const isOwner = station?.owner?._id === user?._id
-    const tracks =
-        stationId === 'liked-tracks'
-            ? user?.likedTracks?.tracks
-            : station?.tracks || []
+    const [tracks,setTracks] = useState(stationId === 'liked-tracks' ? user?.likedTracks?.tracks : (station?.tracks || []))
     const navigate = useNavigate()
     useEffect(() => {
         if (stationId !== 'liked-tracks') {
