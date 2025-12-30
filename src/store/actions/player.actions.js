@@ -19,7 +19,7 @@ export const playerActions = {
 async function onTrackToPlay(track) {
     const artistName = track.artists.map(artist => artist.name + ' ')
     const trackName = track.name
-    const videoId = await youtubeService.search(artistName, trackName) || "7q2B4M5EiBkqrlsNW8lB7N"
+    const videoId = await youtubeService.search(artistName, trackName)
     const trackToSave = { ...track, videoId: videoId }
     store.dispatch({ type: UPDATE_CURRENT_TRACK, track: trackToSave })
     _pushToList(track)
