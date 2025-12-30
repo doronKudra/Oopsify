@@ -10,6 +10,7 @@ export const stationService = {
     addStationMsg,
     addTrack,
     removeTrack,
+    updateWithImage,
 }
 
 async function query(filterBy = null) {
@@ -46,4 +47,10 @@ async function addTrack(stationId, track){
 
 async function removeTrack(stationId, trackId){
     return httpService.delete(`station/${stationId}/${trackId}`)
+}
+
+async function updateWithImage(stationId, formData) {
+    return await httpService.put(`station/${stationId}`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+    })
 }

@@ -88,9 +88,10 @@ export async function addStation() {
 }
 
 
-export async function updateStation(station) {
+export async function updateStation(station, formData) {
     try {
-        const savedStation = await stationService.save(station)
+        const savedStation = await stationService.updateWithImage(station._id, formData)
+
         store.dispatch({ type: UPDATE_STATION, station: savedStation })
         return savedStation
     } catch (err) {

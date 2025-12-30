@@ -1,36 +1,38 @@
 import { store } from '../store/store'
-import { useState } from 'react'
-import { updateStation,loadStation } from '../store/actions/station.actions'
+import { useRef, useState } from 'react'
+import { updateStation, loadStation } from '../store/actions/station.actions'
 import { useSelector } from 'react-redux'
 
 export function EditStation({ closeModal }) {
+
     const station = useSelector(storeState => storeState.stationModule.station)
     const [name, setName] = useState(station?.name || '')
     const [description, setDescription] = useState(station?.description || '')
-    const [image, setImage] = useState(station?.images[0]?.url || '')
+    const [imageFile, setImageFile] = useState(null)
+    const [imagePreview, setImagePreview] = useState(imageFile ? URL.createObjectURL(imageFile) : station?.images[0]?.url)
+    const fileInputRef = useRef(null)
 
-    function onSave() {
+    async function onSave() {
         if (!station) return
-        
+
         const updatedStation = {
-            ...station,       
-            name,             
-            description,      
-            images: [{ url: image }] 
+            ...station,
+            name,
+            description,
         }
-        updateStation(updatedStation)
-        
+        const formData = new FormData()
+        if(imageFile) formData.append('image', imageFile)
+
+        await updateStation(updatedStation, formData)
         closeModal()
     }
+
     function onImageChange(e) {
         const file = e.target.files[0]
         if (!file) return
 
-        const reader = new FileReader()
-        reader.onload = () => {
-            setImage(reader.result)
-        }
-        reader.readAsDataURL(file)
+        setImageFile(file)
+        setImagePreview(URL.createObjectURL(file))
     }
     return <div className="edit-modal-container">
         <div onMouseDown={closeModal} className="edit-modal-backdrop"></div>
@@ -43,14 +45,15 @@ export function EditStation({ closeModal }) {
                 <div className="edit-modal-image-container">
                     <img
                         className="edit-modal-img"
-                        src={image || '/src/assets/images/liked-songs.png'}
+                        src={imagePreview || '/src/assets/images/liked-songs.png'}
                         alt="Station cover"
-                        onClick={() => document.getElementById('station-image-input').click()}
+                        onClick={() => fileInputRef.current?.click()}
                     />
-                    <div className="edit-modal-image-overlay" onClick={() => document.getElementById('station-image-input').click()}>
+                    <div className="edit-modal-image-overlay" onClick={() => fileInputRef.current?.click()}>
 
                     </div>
                     <input
+                        ref={fileInputRef}
                         id="station-image-input"
                         type="file"
                         accept="image/*"
