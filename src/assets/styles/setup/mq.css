@@ -6,7 +6,7 @@
 
 @media (min-width: 1048px) {
     div.main-container {
-        grid-template-columns: 26.75rem 1fr;
+        grid-template-columns: 20rem 1fr;
     }
     .sidebar-station-preview-container{
         padding-left: 4px;
