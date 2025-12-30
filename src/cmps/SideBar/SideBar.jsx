@@ -29,7 +29,7 @@ export function SideBar() {
         let actions
         if (station.owner._id === user._id) {
             actions = [
-                { id: makeId(), icon: 'queue', name: 'Add to queue', callback: () => playerActions.onAddStationToList(station.tracks)}, // TODO
+                { id: makeId(), icon: 'queue', name: 'Add to queue', callback: () => playerActions.onPlayStation(station.tracks)}, // TODO
                 { id: makeId(), icon: 'profile', name: 'Add to profile', callback: () => {},border: true,}, // TODO
                 { id: makeId(), icon: 'edit', name: 'Edit details', callback: () => {openEditStation()} },
                 { id: makeId(), icon: 'delete', name: 'Delete', callback: () => {onDeleteStation(station)} },   

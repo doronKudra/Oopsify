@@ -7,11 +7,14 @@ import { YtPlayer } from '../YtPlayer.jsx'
 import { playerActions } from '../../store/actions/player.actions.js'
 // import { useContextMenu } from '../OptionMenuProvider.jsx'
 import { toggleLikedTrack } from '../../store/actions/user.actions.js'
+import { store } from '../../store/store.js'
+import { SET_PLAYING } from '../../store/reducers/player.reducer.js'
 
 export function AppFooter() {
 	const track = useSelector(state => state.playerModule.track)
 	const trackList = useSelector(state => state.playerModule.trackList)
 
+	// const isPlaying = useSelector(state => state.playerModule)
 	const [isPlaying, setIsPlaying] = useState(false)
 	const [duration, setDuration] = useState(null)
 	const [currTime, setCurrTime] = useState(null)
@@ -27,6 +30,10 @@ export function AppFooter() {
 	useEffect(() => {
 		volumeRef.current.style.setProperty('--fill', `${volume}%`)
 	}, [])
+
+	useEffect(() => {
+		store.dispatch({type:SET_PLAYING, isPlaying})
+	},[isPlaying])
 
 	function onReady({ target }) {
 		playerRef.current = target
@@ -114,10 +121,10 @@ export function AppFooter() {
 		toggleLikedTrack(track)
 	}
 	function onTilte() {
-		
+
 	}
 	function onArtist() {
-		
+
 	}
 
 

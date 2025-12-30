@@ -96,7 +96,7 @@ export function StationDetails() {
 
     function onAddStationToQueue(tracks) {
         console.log(tracks)
-        playerActions.onAddStationToList(tracks)
+        playerActions.onPlayStation(tracks)
     }
 
     async function onToggleLiked(track) {
@@ -334,7 +334,7 @@ export function StationDetails() {
                     id: makeId(),
                     icon: 'queue',
                     name: 'Add to queue', // free
-                    callback: () => playerActions.onAddStationToList(tracks),
+                    callback: () => playerActions.onPlayStation(tracks),
                     border: true,
                 }, // TODO
                 {

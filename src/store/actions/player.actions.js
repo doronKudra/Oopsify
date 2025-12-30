@@ -1,6 +1,6 @@
 import { utilService } from "../../services/util.service"
 import { youtubeService } from "../../services/youtubeService"
-import { ADD_TRACK_TO_LIST, SET_LIST_IDX, SET_TRACK_LIST, UPDATE_CURRENT_TRACK,ADD_STATION_TO_LIST } from "../reducers/player.reducer"
+import { ADD_TRACK_TO_LIST, SET_LIST_IDX, SET_TRACK_LIST, UPDATE_CURRENT_TRACK, ADD_STATION_TO_LIST, SET_PLAYING, SET_STATION_ID } from "../reducers/player.reducer"
 import { store } from "../store"
 
 
@@ -9,11 +9,12 @@ export const playerActions = {
     onTrackToPlay,
     isTrackPlaying,
     getPrevNextTrack,
-    onTrackList,
+    onPlayStation,
     onShuffle,
     onAddTrackToList,
     playPrevNextTrack,
-    onAddStationToList,
+    onPlaying,
+    // onAddStationToList,
 }
 
 //FOR PREVIEW
@@ -31,15 +32,16 @@ function onAddTrackToList(track) {
     store.dispatch({ type: ADD_TRACK_TO_LIST, track: track })
 }
 
-function onAddStationToList(tracks){
-    store.dispatch({ type: ADD_STATION_TO_LIST, tracks: tracks})
-    onTrackToPlay(tracks[0])
-}
+// function onAddStationToList(tracks){
+//     store.dispatch({ type: ADD_STATION_TO_LIST, tracks: tracks})
+//     onTrackToPlay(tracks[0])
+// }
 
 //REPLACE THE CURRENT PLAYLIST
-function onTrackList(tracks) {
+function onPlayStation(stationId) {
     onTrackToPlay(tracks[0])
     store.dispatch({ type: SET_TRACK_LIST, trackList: tracks })
+    store.dispatch({ type: SET_STATION_ID, stationId })
 }
 
 //FOR PREVIEW TO SHOW PLAYING SONG STYLE
@@ -48,12 +50,15 @@ function isTrackPlaying(id) { // for lists display
     return isPlaying
 }
 
+function onPlaying(isPlaying) {
+    store.dispatch({ type: SET_PLAYING, isPlaying })
+}
 
 //ONLY MEDIA PLAYER USES!
 
 function playPrevNextTrack(value) {
     const trackList = store.getState().playerModule.trackList
-    
+
     const reqIdx = store.getState().playerModule.idx + value
     const track = trackList[reqIdx]
     if (!trackList || !trackList.length || !track) return
@@ -63,7 +68,7 @@ function playPrevNextTrack(value) {
 function getPrevNextTrack(value) { //value = -1 || 1 // the same as checking if next || prev track
     const trackList = store.getState().playerModule.trackList
     if (!trackList || !trackList.length) return false
-    
+
     const reqIdx = store.getState().playerModule.idx + value
     const track = trackList[reqIdx]
     return track ? track : false
@@ -72,7 +77,7 @@ function getPrevNextTrack(value) { //value = -1 || 1 // the same as checking if 
 function onShuffle() {
     let trackList = [...store.getState().playerModule.trackList]
     if (!trackList || !trackList.length) return
-    
+
     const currIdx = store.getState().playerModule.idx
     const currTrack = trackList.splice(currIdx, 1)
     const shuffeled = [...currTrack, ...utilService.shuffleArray(trackList)]
@@ -87,10 +92,13 @@ function _pushToList(track) {
 }
 
 function onReapet(value) {
-    
+
 }
 
 // function setStationSelected
 
+store.subscribe(()=>{
+    console.log('store:',store.getState())
+})
 
 

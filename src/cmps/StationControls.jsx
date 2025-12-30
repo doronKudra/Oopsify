@@ -2,6 +2,7 @@ import { playerActions } from '../store/actions/player.actions'
 import { useSelector } from 'react-redux'
 import { PlayIcon } from './icons/PlayIcon'
 import { PauseIcon } from './icons/PauseIcon'
+import { store } from '../store/store'
 
 export function StationControls({
     openContextMenu,
@@ -14,11 +15,9 @@ export function StationControls({
     )
     const isLiked = sidebarStations.some(({ _id }) => _id === station._id)
 
-    const playerState = useSelector((store) => store.playerModule)
+    const playingStationId = useSelector((store) => store.playerModule.stationId)
 
-    const isThisStationPlaying =
-        playerState.stationSelected.stationId === station._id &&
-        playerState.stationSelected.isPlaying
+    const isThisStationPlaying = playingStationId === station._id && playerState.isPlaying
 
     function onStationRightClick(ev, station) {
         openContextMenu({
@@ -29,13 +28,14 @@ export function StationControls({
     }
 
     function onPlayPauseBtn() {
-        if (isThisStationPlaying) {
-            playerActions.setStationPlaying(false)
-            // playerActions.pauseTrack() // 
-        } else {
-            playerActions.setStationSelected(station._id, true)
-            playerActions.onTrackList(station.tracks)
-        }
+        const isPlaying = store.getState().playerModule.isPlaying
+        playerActions.onPlaying(!isPlaying)
+        // if (isThisStationPlaying) {
+        //     playerActions.setStationPlaying(false)
+        //     // playerActions.pauseTrack() // 
+        // } else {
+        //     playerActions.onPlayStation(station)
+        // }
     }
 
     const hasImg = station?.images?.[0]?.url
