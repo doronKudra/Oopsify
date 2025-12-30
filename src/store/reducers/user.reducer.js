@@ -14,14 +14,12 @@ export const SET_LIKED_STATIONS = 'SET_LIKED_STATIONS'
 export const UPDATE_OWNED_STATION = 'UPDATE_OWNED_STATION'
 
 const initialState = {
-    // user: userService.getLoggedinUser(),
-    user:null,
+    user: userService?.getLoggedinUser() || null,
     users: [],
     watchedUser: null,
 }
 
 export function userReducer(state = initialState, action) {
-    console.log('action:',action)
     switch (action.type) {
         case SET_USER:
             return { ...state, user: action.user }

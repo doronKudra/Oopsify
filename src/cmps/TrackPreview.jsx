@@ -3,7 +3,7 @@ import { playerActions } from '../store/actions/player.actions'
 import { toggleLikedTrack } from '../store/actions/user.actions'
 import { useLocation } from 'react-router'
 
-export function TrackPreview({ openContextMenu, track, idx, inDetails, onAddTrackInSearch }) {
+export function TrackPreview({ openContextMenu, track, idx, inDetails, onAddToStation }) {
     const user = useSelector(state => state.userModule.user)
 
     function getCurrTime(time) {
@@ -185,7 +185,7 @@ export function TrackPreview({ openContextMenu, track, idx, inDetails, onAddTrac
                     </button>
                 </div>
             ) : (
-                <button onClick={() => onAddTrackInSearch(track)} className="details-add-btn">Add</button>
+                <button onClick={() => onAddToStation(track)} className="details-add-btn">Add</button>
             )}
         </div>
     )

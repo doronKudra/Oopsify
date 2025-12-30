@@ -4,20 +4,24 @@ import { SideBarHeader } from './SideBarHeader.jsx'
 import { SideBarFilter } from './SideBarFilter.jsx'
 import { StationList } from '../StationList.jsx'
 import { stationService } from '../../services/station/index.js'
-import { loadSidebarStations } from '../../store/actions/station.actions.js'
+import { loadSidebarStations, removeStation } from '../../store/actions/station.actions.js'
 import { LikedTracks } from '../LikedTracks.jsx'
 import { useContextMenu } from '../OptionMenuProvider.jsx'
 import { makeId } from '../../services/util.service.js'
 import { toggleLikedStation } from '../../store/actions/user.actions.js'
 import { useModal } from '../ModalProvider.jsx'
+import { useEffectUpdate } from '../../customHooks/useEffectUpdate.js'
+import { useNavigate } from 'react-router-dom'
+// import { playerActions } from '../store/actions/player.actions.js'
 
 export function SideBar() {
     const user = useSelector(storeState => storeState.userModule.user)
     const [filterBy, setFilterBy] = useState(stationService.getDefaultFilter())
     const stations = useSelector(storeState => storeState.stationModule.sidebarStations)
+    const currentStation = useSelector(storeState => storeState.stationModule.station)
     const { openContextMenu } = useContextMenu()
     const { openEditStation } = useModal()
-    console.log('user:',user)
+    const navigate = useNavigate()
     function handleOpenMenu({ x, y, context }) {
         const { station } = context
         let actions
@@ -26,7 +30,7 @@ export function SideBar() {
                 { id: makeId(), icon: 'queue', name: 'Add to queue', callback: () => {}}, // TODO
                 { id: makeId(), icon: 'profile', name: 'Add to profile', callback: () => {},border: true,}, // TODO
                 { id: makeId(), icon: 'edit', name: 'Edit details', callback: () => {openEditStation()} },
-                { id: makeId(), icon: 'delete', name: 'Delete', callback: () => {} }, // TODO
+                { id: makeId(), icon: 'delete', name: 'Delete', callback: () => {onDeleteStation(station)} },   
                 { id: makeId(), icon: 'new-playlist', name: 'Create playlist', callback: () => {} }, // TODO
                 { id: makeId(), icon: 'add', name: 'Create folder', callback: () => {} }, // TODO
                 { id: makeId(), icon: 'private', name: 'Make private', callback: () => {} }, // TODO
@@ -41,7 +45,7 @@ export function SideBar() {
                 actions = [
                     { id: makeId(), icon: 'queue', name: 'Add to queue', callback: () => {},border: true, }, // TODO
                     (isLiked && { id: makeId(), icon: 'profile', name: 'Add to profile', callback: () => {},border: true, }),// TODO
-                    { id: makeId(), icon: 'remove', name: 'Remove from Your Library', callback: () => onRemoveStation(station),border: true, },
+                    {id: makeId(), icon: 'remove', name: 'Remove from Your Library', callback: () => onRemoveStation(station),border: true, },
                     { id: makeId(), icon: 'new-playlist', name: 'Create playlist', callback: () => {} },// TODO
                     { id: makeId(), icon: 'add', name: 'Create folder', callback: () => {},border: true,},// TODO
                     { id: makeId(), icon: 'folder', name: 'Move to folder', callback: () => {} },// TODO
@@ -62,28 +66,40 @@ export function SideBar() {
     }
 
     function onPinStation(station) {
-        console.log('pinned')
+        
     }
 
-    function onAddStation(station) {
-        toggleLikedStation(station._id)
-    }
     function onRemoveStation(station) {
-        toggleLikedStation(station._id)
+        toggleLikedStation(station)
     }
 
-    useEffect(() => {
-        loadSidebarStations(filterBy)
+    async function onDeleteStation(station){
+        toggleLikedStation(station)
+        await removeStation(station._id)
+        if(currentStation._id === station._id){
+            navigate('/')
+        }
+    }
+
+    useEffectUpdate(() => {
+        if (!user || !user?.stations) {
+            return
+        }
+        
+        loadSidebarStations(filterBy) 
     }, [filterBy])
 
     useEffect(() => {
-        if (!user?.stations) return
+        if (!user || !user?.stations) {
+            return
+        }
         setFilterBy(prev => ({
             ...prev,
-            stations: user.stations
+            stationsId: user.stations
         }))
     }, [user?.stations])
 
+    
     return (
         <div className="route-scroll sidebar-scroll">
             <aside className='sidebar-container'>

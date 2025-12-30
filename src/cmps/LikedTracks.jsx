@@ -20,7 +20,7 @@ export function LikedTracks({ user, listType }) {
     }
 
     function onPinStation(station) {
-        console.log('pinned')
+        
     }
 
     // const station = {

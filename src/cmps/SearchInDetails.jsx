@@ -5,9 +5,7 @@ import { TrackPreview } from "./TrackPreview.jsx"
 import { useSelector } from "react-redux"
 import {  toggleLikedTrack } from "../store/actions/user.actions.js"
 
-export function SearchInDetails({ openContextMenu, tracks: isTracksInDetails, station }) {
-    console.log('station:',station)
-    console.log('openContextMenu:',openContextMenu)
+export function SearchInDetails({ openContextMenu, tracks: isTracksInDetails, station,onAddToStation }) {
     // const user = useSelector(state => state.userModule.user)
 
     const [txt, setTxt] = useState('')
@@ -34,10 +32,6 @@ export function SearchInDetails({ openContextMenu, tracks: isTracksInDetails, st
             return
         }
         setTracks(await spotifyService.search(txt, 'track'))
-    }
-
-    function onAddTrackInSearch(track) {
-        if (station._id === "liked-tracks") toggleLikedTrack(track)
     }
 
     if (!isShown) {
@@ -76,7 +70,7 @@ export function SearchInDetails({ openContextMenu, tracks: isTracksInDetails, st
 
                     {tracks && tracks.length ?
                         tracks.map((track, idx) => (
-                            <TrackPreview openContextMenu={openContextMenu} key={track._id} track={track} idx={idx} isStation={false} inDetails={true} onAddTrackInSearch={onAddTrackInSearch} />
+                            <TrackPreview openContextMenu={openContextMenu} key={track._id} track={track} idx={idx} isStation={false} inDetails={true} onAddToStation={onAddToStation} />
                         )) : ''}
                     {txt ? <div> No Results </div> : ""}
                 </div>

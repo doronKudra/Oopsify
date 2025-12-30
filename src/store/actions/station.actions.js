@@ -1,7 +1,7 @@
 import { store } from '../store'
 import { stationService } from '../../services/station'
 import { userService } from '../../services/user'
-import { ADD_STATION, REMOVE_STATION, SET_STATIONS, SET_STATION, UPDATE_STATION, SET_SIDEBAR_STATIONS, } from '../reducers/station.reducer'
+import { ADD_STATION, REMOVE_STATION, SET_STATIONS, SET_STATION, UPDATE_STATION, SET_SIDEBAR_STATIONS, ADD_TRACK,REMOVE_TRACK} from '../reducers/station.reducer'
 import { updateUser } from './user.actions'
 
 
@@ -9,6 +9,7 @@ export function loadLikedTracks() {
     try {
         const storeUser = store.getState().userModule.user
         const likedTracks = storeUser?.likedTracks
+        console.log('storeUser',storeUser)
         store.dispatch({ type: SET_STATION, station: likedTracks })
     } catch (err) {
 
@@ -36,8 +37,11 @@ export async function loadSidebarStations(filterBy) {
 }
 
 export async function loadStation(stationId) {
+    console.log('from load station', stationId)
     try {
+        store.dispatch({ type: SET_STATION, station: null })
         const station = await stationService.getById(stationId)
+        console.log('from load station, new station: ', station)
         store.dispatch({ type: SET_STATION, station })
     } catch (err) {
         console.error('Cannot load station', err)
@@ -57,25 +61,26 @@ export async function removeStation(stationId) {
     }
 }
 
-export async function addStation({ username, id}) {
+export async function addStation() {
     try {
-        console.log(username)
-        const station = stationService.getEmptyStation({ username, id })
+
+        const station = stationService.getEmptyStation()
         const savedStation = await stationService.save(station)
+        console.log('station:', station, 'savedStation:', savedStation)
 
-        const stationToStore = JSON.parse(JSON.stringify(savedStation))
+        // const stationToStore = JSON.parse(JSON.stringify(savedStation))
 
-        store.dispatch({ type: ADD_STATION, station: stationToStore })
+        store.dispatch({ type: ADD_STATION, station: savedStation })
 
         const user = store.getState().userModule.user
-        if (user && !user.likedStations.includes(stationToStore._id)) {
+        if (user && !user.stations.includes(savedStation._id)) {
             await updateUser({
                 ...user,
-                likedStations: [...user.likedStations, stationToStore._id],
+                stations: [...user.stations, savedStation._id],
             })
         }
 
-        return stationToStore
+        return savedStation
     } catch (err) {
         console.error('Cannot add station', err)
         throw err
@@ -96,29 +101,26 @@ export async function updateStation(station) {
 
 export async function addTrackToStation(stationId, track) {
     try {
-        const savedStation = await stationService.addTrack(stationId, track)
-        store.dispatch({ type: UPDATE_STATION, station: savedStation })
+        const addedTrack = await stationService.addTrack(stationId, track)
 
-        return savedStation
+        store.dispatch({ type: ADD_TRACK, track})
+
+        return addedTrack
     } catch (err) {
         console.error('Cannot add track to station', err)
         throw err
     }
 }
 
-export async function removeTrackFromStation(station, trackId) {
+export async function removeTrackFromStation(stationId, trackId) {
     try {
-        const updatedStation = {
-            ...station,
-            tracks: station.tracks.filter(t => t._id !== trackId),
-        }
+        const removedTrackId = await stationService.removeTrack(stationId, trackId)
 
-        const savedStation = await stationService.save(updatedStation)
-        store.dispatch({ type: UPDATE_STATION, station: savedStation })
+        store.dispatch({ type: REMOVE_TRACK, trackId: trackId})
 
-        return savedStation
+        return removedTrackId
     } catch (err) {
-        console.error('Cannot remove track from station', err)
+        console.error('Cannot remove track to station', err)
         throw err
     }
 }

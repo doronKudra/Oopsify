@@ -1,6 +1,9 @@
 import { playerActions } from "../store/actions/player.actions"
+import { useSelector} from 'react-redux'
 
-export function StationControls({ openContextMenu, station }) {
+export function StationControls({ openContextMenu,onAddStation,onRemoveStation, station }) {
+    const sidebarStations = useSelector((store) => store.stationModule.sidebarStations)
+    const isLiked = sidebarStations.some(({ _id }) => _id === station._id)
     function onStationRightClick(ev, station) {
 
         openContextMenu({
@@ -76,9 +79,13 @@ export function StationControls({ openContextMenu, station }) {
             <button
                 className="control-btn liked-btn"
                 aria-label="Add To Liked"
-                onClick={() => {}}
+                onClick={() => {
+
+                    (isLiked) ? onRemoveStation(station):
+                    onAddStation(station)
+                }}
             >
-                <svg
+                {!isLiked && <svg
                     viewBox="0 0 24 24"
                     className="icon-control liked-icon"
                     xmlns="http://www.w3.org/2000/svg"
@@ -91,7 +98,8 @@ export function StationControls({ openContextMenu, station }) {
                         d="M17.999 12a1 1 0 0 1-1 1h-4v4a1 1 0 1 1-2 0v-4h-4a1 1 0 1 1 0-2h4V7a1 1 0 1 1 2 0v4h4a1 1 0 0 1 1 1"
                         fill="currentColor"
                     />
-                </svg>
+                </svg>}
+                {isLiked && <svg data-encore-id="icon" role="img" aria-hidden="true" className="icon-control liked-icon-marked" viewBox="0 0 24 24" ><path d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12m16.398-2.38a1 1 0 0 0-1.414-1.413l-6.011 6.01-1.894-1.893a1 1 0 0 0-1.414 1.414l3.308 3.308z"></path></svg>}
             </button>
 
             {/* Download */}
