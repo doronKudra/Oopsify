@@ -37,7 +37,7 @@ export function stationReducer(state = initialState, action) {
             return { ...state, sidebarStations: [...state.sidebarStations, action.station] }
         case REMOVE_SIDEBAR_STATION:
             let sidebarStations = state.sidebarStations.filter(station => station._id !== action.stationId)
-            return { ...state, sidebarStations: sidebarStations }
+            return { ...state, sidebarStations: [...sidebarStations] }
         case UPDATE_STATION:
             stations = state.stations.map(station =>
                 station._id === action.station._id ? { ...action.station } : station)
