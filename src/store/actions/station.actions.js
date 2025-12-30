@@ -103,7 +103,7 @@ export async function addTrackToStation(stationId, track) {
     try {
         const addedTrack = await stationService.addTrack(stationId, track)
 
-        store.dispatch({ type: ADD_TRACK, track: track})
+        store.dispatch({ type: ADD_TRACK, track})
 
         return addedTrack
     } catch (err) {
