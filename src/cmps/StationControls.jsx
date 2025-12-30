@@ -1,43 +1,60 @@
-import { playerActions } from "../store/actions/player.actions"
+import { playerActions } from '../store/actions/player.actions'
+import { useSelector } from 'react-redux'
+import { PlayIcon } from './icons/PlayIcon'
+import { PauseIcon } from './icons/PauseIcon'
 
-export function StationControls({ openContextMenu, station }) {
+export function StationControls({
+    openContextMenu,
+    onAddStation,
+    onRemoveStation,
+    station,
+}) {
+    const sidebarStations = useSelector(
+        (store) => store.stationModule.sidebarStations
+    )
+    const isLiked = sidebarStations.some(({ _id }) => _id === station._id)
+
+    const playerState = useSelector((store) => store.playerModule)
+
+    const isThisStationPlaying =
+        playerState.stationSelected.stationId === station._id &&
+        playerState.stationSelected.isPlaying
+
     function onStationRightClick(ev, station) {
-
         openContextMenu({
             x: ev.clientX,
             y: ev.clientY,
-            context: { station }
+            context: { station },
         })
     }
 
+    function onPlayPauseBtn() {
+        if (isThisStationPlaying) {
+            playerActions.setStationPlaying(false)
+            // playerActions.pauseTrack() // 
+        } else {
+            playerActions.setStationSelected(station._id, true)
+            playerActions.onTrackList(station.tracks)
+        }
+    }
+
     const hasImg = station?.images?.[0]?.url
-    
+
     return (
         <div className="btn-container">
             {/* Play */}
             <button
                 className="control-btn play-btn"
                 aria-label="Play"
-                onClick={() => playerActions.onTrackList(station.tracks)}
+                onClick={onPlayPauseBtn}
             >
                 <div className="green-circle">
-                    <span className="play-pause-icon">
-                        <svg
-                            className="play-icon"
-                            viewBox="0 0 24 24"
-                            aria-hidden="true"
-                        >
-                            <path d="m7.05 3.606 13.49 7.788a.7.7 0 0 1 0 1.212L7.05 20.394A.7.7 0 0 1 6 19.788V4.212a.7.7 0 0 1 1.05-.606"></path>
-                        </svg>
-
-                        <svg
-                            className="pause-icon"
-                            viewBox="0 0 24 24"
-                            aria-hidden="true"
-                        >
-                            <path d="M5.7 3a.7.7 0 0 0-.7.7v16.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V3.7a.7.7 0 0 0-.7-.7zm10 0a.7.7 0 0 0-.7.7v16.6a.7.7 0 0 0 .7.7h2.6a.7.7 0 0 0 .7-.7V3.7a.7.7 0 0 0-.7-.7z"></path>
-                        </svg>
-                    </span>
+                    {' '}
+                    {isThisStationPlaying ? (
+                        <PauseIcon width={24} height={24} />
+                    ) : (
+                        <PlayIcon width={24} height={24} />
+                    )}{' '}
                 </div>
             </button>
 
@@ -76,22 +93,37 @@ export function StationControls({ openContextMenu, station }) {
             <button
                 className="control-btn liked-btn"
                 aria-label="Add To Liked"
-                onClick={() => {}}
+                onClick={() => {
+                    isLiked ? onRemoveStation(station) : onAddStation(station)
+                }}
             >
-                <svg
-                    viewBox="0 0 24 24"
-                    className="icon-control liked-icon"
-                    xmlns="http://www.w3.org/2000/svg"
-                >
-                    <path
-                        d="M11.999 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18m-11 9c0-6.075 4.925-11 11-11s11 4.925 11 11-4.925 11-11 11-11-4.925-11-11"
-                        fill="currentColor"
-                    />
-                    <path
-                        d="M17.999 12a1 1 0 0 1-1 1h-4v4a1 1 0 1 1-2 0v-4h-4a1 1 0 1 1 0-2h4V7a1 1 0 1 1 2 0v4h4a1 1 0 0 1 1 1"
-                        fill="currentColor"
-                    />
-                </svg>
+                {!isLiked && (
+                    <svg
+                        viewBox="0 0 24 24"
+                        className="icon-control liked-icon"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <path
+                            d="M11.999 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18m-11 9c0-6.075 4.925-11 11-11s11 4.925 11 11-4.925 11-11 11-11-4.925-11-11"
+                            fill="currentColor"
+                        />
+                        <path
+                            d="M17.999 12a1 1 0 0 1-1 1h-4v4a1 1 0 1 1-2 0v-4h-4a1 1 0 1 1 0-2h4V7a1 1 0 1 1 2 0v4h4a1 1 0 0 1 1 1"
+                            fill="currentColor"
+                        />
+                    </svg>
+                )}
+                {isLiked && (
+                    <svg
+                        data-encore-id="icon"
+                        role="img"
+                        aria-hidden="true"
+                        className="icon-control liked-icon-marked"
+                        viewBox="0 0 24 24"
+                    >
+                        <path d="M1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12m16.398-2.38a1 1 0 0 0-1.414-1.413l-6.011 6.01-1.894-1.893a1 1 0 0 0-1.414 1.414l3.308 3.308z"></path>
+                    </svg>
+                )}
             </button>
 
             {/* Download */}
@@ -120,7 +152,7 @@ export function StationControls({ openContextMenu, station }) {
             <button
                 className="control-btn more-btn"
                 aria-label="More options"
-                onPointerDown={(ev) => onStationRightClick(ev,station)}
+                onPointerDown={(ev) => onStationRightClick(ev, station)}
             >
                 <svg
                     viewBox="0 0 24 24"
@@ -134,10 +166,7 @@ export function StationControls({ openContextMenu, station }) {
                 </svg>
             </button>
 
-            <button
-                className="control-btn list-btn"
-                aria-label="List view"
-            >
+            <button className="control-btn list-btn" aria-label="List view">
                 <span className="btn-label">List</span>
                 <svg
                     viewBox="0 0 16 16"
