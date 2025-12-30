@@ -38,10 +38,10 @@ function onAddTrackToList(track) {
 // }
 
 //REPLACE THE CURRENT PLAYLIST
-function onPlayStation(stationId) {
-    onTrackToPlay(tracks[0])
-    store.dispatch({ type: SET_TRACK_LIST, trackList: tracks })
-    store.dispatch({ type: SET_STATION_ID, stationId })
+function onPlayStation(station) {
+    onTrackToPlay(station.tracks[0])
+    store.dispatch({ type: SET_TRACK_LIST, trackList: station.tracks })
+    store.dispatch({ type: SET_STATION_ID, stationId: station.id || station._id || station.spotifyId })
 }
 
 //FOR PREVIEW TO SHOW PLAYING SONG STYLE
@@ -97,8 +97,5 @@ function onReapet(value) {
 
 // function setStationSelected
 
-store.subscribe(()=>{
-    console.log('store:',store.getState())
-})
 
 
