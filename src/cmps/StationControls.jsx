@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import { PlayIcon } from './icons/PlayIcon'
 import { PauseIcon } from './icons/PauseIcon'
 import { store } from '../store/store'
+import { useEffect, useState } from 'react'
 
 export function StationControls({
     openContextMenu,
@@ -18,7 +19,16 @@ export function StationControls({
     const playingStationId = useSelector((store) => store.playerModule.stationId)
     const isPlaying = useSelector(state => state.playerModule.isPlaying)
 
-    const isThisStationPlaying = playingStationId === station._id && isPlaying
+    const [isThisStationPlaying, setIsThisStationPlaying] = useState(false)
+
+    useEffect(()=>{
+        console.log('2:',2)
+        if (isPlaying && playingStationId === station?._id){
+            setIsThisStationPlaying(true)
+        } else {
+            setIsThisStationPlaying(false)
+        }
+    },[isPlaying, playingStationId])
 
     function onStationRightClick(ev, station) {
         openContextMenu({
@@ -29,13 +39,14 @@ export function StationControls({
     }
 
     function onPlayPauseBtn() {
-        if (isThisStationPlaying) {
-            const isPlaying = store.getState().playerModule.isPlaying
-            playerActions.onPlaying(!isPlaying)
+        if (isThisStationPlaying) { //pause
+            playerActions.onPlaying(true)
             // playerActions.setStationPlaying(false)
             // playerActions.pauseTrack() // 
-        } else {
+        } else if(playingStationId !== station._id){
             playerActions.onPlayStation(station)
+        } else {
+            playerActions.onPlaying(false)            
         }
     }
 
