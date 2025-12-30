@@ -58,8 +58,8 @@ export function StationDetails() {
 
     useEffect(() => {
         setTracks(station?.tracks || [])
-    },[station])
-    
+    }, [station])
+
     const { openContextMenu } = useContextMenu()
 
     async function onAddStation(station) {
@@ -129,7 +129,7 @@ export function StationDetails() {
     if (!station) return <section className="station-details"></section>
 
     const stationDurationMs = station.tracks.reduce(
-        (sum, t) => sum + (t.duration_ms || 0),
+        (sum, t) => sum + (t.duration || t.duration_ms || 0),
         0
     )
     const stationDuration = formatSpotifyDuration(stationDurationMs)
