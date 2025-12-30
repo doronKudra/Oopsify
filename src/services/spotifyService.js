@@ -6,7 +6,11 @@ export const spotifyService = {
 
 const key = import.meta.env.VITE_SPOTKEY
 
-const token = await _getValidToken()
+async function init() {
+  return await _getValidToken()
+}
+
+const token = init()
 
 async function getById(id, type = 'station') {
     const isArray = Array.isArray(id)
