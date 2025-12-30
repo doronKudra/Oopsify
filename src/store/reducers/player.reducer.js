@@ -11,7 +11,8 @@ const initialState = {
     track: null,
     trackList: [],
     idx: 0, //?
-    stationSelected: stationId,
+    // stationSelected: stationId,
+    stationId: null,
     isPlaying: false,
 }
 

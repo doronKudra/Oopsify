@@ -22,6 +22,8 @@ export function SideBar() {
     const { openContextMenu } = useContextMenu()
     const { openEditStation } = useModal()
     const navigate = useNavigate()
+    const isOpen = useState(false)
+
     function handleOpenMenu({ x, y, context }) {
         const { station } = context
         let actions
@@ -125,6 +127,10 @@ export function SideBar() {
         if(currentStation._id === station._id){
             navigate('/')
         }
+    }
+
+    function toggleSidebar() {
+        
     }
 
     useEffectUpdate(() => {
