@@ -330,7 +330,7 @@ export function StationDetails() {
                     id: makeId(),
                     icon: 'queue',
                     name: 'Add to queue', // free
-                    callback: () => { },
+                    callback: () => {},
                     border: true,
                 }, // TODO
                 {
@@ -461,11 +461,115 @@ export function StationDetails() {
 
                             <div className="station-header-info">
                                 {(() => {
+                                    // Determine owner name
+                                    const ownerName =
+                                        station?.owner?.fullname ||
+                                        station?.owner?.name ||
+                                        user?.fullname ||
+                                        null
+
+                                    // Build an array of JSX elements (not strings!)
+                                    const info = []
+
+                                    if (ownerName) {
+                                        info.push(
+                                            <span
+                                                className="enhance"
+                                                key="owner"
+                                            >
+                                                {ownerName}
+                                            </span>
+                                        )
+                                    }
+
+                                    if (station?.year) {
+                                        info.push(
+                                            <span key="year">
+                                                {station.year}
+                                            </span>
+                                        )
+                                    }
+
+                                    if (stationDuration) {
+                                        info.push(
+                                            <span key="duration">
+                                                {stationDuration}
+                                            </span>
+                                        )
+                                    }
+
+                                    // Fallback: no info OR liked songs
+                                    if (
+                                        info.length === 0 ||
+                                        stationId === 'liked-songs'
+                                    ) {
+                                        return (
+                                            <span>
+                                                {station?.tracks?.length || 0}{' '}
+                                                songs
+                                            </span>
+                                        )
+                                    }
+
+                                    // Insert dots between JSX items
+                                    return info.reduce((acc, item, i) => {
+                                        if (i > 0) {
+                                            acc.push(
+                                                <span
+                                                    key={`dot-${i}`}
+                                                    className="dot"
+                                                >
+                                                    •
+                                                </span>
+                                            )
+                                        }
+                                        acc.push(item)
+                                        return acc
+                                    }, [])
+                                })()}
+                            </div>
+
+                            {/* <div className="station-header-info">
+                                {(() => {
+                                    const ownerName =
+                                        station?.owner?.fullname ||
+                                        station?.owner?.name ||
+                                        user?.fullname ||
+                                        null
+
+                                    // Build info array
+                                    const info = [
+                                        ownerName,
+                                        station?.year,
+                                        stationDuration,
+                                    ].filter(Boolean)
+
+                                    // If no info → fallback to "X songs"
+                                    if (
+                                        info.length === 0 ||
+                                        stationId === 'liked-songs'
+                                    ) {
+                                        return (
+                                            <span>
+                                                {station?.tracks?.length || 0}{' '}
+                                                songs
+                                            </span>
+                                        )
+                                    }
+
+                                    // Join with dots
+                                    return info.join(' • ')
+                                })()}
+                            </div> */}
+
+                            {/* <div className="station-header-info">
+                                {(() => {
                                     const parts = []
 
                                     // Use station owner OR logged-in user (for Liked Songs)
                                     const ownerName =
                                         station?.owner?.fullname ||
+                                        station?.owner?.name ||
                                         user?.fullname ||
                                         null
 
@@ -496,7 +600,7 @@ export function StationDetails() {
                                         )
                                     }
 
-                                    if (parts.length === 0) {
+                                    if (parts.length === 0 || stationId === 'liked-songs') {
                                         return (
                                             <span>
                                                 {station?.tracks?.length || 0}{' '}
@@ -517,15 +621,10 @@ export function StationDetails() {
                                               ]
                                     )
                                 })()}
-                            </div>
+                            </div> */}
                         </div>
                     </section>
 
-                    {/* <div
-                        style={{
-                            background: `linear-gradient( to bottom, ${colorStop2} 0%, ${colorStop3} 100% )`,
-                        }}
-                    > */}
                     <StationControls
                         openContextMenu={handleOpenMenuStation}
                         station={station}
