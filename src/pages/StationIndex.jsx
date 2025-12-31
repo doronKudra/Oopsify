@@ -34,46 +34,46 @@ export function StationIndex() {
                     id: makeId(),
                     icon: 'queue',
                     name: 'Add to queue',
-                    callback: () => { },
+                    callback: () => {},
                     border: true,
                 }, // TODO
                 {
                     id: makeId(),
                     icon: 'profile',
                     name: 'Add to profile',
-                    callback: () => { },
+                    callback: () => {},
                     border: true,
                 },
                 {
                     id: makeId(),
                     icon: 'edit',
                     name: 'Edit details',
-                    callback: () => { },
+                    callback: () => {},
                 }, // TODO
                 {
                     id: makeId(),
                     icon: 'delete',
                     name: 'Delete',
-                    callback: () => { },
+                    callback: () => {},
                     border: true,
                 }, // TODO
                 {
                     id: makeId(),
                     icon: 'private',
                     name: 'Make private',
-                    callback: () => { },
+                    callback: () => {},
                 }, // TODO
                 {
                     id: makeId(),
                     icon: 'folder',
                     name: 'Move to folder',
-                    callback: () => { },
+                    callback: () => {},
                 }, // TODO - make a dropdown cmp
                 {
                     id: makeId(),
                     icon: 'share',
                     name: 'Share',
-                    callback: () => { },
+                    callback: () => {},
                 }, // TODO
             ]
         } else {
@@ -82,42 +82,42 @@ export function StationIndex() {
                 actions = [
                     isLiked
                         ? {
-                            id: makeId(),
-                            icon: 'remove',
-                            name: 'Remove from Your Library',
-                            callback: () => onRemoveStation(station),
-                        }
+                              id: makeId(),
+                              icon: 'remove',
+                              name: 'Remove from Your Library',
+                              callback: () => onRemoveStation(station),
+                          }
                         : {
-                            id: makeId(),
-                            icon: 'save',
-                            name: 'Add to Your Library',
-                            callback: () => onAddStation(station),
-                        },
+                              id: makeId(),
+                              icon: 'save',
+                              name: 'Add to Your Library',
+                              callback: () => onAddStation(station),
+                          },
                     {
                         id: makeId(),
                         icon: 'queue',
                         name: 'Add to queue',
-                        callback: () => { },
+                        callback: () => {},
                         border: true,
                     }, // TODO
                     isLiked && {
                         id: makeId(),
                         icon: 'profile',
                         name: 'Add to profile',
-                        callback: () => { },
+                        callback: () => {},
                         border: true,
                     }, // TODO
                     {
                         id: makeId(),
                         icon: 'folder',
                         name: isLiked ? 'Move to folder' : 'Add to folder',
-                        callback: () => { },
+                        callback: () => {},
                     }, // TODO
                     {
                         id: makeId(),
                         icon: 'share',
                         name: 'Share',
-                        callback: () => { },
+                        callback: () => {},
                     }, // TODO
                 ]
             }
@@ -163,28 +163,19 @@ export function StationIndex() {
             .sort(() => Math.random() - 0.5)
     }
 
+    const [recommendedStations, setRecommendedStations] = useState(stations)
+    const [discoverStations, setDiscoverStations] = useState(stations)
+    const [trendingStations, setTrendingStations] = useState(stations)
+    const [vibeStations, setVibeStations] = useState(stations)
+
+    useEffect(() => {
+        setRecommendedStations(shuffleAndFilterList(stations))
+        setDiscoverStations(shuffleAndFilterList(stations))
+        setTrendingStations(shuffleAndFilterList(stations))
+        setVibeStations(shuffleAndFilterList(stations))
+    }, [])
+
     const recentStations = sidebarStations.toReversed()
-
-    const recommendedStations = useMemo(
-        () => shuffleAndFilterList(stations),
-        [stations]
-    )
-
-    const discoverStations = useMemo(
-        () => shuffleAndFilterList(stations),
-        [stations]
-    )
-
-
-    const trendingStations = useMemo(
-        () => shuffleAndFilterList(stations),
-        [stations]
-    )
-
-    const vibeStations = useMemo(
-        () => shuffleAndFilterList(stations),
-        [stations]
-    )
 
     return (
         <main
