@@ -27,7 +27,7 @@ export function AppHeader() {
     }, [location.search])
 
     useEffect(() => {
-        if (location.pathname !== '/search' && location.pathname !== '/genres') setFilterBy({ txt: '', type: 'track' })
+        if (location.pathname !== '/search' && location.pathname !== '/genres' && filterBy.txt) setFilterBy({ txt: '', type: 'track' })
     }, [location.pathname])
 
     useEffect(() => {
