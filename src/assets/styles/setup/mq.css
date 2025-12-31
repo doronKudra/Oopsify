@@ -64,6 +64,13 @@
             width: 64px;
             height: 64px;
         }
+
+        .recent-station-preview-container{
+            svg{
+                width: 24px;
+                height: 24px;
+            }
+        }
     }
 
     img span.recent-preview-station-title {

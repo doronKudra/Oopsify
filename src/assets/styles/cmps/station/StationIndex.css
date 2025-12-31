@@ -81,23 +81,43 @@
     }
 }
 
-.station-index-play-btn {
+.station-index-play-btn,
+.station-recent-play-btn {
+    padding: 0;
     position: absolute;
     display: flex;
     justify-content: center;
     align-items: center;
+    border-radius: 50%;
+    background-color: #1ed760;
+    transition: 0.3s;
+    box-shadow: 0px 1px 10px rgba(0, 0, 0, 0.467);
+
+    opacity: 0;
+
+    &.playing {
+        opacity: 1;
+    }
+}
+
+.station-index-play-btn {
     bottom: 10px;
     right: 18px;
     width: 48px;
     height: 48px;
-    opacity: 0;
-    border-radius: 50%;
-    background-color: #1ed760;
-    transition: 0.3s;
 
     &.playing {
-        opacity: 1;
         bottom: 18px;
+    }
+}
+
+.station-recent-play-btn{
+    right: 6px;
+    height: calc(100% - 16px);
+    aspect-ratio: 1 / 1 ;
+    svg{
+        width: 16px;
+        height: 16px;
     }
 }
 
@@ -107,6 +127,10 @@
         bottom: 18px;
     }
 }
+
+.recent-station-preview-container:hover .station-recent-play-btn{
+    opacity: 1;
+} 
 
 .index-station-preview-title {
     padding-inline: 10px;
@@ -140,6 +164,7 @@ a.recent-station-preview-link {
 }
 
 .recent-station-preview-container {
+    position: relative;
     display: flex;
     flex-direction: row;
     gap: 8px;

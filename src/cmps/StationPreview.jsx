@@ -157,6 +157,16 @@ function DynamicCmp({ onStationRightClick, station, listType, onHoverColor }) {
                                 {station?.name?.length > 19 && '...'}
                             </span>
                         </div>
+                        <button
+                            onClick={ev => onPlayStation(station, ev)}
+                            className={`station-recent-play-btn ${isThisStationPlaying ? 'playing' : ''}`}>
+                            {isThisStationPlaying
+                                ?
+                                <PauseIcon width={24} height={24} />
+                                :
+                                <PlayIcon width={24} height={24} />
+                            }
+                        </button>
                     </article>
                 </Link>
             )
