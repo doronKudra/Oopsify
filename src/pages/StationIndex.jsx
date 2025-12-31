@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 
 import { loadStations } from '../store/actions/station.actions.js'
@@ -154,14 +154,21 @@ export function StationIndex() {
         setHomeBg(rgb)
     }
 
-function shuffleAndFilterList(list) {
-    return [...list]
-        .filter(station => station.tracks?.length > 0)
-        .sort(() => Math.random() - 0.5)
-}
+    function shuffleAndFilterList(list) {
+        return [...list]
+            .filter((station) => station.tracks?.length > 0)
+            .sort(() => Math.random() - 0.5)
+    }
 
-    const recommendedStations = shuffleAndFilterList(stations)
-    const discoverStations = shuffleAndFilterList(stations)
+    const recommendedStations = useMemo(
+        () => shuffleAndFilterList(stations),
+        [stations]
+    )
+
+    const discoverStations = useMemo(
+        () => shuffleAndFilterList(stations),
+        [stations]
+    )
 
     return (
         <main
