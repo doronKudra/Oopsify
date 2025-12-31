@@ -7,7 +7,7 @@
     position: relative;
     background-color: #121212;
 
-    > section {
+    >section {
         overflow: hidden;
     }
 
@@ -32,16 +32,14 @@
     position: absolute;
     inset: 0;
     z-index: 0;
-    background: linear-gradient(
-        to bottom,
-        var(--homeBg) 0px,
-        color-mix(in srgb, var(--homeBg) 50%, #121212) 150px,
-        #121212 300px
-    );
+    background: linear-gradient(to bottom,
+            var(--homeBg) 0px,
+            color-mix(in srgb, var(--homeBg) 50%, #121212) 150px,
+            #121212 300px);
     transition: background 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.station-index > * {
+.station-index>* {
     position: relative;
     z-index: 1;
 }
@@ -66,6 +64,7 @@
             font-size: 0.81rem;
         }
     }
+
     a:hover {
         cursor: pointer;
     }
@@ -82,26 +81,31 @@
     }
 }
 
-.station-index-play-btn{
+.station-index-play-btn {
     position: absolute;
     display: flex;
     justify-content: center;
+    align-items: center;
     bottom: 10px;
-    right: 16px;
+    right: 18px;
     width: 48px;
     height: 48px;
     opacity: 0;
     border-radius: 50%;
     background-color: #1ed760;
     transition: 0.3s;
-    >svg{
-        width: 24px;
+
+    &.playing {
+        opacity: 1;
+        bottom: 18px;
     }
 }
 
-.index-station-preview-container:hover .station-index-play-btn{
-    opacity: 1;
-    bottom: 16px;
+.index-station-preview-container:hover {
+    .station-index-play-btn {
+        opacity: 1;
+        bottom: 18px;
+    }
 }
 
 .index-station-preview-title {
@@ -213,6 +217,7 @@ img.recent-small-img {
 .carousel-btn {
     background-color: rgb(31, 31, 31);
 }
+
 .carousel-btn {
     background-color: rgb(42, 42, 42);
 }
@@ -229,6 +234,7 @@ img.recent-small-img {
     opacity: 1;
     pointer-events: auto;
 }
+
 .carousel-btn:hover {
     opacity: 1;
     pointer-events: auto;
