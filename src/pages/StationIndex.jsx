@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useEffect, useMemo, useRef } from 'react'
 import { useSelector } from 'react-redux'
 
 import { loadStations } from '../store/actions/station.actions.js'
@@ -17,6 +17,9 @@ export function StationIndex() {
     const stations = useSelector(
         (storeState) => storeState.stationModule.stations
     )
+    const sidebarStations = useSelector(
+        (storeState) => storeState.stationModule.sidebarStations
+    )
     const baseColor = '132, 0, 255'
     const [homeBg, setHomeBg] = useState('#121212')
     const user = useSelector((storeState) => storeState.userModule.user)
@@ -31,46 +34,46 @@ export function StationIndex() {
                     id: makeId(),
                     icon: 'queue',
                     name: 'Add to queue',
-                    callback: () => {},
+                    callback: () => { },
                     border: true,
                 }, // TODO
                 {
                     id: makeId(),
                     icon: 'profile',
                     name: 'Add to profile',
-                    callback: () => {},
+                    callback: () => { },
                     border: true,
                 },
                 {
                     id: makeId(),
                     icon: 'edit',
                     name: 'Edit details',
-                    callback: () => {},
+                    callback: () => { },
                 }, // TODO
                 {
                     id: makeId(),
                     icon: 'delete',
                     name: 'Delete',
-                    callback: () => {},
+                    callback: () => { },
                     border: true,
                 }, // TODO
                 {
                     id: makeId(),
                     icon: 'private',
                     name: 'Make private',
-                    callback: () => {},
+                    callback: () => { },
                 }, // TODO
                 {
                     id: makeId(),
                     icon: 'folder',
                     name: 'Move to folder',
-                    callback: () => {},
+                    callback: () => { },
                 }, // TODO - make a dropdown cmp
                 {
                     id: makeId(),
                     icon: 'share',
                     name: 'Share',
-                    callback: () => {},
+                    callback: () => { },
                 }, // TODO
             ]
         } else {
@@ -79,42 +82,42 @@ export function StationIndex() {
                 actions = [
                     isLiked
                         ? {
-                              id: makeId(),
-                              icon: 'remove',
-                              name: 'Remove from Your Library',
-                              callback: () => onRemoveStation(station),
-                          }
+                            id: makeId(),
+                            icon: 'remove',
+                            name: 'Remove from Your Library',
+                            callback: () => onRemoveStation(station),
+                        }
                         : {
-                              id: makeId(),
-                              icon: 'save',
-                              name: 'Add to Your Library',
-                              callback: () => onAddStation(station),
-                          },
+                            id: makeId(),
+                            icon: 'save',
+                            name: 'Add to Your Library',
+                            callback: () => onAddStation(station),
+                        },
                     {
                         id: makeId(),
                         icon: 'queue',
                         name: 'Add to queue',
-                        callback: () => {},
+                        callback: () => { },
                         border: true,
                     }, // TODO
                     isLiked && {
                         id: makeId(),
                         icon: 'profile',
                         name: 'Add to profile',
-                        callback: () => {},
+                        callback: () => { },
                         border: true,
                     }, // TODO
                     {
                         id: makeId(),
                         icon: 'folder',
                         name: isLiked ? 'Move to folder' : 'Add to folder',
-                        callback: () => {},
+                        callback: () => { },
                     }, // TODO
                     {
                         id: makeId(),
                         icon: 'share',
                         name: 'Share',
-                        callback: () => {},
+                        callback: () => { },
                     }, // TODO
                 ]
             }
@@ -160,12 +163,25 @@ export function StationIndex() {
             .sort(() => Math.random() - 0.5)
     }
 
+    const recentStations = sidebarStations.toReversed()
+
     const recommendedStations = useMemo(
         () => shuffleAndFilterList(stations),
         [stations]
     )
 
     const discoverStations = useMemo(
+        () => shuffleAndFilterList(stations),
+        [stations]
+    )
+
+
+    const trendingStations = useMemo(
+        () => shuffleAndFilterList(stations),
+        [stations]
+    )
+
+    const vibeStations = useMemo(
         () => shuffleAndFilterList(stations),
         [stations]
     )
@@ -186,7 +202,7 @@ export function StationIndex() {
         >
             <StationList
                 openContextMenu={handleOpenMenu}
-                stations={stations}
+                stations={recentStations}
                 listType={'recent'}
                 onHoverColor={handleHoverColor}
             />
@@ -201,6 +217,18 @@ export function StationIndex() {
                 stations={discoverStations}
                 listType={'index'}
                 listTitle={'Discover Picks for you'}
+            />
+            <StationList
+                openContextMenu={handleOpenMenu}
+                stations={trendingStations}
+                listType={'index'}
+                listTitle={'Trending'}
+            />
+            <StationList
+                openContextMenu={handleOpenMenu}
+                stations={vibeStations}
+                listType={'index'}
+                listTitle={'Vibe'}
             />
         </main>
     )
