@@ -188,6 +188,13 @@ img.recent-small-img {
     transition: opacity 0.25s ease, background 0.2s ease;
 }
 
+.carousel-btn {
+    background-color: rgb(31, 31, 31);
+}
+.carousel-btn {
+    background-color: rgb(42, 42, 42);
+}
+
 .carousel-btn.left {
     left: 0;
 }
@@ -200,7 +207,20 @@ img.recent-small-img {
     opacity: 1;
     pointer-events: auto;
 }
+.carousel-btn:hover {
+    opacity: 1;
+    pointer-events: auto;
+}
 
-.carousel-btn:hover .carousel-arrow {
-    color: white;
+.carousel-arrow {
+    width: 16px;
+    height: 16px;
+}
+
+.carousel-arrow path {
+    fill: rgb(255, 255, 255, 0.7);
+}
+
+.carousel-btn:hover .carousel-arrow path {
+    fill: white;
 }
