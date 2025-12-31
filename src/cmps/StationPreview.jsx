@@ -68,6 +68,9 @@ function DynamicCmp({ onStationRightClick, station, listType, onHoverColor }) {
                 <article onContextMenu={(ev) => onStationRightClick(ev, station)} className="index-station-preview-container">
                     <div className="medium-img-container">
                         <img className="medium-img" src={station?.images?.at(0)?.url}></img>
+                        <button className='station-index-play-btn'>
+                            <svg data-encore-id="icon" role="img" aria-hidden="true" viewBox="0 0 24 24"><path d="m7.05 3.606 13.49 7.788a.7.7 0 0 1 0 1.212L7.05 20.394A.7.7 0 0 1 6 19.788V4.212a.7.7 0 0 1 1.05-.606"></path></svg>
+                        </button>
                     </div>
                     <div className="index-station-preview">
                         <span className="index-station-preview-title">

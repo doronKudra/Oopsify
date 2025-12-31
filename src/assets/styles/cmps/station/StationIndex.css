@@ -82,6 +82,28 @@
     }
 }
 
+.station-index-play-btn{
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    bottom: 10px;
+    right: 16px;
+    width: 48px;
+    height: 48px;
+    opacity: 0;
+    border-radius: 50%;
+    background-color: #1ed760;
+    transition: 0.3s;
+    >svg{
+        width: 24px;
+    }
+}
+
+.index-station-preview-container:hover .station-index-play-btn{
+    opacity: 1;
+    bottom: 16px;
+}
+
 .index-station-preview-title {
     padding-inline: 10px;
     font-weight: 500;
