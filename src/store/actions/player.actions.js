@@ -22,7 +22,9 @@ async function onTrackToPlay(track) {
     const artistName = track.artists.map(artist => artist.name + ' ')
     const trackName = track.name
     const videoId = await youtubeService.search(artistName, trackName)
+    console.log('videoId:',videoId)
     const trackToSave = { ...track, videoId: videoId }
+    console.log('trackToSave:',trackToSave)
     store.dispatch({ type: UPDATE_CURRENT_TRACK, track: trackToSave })
     _pushToList(track)
 }
