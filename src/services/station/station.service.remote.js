@@ -14,7 +14,8 @@ export const stationService = {
 }
 
 async function query(filterBy = null) {
-    return httpService.get(`station`, { params: filterBy })
+    console.log(filterBy)
+    return httpService.get(`station`, { filterBy })
 }
 
 function getById(stationId) {

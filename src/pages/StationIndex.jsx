@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useSelector } from 'react-redux'
 
 import { loadStations } from '../store/actions/station.actions.js'
@@ -148,11 +148,27 @@ export function StationIndex() {
             return
         }
 
-        const [r, g, b] = color.value 
+        const [r, g, b] = color.value
         const rgb = `${r}, ${g}, ${b}`
 
         setHomeBg(rgb)
     }
+
+    function shuffleAndFilterList(list) {
+        return [...list]
+            .filter((station) => station.tracks?.length > 0)
+            .sort(() => Math.random() - 0.5)
+    }
+
+    const recommendedStations = useMemo(
+        () => shuffleAndFilterList(stations),
+        [stations]
+    )
+
+    const discoverStations = useMemo(
+        () => shuffleAndFilterList(stations),
+        [stations]
+    )
 
     return (
         <main
@@ -176,13 +192,13 @@ export function StationIndex() {
             />
             <StationList
                 openContextMenu={handleOpenMenu}
-                stations={stations}
+                stations={recommendedStations}
                 listType={'index'}
                 listTitle={'Recommended Stations'}
             />
             <StationList
                 openContextMenu={handleOpenMenu}
-                stations={stations}
+                stations={discoverStations}
                 listType={'index'}
                 listTitle={'Discover Picks for you'}
             />

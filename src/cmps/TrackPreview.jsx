@@ -3,8 +3,18 @@ import { playerActions } from '../store/actions/player.actions'
 import { toggleLikedTrack } from '../store/actions/user.actions'
 import { useLocation } from 'react-router'
 
-export function TrackPreview({ openContextMenu, track, idx, inDetails, onAddToStation }) {
-    const user = useSelector(state => state.userModule.user)
+export function TrackPreview({
+    openContextMenu,
+    track,
+    idx,
+    inDetails,
+    onAddToStation,
+}) {
+    const user = useSelector((state) => state.userModule.user)
+    const currPlayingTrack = useSelector((state) => state.playerModule.track)
+    const isPlayerPlaying = useSelector((state) => state.playerModule.isPlaying)
+    const isThisTrackPlaying =
+        isPlayerPlaying && currPlayingTrack?._id === track._id
 
     function getCurrTime(time) {
         const totalSec = Math.floor(time / 1000)
@@ -32,7 +42,7 @@ export function TrackPreview({ openContextMenu, track, idx, inDetails, onAddToSt
     function checkLiked(id) {
         const likedTracks = user?.likedTracks?.tracks
         if (!likedTracks || !likedTracks.length) return false
-        const isLiked = likedTracks.find(likedTrack => likedTrack._id === id)
+        const isLiked = likedTracks.find((likedTrack) => likedTrack._id === id)
         return isLiked
     }
 
@@ -82,7 +92,13 @@ export function TrackPreview({ openContextMenu, track, idx, inDetails, onAddToSt
                     alt=""
                 />
                 <div>
-                    <div className="track-name">{track.name}</div>
+                    <div
+                        className={`track-name ${
+                            isThisTrackPlaying ? 'playing' : ''
+                        }`}
+                    >
+                        {track.name}
+                    </div>
                     <div className="track-artist">
                         {track.artists.map((a) => a.name).join(', ')}
                     </div>
@@ -90,7 +106,7 @@ export function TrackPreview({ openContextMenu, track, idx, inDetails, onAddToSt
             </div>
 
             {/* Column 3 */}
-            <div className="track-album-name" onClick={() => { }}>
+            <div className="track-album-name" onClick={() => {}}>
                 {track?.album?.name && track?.album?.name}
             </div>
 
@@ -185,7 +201,12 @@ export function TrackPreview({ openContextMenu, track, idx, inDetails, onAddToSt
                     </button>
                 </div>
             ) : (
-                <button onClick={() => onAddToStation(track)} className="details-add-btn">Add</button>
+                <button
+                    onClick={() => onAddToStation(track)}
+                    className="details-add-btn"
+                >
+                    Add
+                </button>
             )}
         </div>
     )

@@ -34,7 +34,6 @@ import {
 import { playerActions } from '../store/actions/player.actions.js'
 
 export function StationDetails() {
-    
     const { stationId } = useParams()
     const { openEditStation } = useModal()
     const user = useSelector((store) => store.userModule.user)
@@ -43,7 +42,11 @@ export function StationDetails() {
         (store) => store.stationModule.sidebarStations
     )
     const isOwner = station?.owner?._id === user?._id
-    const [tracks,setTracks] = useState(stationId === 'liked-tracks' ? user?.likedTracks?.tracks : (station?.tracks || []))
+    const [tracks, setTracks] = useState(
+        stationId === 'liked-tracks'
+            ? user?.likedTracks?.tracks
+            : station?.tracks || []
+    )
     const navigate = useNavigate()
     useEffect(() => {
         if (stationId !== 'liked-tracks') {
@@ -51,14 +54,12 @@ export function StationDetails() {
         } else {
             loadLikedTracks(stationId)
         }
-        
     }, [stationId])
 
     useEffect(() => {
-        console.log(tracks)
         setTracks(station?.tracks || [])
-    },[station])
-    
+    }, [station])
+
     const { openContextMenu } = useContextMenu()
 
     async function onAddStation(station) {
@@ -128,7 +129,7 @@ export function StationDetails() {
     if (!station) return <section className="station-details"></section>
 
     const stationDurationMs = station.tracks.reduce(
-        (sum, t) => sum + (t.duration_ms || 0),
+        (sum, t) => sum + (t.duration || t.duration_ms || 0),
         0
     )
     const stationDuration = formatSpotifyDuration(stationDurationMs)
@@ -457,73 +458,24 @@ export function StationDetails() {
                                 {station.name}
                             </h1>
 
-                            <div className="station-header-info">
-                                {(() => {
-                                    const parts = []
-
-                                    // Use station owner OR logged-in user (for Liked Songs)
-                                    const ownerName =
-                                        station?.owner?.fullname ||
+                            <div>
+                                <span className="enhance">
+                                    {station?.owner?.fullname ||
+                                        station?.owner?.name ||
                                         user?.fullname ||
-                                        null
+                                        null}
+                                </span>
 
-                                    if (ownerName) {
-                                        parts.push(
-                                            <span
-                                                className="enhance"
-                                                key="owner"
-                                            >
-                                                {ownerName}
-                                            </span>
-                                        )
-                                    }
-
-                                    if (station?.year) {
-                                        parts.push(
-                                            <span key="year">
-                                                {station.year}
-                                            </span>
-                                        )
-                                    }
-
-                                    if (stationDuration) {
-                                        parts.push(
-                                            <span key="duration">
-                                                {stationDuration}
-                                            </span>
-                                        )
-                                    }
-
-                                    if (parts.length === 0) {
-                                        return (
-                                            <span>
-                                                {station?.tracks?.length || 0}{' '}
-                                                songs
-                                            </span>
-                                        )
-                                    }
-
-                                    return parts.flatMap((item, i) =>
-                                        i === 0
-                                            ? [item]
-                                            : [
-                                                  <span key={`dot-${i}`}>
-                                                      {' '}
-                                                      •{' '}
-                                                  </span>,
-                                                  item,
-                                              ]
-                                    )
-                                })()}
+                                <span>
+                                    {' • '}
+                                    {`${station?.tracks?.length || 0} songs`}
+                                    {station._id !== 'liked-tracks' &&
+                                        `, ${stationDuration}`}
+                                </span>
                             </div>
                         </div>
                     </section>
 
-                    {/* <div
-                        style={{
-                            background: `linear-gradient( to bottom, ${colorStop2} 0%, ${colorStop3} 100% )`,
-                        }}
-                    > */}
                     <StationControls
                         openContextMenu={handleOpenMenuStation}
                         station={station}

@@ -7,14 +7,22 @@ import { SortableTrack } from './SortableTracks.jsx'
 import { TrackPreview } from './TrackPreview.jsx'
 // get the user from store
 
-export function TrackList({ openContextMenu, tracks, tempIdsRef, isStation, isOwner}) {
+export function TrackList({
+    openContextMenu,
+    tracks,
+    tempIdsRef,
+    isStation,
+    isOwner,
+}) {
     return (
         <section>
-            <div className={`track-list-container ${!isStation && 'album-view'}`}>
+            <div
+                className={`track-list-container ${!isStation && 'album-view'}`}
+            >
                 <div className="track-list-title">
                     <div className="title-track-number left">#</div>
                     <div className="center">Title</div>
-                    {isStation && <div className='list-album-title'>Album</div>}
+                    {isStation && <div className="list-album-title">Album</div>}
                     <div className="title-track-duration right">
                         <svg
                             viewBox="0 0 16 16"
@@ -37,29 +45,31 @@ export function TrackList({ openContextMenu, tracks, tempIdsRef, isStation, isOw
                         items={tempIdsRef.current}
                         strategy={verticalListSortingStrategy}
                     >
-                        {isOwner ? tracks.map((track, idx) => {
-                            const tempId = tempIdsRef.current[idx]
-                            return (
-                                <SortableTrack id={tempId} key={tempId}>
-                                    <TrackPreview
-                                        openContextMenu={openContextMenu}
-                                        track={track}
-                                        idx={idx}
-                                        isStation={isStation}
-                                    />
-                                </SortableTrack>
-                            )
-                        }):
-                        tracks.map((track, idx) => {
-                            return (
-                                <TrackPreview
-                                    openContextMenu={openContextMenu}
-                                    track={track}
-                                    idx={idx}
-                                    isStation={isStation}
-                                />
-                            )
-                        })}
+                        {isOwner
+                            ? tracks.map((track, idx) => {
+                                  const tempId = tempIdsRef.current[idx]
+                                  return (
+                                      <SortableTrack id={tempId} key={tempId}>
+                                          <TrackPreview
+                                              openContextMenu={openContextMenu}
+                                              track={track}
+                                              idx={idx}
+                                              isStation={isStation}
+                                          />
+                                      </SortableTrack>
+                                  )
+                              })
+                            : tracks.map((track, idx) => {
+                                  return (
+                                      <TrackPreview
+                                          key={track._id}
+                                          openContextMenu={openContextMenu}
+                                          track={track}
+                                          idx={idx}
+                                          isStation={isStation}
+                                      />
+                                  )
+                              })}
                     </SortableContext>
                 </div>
             </div>

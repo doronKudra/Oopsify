@@ -57,7 +57,13 @@ export function StationList({
             {listType === 'index' && (
                 <div className="carousel-wrapper">
                     <button className="carousel-btn left" onClick={scrollLeft}>
-                        ‹
+                        <svg
+                            viewBox="0 0 16 16"
+                            className="carousel-arrow left"
+                            aria-hidden="true"
+                        >
+                            <path d="M11.03.47a.75.75 0 0 1 0 1.06L4.56 8l6.47 6.47a.75.75 0 1 1-1.06 1.06L2.44 8l7.53-7.53a.75.75 0 0 1 1.06 0"></path>{' '}
+                        </svg>
                     </button>
 
                     <ul
@@ -80,7 +86,14 @@ export function StationList({
                         className="carousel-btn right"
                         onClick={scrollRight}
                     >
-                        ›
+                        <svg
+                            viewBox="0 0 16 16"
+                            className="carousel-arrow right"
+                            aria-hidden="true"
+                            style={{ transform: 'rotate(180deg)' }}
+                        >
+                            <path d="M11.03.47a.75.75 0 0 1 0 1.06L4.56 8l6.47 6.47a.75.75 0 1 1-1.06 1.06L2.44 8l7.53-7.53a.75.75 0 0 1 1.06 0"></path>{' '}
+                        </svg>
                     </button>
                 </div>
             )}
