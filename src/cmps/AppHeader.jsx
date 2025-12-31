@@ -20,11 +20,15 @@ export function AppHeader() {
     const debouncedSearchRef = useRef(debounce(handleSearch, 400))
 
     useEffect(() => {
-        const txt = searchParams.get('txt') || ''
+        const txt = searchParams.get('txt') 
         const type = searchParams.get('type') || 'track'
         if (!txt) return
         setFilterBy({ txt, type })
     }, [location.search])
+
+    useEffect(() => {
+        if (location.pathname !== '/search' && location.pathname !== '/genres' && filterBy.txt) setFilterBy({ txt: '', type: 'track' })
+    }, [location.pathname])
 
     useEffect(() => {
         debouncedSearchRef.current(filterBy)
@@ -36,8 +40,7 @@ export function AppHeader() {
             return
         }
         navigate(
-            `/search?txt=${encodeURIComponent(filterBy.txt)}&type=${
-                filterBy.type
+            `/search?txt=${encodeURIComponent(filterBy.txt)}&type=${filterBy.type
             }`,
             { replace: true }
         )

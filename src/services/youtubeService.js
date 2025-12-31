@@ -16,8 +16,12 @@ async function search(artistName, txt) {
     url.searchParams.set('type', 'video')
     url.searchParams.set('maxResults', '1')
     url.searchParams.set('key', key)
-
-    const data = await fetch(url).then(res => res.json())
-    if (!data.items[0]) return "7q2B4M5EiBkqrlsNW8lB7N"
-    return data.items[0]?.id.videoId
+    try {
+        const data = await fetch(url).then(res => res.json())
+        return data?.items?.[0]?.id?.videoId ?? "7q2B4M5EiBkqrlsNW8lB7N"
+        
+    } catch (err) {
+        console.log('err from youtube service:',err)
+        return "7q2B4M5EiBkqrlsNW8lB7N"
+    }
 }
