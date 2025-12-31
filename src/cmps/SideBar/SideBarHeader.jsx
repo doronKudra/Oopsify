@@ -47,6 +47,19 @@ export function SideBarHeader({ user, toggleSidebar }) {
                         onClick={onAddStation}
                     >
                         <svg
+                            role="img"
+                            aria-hidden="true"
+                            className="sidebar-create-station-icon icon-small"
+                            viewBox="0 0 16 16"
+                        >
+                            <path d="M15.25 8a.75.75 0 0 1-.75.75H8.75v5.75a.75.75 0 0 1-1.5 0V8.75H1.5a.75.75 0 0 1 0-1.5h5.75V1.5a.75.75 0 0 1 1.5 0v5.75h5.75a.75.75 0 0 1 .75.75"></path>
+                        </svg>
+                    </button>
+                    {/* <button
+                        className="sidebar-create-station"
+                        onClick={onAddStation}
+                    >
+                        <svg
                             data-encore-id="icon"
                             role="img"
                             aria-hidden="true"
@@ -56,7 +69,7 @@ export function SideBarHeader({ user, toggleSidebar }) {
                             <path d="M15.25 8a.75.75 0 0 1-.75.75H8.75v5.75a.75.75 0 0 1-1.5 0V8.75H1.5a.75.75 0 0 1 0-1.5h5.75V1.5a.75.75 0 0 1 1.5 0v5.75h5.75a.75.75 0 0 1 .75.75"></path>
                         </svg>
                         <span>Create</span>
-                    </button>
+                    </button> */}
                     <button className="sidebar-expand">
                         <svg
                             className="sidebar-expand-icon icon-small"

@@ -157,23 +157,12 @@ export function StationIndex() {
         setHomeBg(rgb)
     }
 
-    function shuffleAndFilterList(list) {
-        return [...list]
-            .filter((station) => station.tracks?.length > 0)
-            .sort(() => Math.random() - 0.5)
-    }
+    const shuffled = useSelector((state) => state.stationModule.shuffled)
 
-    const [recommendedStations, setRecommendedStations] = useState(stations)
-    const [discoverStations, setDiscoverStations] = useState(stations)
-    const [trendingStations, setTrendingStations] = useState(stations)
-    const [vibeStations, setVibeStations] = useState(stations)
-
-    useEffect(() => {
-        setRecommendedStations(shuffleAndFilterList(stations))
-        setDiscoverStations(shuffleAndFilterList(stations))
-        setTrendingStations(shuffleAndFilterList(stations))
-        setVibeStations(shuffleAndFilterList(stations))
-    }, [])
+    const recommendedStations = shuffled?.recommendedStations || []
+    const discoverStations = shuffled?.discoverStations || []
+    const trendingStations = shuffled?.trendingStations || []
+    const vibeStations = shuffled?.vibeStations || []
 
     const recentStations = sidebarStations.toReversed()
 

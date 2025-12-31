@@ -1,25 +1,43 @@
 import { store } from '../store'
 import { stationService } from '../../services/station'
 import { userService } from '../../services/user'
-import { ADD_STATION, REMOVE_STATION, SET_STATIONS, SET_STATION, UPDATE_STATION, SET_SIDEBAR_STATIONS, ADD_TRACK,REMOVE_TRACK} from '../reducers/station.reducer'
+import {
+    ADD_STATION,
+    REMOVE_STATION,
+    SET_STATIONS,
+    SET_STATION,
+    UPDATE_STATION,
+    SET_SIDEBAR_STATIONS,
+    ADD_TRACK,
+    REMOVE_TRACK,
+    SET_SHUFFLED,
+} from '../reducers/station.reducer'
 import { updateUser } from './user.actions'
-
 
 export function loadLikedTracks() {
     try {
         const storeUser = store.getState().userModule.user
         const likedTracks = storeUser?.likedTracks
-        console.log('storeUser',storeUser)
+        console.log('storeUser', storeUser)
         store.dispatch({ type: SET_STATION, station: likedTracks })
-    } catch (err) {
-
-    }
+    } catch (err) {}
 }
 
-export async function loadStations(filterBy) { //station index
+let hasLoaded = false
+export async function loadStations(filterBy) {
+    if (hasLoaded) return
+    hasLoaded = true
+
     try {
         const stations = await stationService.query(filterBy)
         store.dispatch({ type: SET_STATIONS, stations })
+        const shuffled = {
+            recommendedStations: shuffleAndFilterList(stations),
+            discoverStations: shuffleAndFilterList(stations),
+            trendingStations: shuffleAndFilterList(stations),
+            vibeStations: shuffleAndFilterList(stations),
+        }
+        store.dispatch({ type: SET_SHUFFLED, shuffled })
     } catch (err) {
         console.error('Cannot load stations', err)
         throw err
@@ -48,8 +66,6 @@ export async function loadStation(stationId) {
     }
 }
 
-
-
 export async function removeStation(stationId) {
     try {
         await stationService.remove(stationId)
@@ -62,7 +78,6 @@ export async function removeStation(stationId) {
 
 export async function addStation() {
     try {
-
         const station = stationService.getEmptyStation()
         const savedStation = await stationService.save(station)
         console.log('station:', station, 'savedStation:', savedStation)
@@ -85,7 +100,6 @@ export async function addStation() {
         throw err
     }
 }
-
 
 export async function updateStation(station) {
     try {
@@ -114,8 +128,8 @@ export async function updateStation(station) {
 export async function addTrackToStation(stationId, track) {
     try {
         const updatedStation = await stationService.addTrack(stationId, track)
-        console.log('newTracks',updatedStation.tracks)
-        store.dispatch({ type: ADD_TRACK, tracks:updatedStation.tracks})
+        console.log('newTracks', updatedStation.tracks)
+        store.dispatch({ type: ADD_TRACK, tracks: updatedStation.tracks })
 
         return updatedStation.tracks
     } catch (err) {
@@ -126,9 +140,12 @@ export async function addTrackToStation(stationId, track) {
 
 export async function removeTrackFromStation(stationId, trackId) {
     try {
-        const removedTrackId = await stationService.removeTrack(stationId, trackId)
+        const removedTrackId = await stationService.removeTrack(
+            stationId,
+            trackId
+        )
 
-        store.dispatch({ type: REMOVE_TRACK, trackId: trackId})
+        store.dispatch({ type: REMOVE_TRACK, trackId: trackId })
 
         return removedTrackId
     } catch (err) {
@@ -149,5432 +166,5451 @@ async function unitTestActions() {
     // TODO unit test addStationMsg
 }
 
+// export function shuffleStations(stationsToShuffle) {
+//     const shuffled = {
+//         recommendedStations: shuffleAndFilterList(stationsToShuffle),
+//         discoverStations: shuffleAndFilterList(stationsToShuffle),
+//         trendingStations: shuffleAndFilterList(stationsToShuffle),
+//         vibeStations: shuffleAndFilterList(stationsToShuffle),
+//     }
+
+//     store.dispatch({ type: SET_SHUFFLED, shuffled })
+//     return shuffled
+// }
+
+function shuffleAndFilterList(list) {
+    return [...list]
+        .filter((station) => station.tracks?.length > 0)
+        .sort(() => Math.random() - 0.5)
+}
+
 export function getDemoStation() {
     return {
-        "id": "3E0RgJpQug1ibE2jTGI0Hk",
-        "name": "Eminem best song 10 hours",
-        "type": "station",
-        "owner": {
-            "id": "31mqwtxnxte5rztyagll4bg72vv4",
-            "name": "RyexFrex",
-            "type": "user"
+        id: '3E0RgJpQug1ibE2jTGI0Hk',
+        name: 'Eminem best song 10 hours',
+        type: 'station',
+        owner: {
+            id: '31mqwtxnxte5rztyagll4bg72vv4',
+            name: 'RyexFrex',
+            type: 'user',
         },
-        "savedCount": 45841,
-        "tracksCount": 123,
-        "images": [
+        savedCount: 45841,
+        tracksCount: 123,
+        images: [
             {
-                "height": 640,
-                "url": "https://mosaic.scdn.co/640/ab67616d00001e021bec21e57fff76db49e15a70ab67616d00001e026ca5c90113b30c3c43ffb8f4ab67616d00001e02b6ef2ebd34efb08cb76f6eecab67616d00001e02dbb3dd82da45b7d7f31b1b42",
-                "width": 640
+                height: 640,
+                url: 'https://mosaic.scdn.co/640/ab67616d00001e021bec21e57fff76db49e15a70ab67616d00001e026ca5c90113b30c3c43ffb8f4ab67616d00001e02b6ef2ebd34efb08cb76f6eecab67616d00001e02dbb3dd82da45b7d7f31b1b42',
+                width: 640,
             },
             {
-                "height": 300,
-                "url": "https://mosaic.scdn.co/300/ab67616d00001e021bec21e57fff76db49e15a70ab67616d00001e026ca5c90113b30c3c43ffb8f4ab67616d00001e02b6ef2ebd34efb08cb76f6eecab67616d00001e02dbb3dd82da45b7d7f31b1b42",
-                "width": 300
+                height: 300,
+                url: 'https://mosaic.scdn.co/300/ab67616d00001e021bec21e57fff76db49e15a70ab67616d00001e026ca5c90113b30c3c43ffb8f4ab67616d00001e02b6ef2ebd34efb08cb76f6eecab67616d00001e02dbb3dd82da45b7d7f31b1b42',
+                width: 300,
             },
             {
-                "height": 60,
-                "url": "https://mosaic.scdn.co/60/ab67616d00001e021bec21e57fff76db49e15a70ab67616d00001e026ca5c90113b30c3c43ffb8f4ab67616d00001e02b6ef2ebd34efb08cb76f6eecab67616d00001e02dbb3dd82da45b7d7f31b1b42",
-                "width": 60
-            }
+                height: 60,
+                url: 'https://mosaic.scdn.co/60/ab67616d00001e021bec21e57fff76db49e15a70ab67616d00001e026ca5c90113b30c3c43ffb8f4ab67616d00001e02b6ef2ebd34efb08cb76f6eecab67616d00001e02dbb3dd82da45b7d7f31b1b42',
+                width: 60,
+            },
         ],
-        "description": "with Mockinbirth, Whitout me,The Real Slim Shady,Lose Yourself, Superman",
-        "tracks": [
+        description:
+            'with Mockinbirth, Whitout me,The Real Slim Shady,Lose Yourself, Superman',
+        tracks: [
             {
-                "id": "561jH07mF1jHuk7KlaeF0s",
-                "name": "Mockingbird",
-                "type": "track",
-                "duration_ms": 250760,
-                "images": [
+                id: '561jH07mF1jHuk7KlaeF0s',
+                name: 'Mockingbird',
+                type: 'track',
+                duration_ms: 250760,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "1kTlYbs28MXw7hwO0NLYif",
-                    "name": "Encore (Deluxe Version)",
-                    "images": [
+                album: {
+                    id: '1kTlYbs28MXw7hwO0NLYif',
+                    name: 'Encore (Deluxe Version)',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 87
+                popularity: 87,
             },
             {
-                "id": "7lQ8MOhq6IN2w8EYcFNSUk",
-                "name": "Without Me",
-                "type": "track",
-                "duration_ms": 290320,
-                "images": [
+                id: '7lQ8MOhq6IN2w8EYcFNSUk',
+                name: 'Without Me',
+                type: 'track',
+                duration_ms: 290320,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "2cWBwpqMsDJC1ZUwz813lo",
-                    "name": "The Eminem Show",
-                    "images": [
+                album: {
+                    id: '2cWBwpqMsDJC1ZUwz813lo',
+                    name: 'The Eminem Show',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 88
+                popularity: 88,
             },
             {
-                "id": "3yfqSUWxFvZELEM4PmlwIR",
-                "name": "The Real Slim Shady",
-                "type": "track",
-                "duration_ms": 284200,
-                "images": [
+                id: '3yfqSUWxFvZELEM4PmlwIR',
+                name: 'The Real Slim Shady',
+                type: 'track',
+                duration_ms: 284200,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "6t7956yu5zYf5A829XRiHC",
-                    "name": "The Marshall Mathers LP",
-                    "images": [
+                album: {
+                    id: '6t7956yu5zYf5A829XRiHC',
+                    name: 'The Marshall Mathers LP',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 86
+                popularity: 86,
             },
             {
-                "id": "1v7L65Lzy0j0vdpRjJewt1",
-                "name": "Lose Yourself",
-                "type": "track",
-                "duration_ms": 322226,
-                "images": [
+                id: '1v7L65Lzy0j0vdpRjJewt1',
+                name: 'Lose Yourself',
+                type: 'track',
+                duration_ms: 322226,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "1rfORa9iYmocEsnnZGMVC4",
-                    "name": "Just Lose It",
-                    "images": [
+                album: {
+                    id: '1rfORa9iYmocEsnnZGMVC4',
+                    name: 'Just Lose It',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 81
+                popularity: 81,
             },
             {
-                "id": "4woTEX1wYOTGDqNXuavlRC",
-                "name": "Superman",
-                "type": "track",
-                "duration_ms": 350320,
-                "images": [
+                id: '4woTEX1wYOTGDqNXuavlRC',
+                name: 'Superman',
+                type: 'track',
+                duration_ms: 350320,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "2cWBwpqMsDJC1ZUwz813lo",
-                    "name": "The Eminem Show",
-                    "images": [
+                album: {
+                    id: '2cWBwpqMsDJC1ZUwz813lo',
+                    name: 'The Eminem Show',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
                     },
                     {
-                        "id": "5jNmxPYz8QE5rYp4GDil8t",
-                        "name": "Dina Rae",
-                        "type": "artist"
-                    }
+                        id: '5jNmxPYz8QE5rYp4GDil8t',
+                        name: 'Dina Rae',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 84
+                popularity: 84,
             },
             {
-                "id": "561jH07mF1jHuk7KlaeF0s",
-                "name": "Mockingbird",
-                "type": "track",
-                "duration_ms": 250760,
-                "images": [
+                id: '561jH07mF1jHuk7KlaeF0s',
+                name: 'Mockingbird',
+                type: 'track',
+                duration_ms: 250760,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "1kTlYbs28MXw7hwO0NLYif",
-                    "name": "Encore (Deluxe Version)",
-                    "images": [
+                album: {
+                    id: '1kTlYbs28MXw7hwO0NLYif',
+                    name: 'Encore (Deluxe Version)',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 87
+                popularity: 87,
             },
             {
-                "id": "7lQ8MOhq6IN2w8EYcFNSUk",
-                "name": "Without Me",
-                "type": "track",
-                "duration_ms": 290320,
-                "images": [
+                id: '7lQ8MOhq6IN2w8EYcFNSUk',
+                name: 'Without Me',
+                type: 'track',
+                duration_ms: 290320,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "2cWBwpqMsDJC1ZUwz813lo",
-                    "name": "The Eminem Show",
-                    "images": [
+                album: {
+                    id: '2cWBwpqMsDJC1ZUwz813lo',
+                    name: 'The Eminem Show',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 88
+                popularity: 88,
             },
             {
-                "id": "3yfqSUWxFvZELEM4PmlwIR",
-                "name": "The Real Slim Shady",
-                "type": "track",
-                "duration_ms": 284200,
-                "images": [
+                id: '3yfqSUWxFvZELEM4PmlwIR',
+                name: 'The Real Slim Shady',
+                type: 'track',
+                duration_ms: 284200,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "6t7956yu5zYf5A829XRiHC",
-                    "name": "The Marshall Mathers LP",
-                    "images": [
+                album: {
+                    id: '6t7956yu5zYf5A829XRiHC',
+                    name: 'The Marshall Mathers LP',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 86
+                popularity: 86,
             },
             {
-                "id": "1v7L65Lzy0j0vdpRjJewt1",
-                "name": "Lose Yourself",
-                "type": "track",
-                "duration_ms": 322226,
-                "images": [
+                id: '1v7L65Lzy0j0vdpRjJewt1',
+                name: 'Lose Yourself',
+                type: 'track',
+                duration_ms: 322226,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "1rfORa9iYmocEsnnZGMVC4",
-                    "name": "Just Lose It",
-                    "images": [
+                album: {
+                    id: '1rfORa9iYmocEsnnZGMVC4',
+                    name: 'Just Lose It',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 81
+                popularity: 81,
             },
             {
-                "id": "4woTEX1wYOTGDqNXuavlRC",
-                "name": "Superman",
-                "type": "track",
-                "duration_ms": 350320,
-                "images": [
+                id: '4woTEX1wYOTGDqNXuavlRC',
+                name: 'Superman',
+                type: 'track',
+                duration_ms: 350320,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "2cWBwpqMsDJC1ZUwz813lo",
-                    "name": "The Eminem Show",
-                    "images": [
+                album: {
+                    id: '2cWBwpqMsDJC1ZUwz813lo',
+                    name: 'The Eminem Show',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
                     },
                     {
-                        "id": "5jNmxPYz8QE5rYp4GDil8t",
-                        "name": "Dina Rae",
-                        "type": "artist"
-                    }
+                        id: '5jNmxPYz8QE5rYp4GDil8t',
+                        name: 'Dina Rae',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 84
+                popularity: 84,
             },
             {
-                "id": "561jH07mF1jHuk7KlaeF0s",
-                "name": "Mockingbird",
-                "type": "track",
-                "duration_ms": 250760,
-                "images": [
+                id: '561jH07mF1jHuk7KlaeF0s',
+                name: 'Mockingbird',
+                type: 'track',
+                duration_ms: 250760,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "1kTlYbs28MXw7hwO0NLYif",
-                    "name": "Encore (Deluxe Version)",
-                    "images": [
+                album: {
+                    id: '1kTlYbs28MXw7hwO0NLYif',
+                    name: 'Encore (Deluxe Version)',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 87
+                popularity: 87,
             },
             {
-                "id": "7lQ8MOhq6IN2w8EYcFNSUk",
-                "name": "Without Me",
-                "type": "track",
-                "duration_ms": 290320,
-                "images": [
+                id: '7lQ8MOhq6IN2w8EYcFNSUk',
+                name: 'Without Me',
+                type: 'track',
+                duration_ms: 290320,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "2cWBwpqMsDJC1ZUwz813lo",
-                    "name": "The Eminem Show",
-                    "images": [
+                album: {
+                    id: '2cWBwpqMsDJC1ZUwz813lo',
+                    name: 'The Eminem Show',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 88
+                popularity: 88,
             },
             {
-                "id": "3yfqSUWxFvZELEM4PmlwIR",
-                "name": "The Real Slim Shady",
-                "type": "track",
-                "duration_ms": 284200,
-                "images": [
+                id: '3yfqSUWxFvZELEM4PmlwIR',
+                name: 'The Real Slim Shady',
+                type: 'track',
+                duration_ms: 284200,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "6t7956yu5zYf5A829XRiHC",
-                    "name": "The Marshall Mathers LP",
-                    "images": [
+                album: {
+                    id: '6t7956yu5zYf5A829XRiHC',
+                    name: 'The Marshall Mathers LP',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 86
+                popularity: 86,
             },
             {
-                "id": "1v7L65Lzy0j0vdpRjJewt1",
-                "name": "Lose Yourself",
-                "type": "track",
-                "duration_ms": 322226,
-                "images": [
+                id: '1v7L65Lzy0j0vdpRjJewt1',
+                name: 'Lose Yourself',
+                type: 'track',
+                duration_ms: 322226,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "1rfORa9iYmocEsnnZGMVC4",
-                    "name": "Just Lose It",
-                    "images": [
+                album: {
+                    id: '1rfORa9iYmocEsnnZGMVC4',
+                    name: 'Just Lose It',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 81
+                popularity: 81,
             },
             {
-                "id": "4woTEX1wYOTGDqNXuavlRC",
-                "name": "Superman",
-                "type": "track",
-                "duration_ms": 350320,
-                "images": [
+                id: '4woTEX1wYOTGDqNXuavlRC',
+                name: 'Superman',
+                type: 'track',
+                duration_ms: 350320,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "2cWBwpqMsDJC1ZUwz813lo",
-                    "name": "The Eminem Show",
-                    "images": [
+                album: {
+                    id: '2cWBwpqMsDJC1ZUwz813lo',
+                    name: 'The Eminem Show',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
                     },
                     {
-                        "id": "5jNmxPYz8QE5rYp4GDil8t",
-                        "name": "Dina Rae",
-                        "type": "artist"
-                    }
+                        id: '5jNmxPYz8QE5rYp4GDil8t',
+                        name: 'Dina Rae',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 84
+                popularity: 84,
             },
             {
-                "id": "561jH07mF1jHuk7KlaeF0s",
-                "name": "Mockingbird",
-                "type": "track",
-                "duration_ms": 250760,
-                "images": [
+                id: '561jH07mF1jHuk7KlaeF0s',
+                name: 'Mockingbird',
+                type: 'track',
+                duration_ms: 250760,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "1kTlYbs28MXw7hwO0NLYif",
-                    "name": "Encore (Deluxe Version)",
-                    "images": [
+                album: {
+                    id: '1kTlYbs28MXw7hwO0NLYif',
+                    name: 'Encore (Deluxe Version)',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 87
+                popularity: 87,
             },
             {
-                "id": "7lQ8MOhq6IN2w8EYcFNSUk",
-                "name": "Without Me",
-                "type": "track",
-                "duration_ms": 290320,
-                "images": [
+                id: '7lQ8MOhq6IN2w8EYcFNSUk',
+                name: 'Without Me',
+                type: 'track',
+                duration_ms: 290320,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "2cWBwpqMsDJC1ZUwz813lo",
-                    "name": "The Eminem Show",
-                    "images": [
+                album: {
+                    id: '2cWBwpqMsDJC1ZUwz813lo',
+                    name: 'The Eminem Show',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 88
+                popularity: 88,
             },
             {
-                "id": "3yfqSUWxFvZELEM4PmlwIR",
-                "name": "The Real Slim Shady",
-                "type": "track",
-                "duration_ms": 284200,
-                "images": [
+                id: '3yfqSUWxFvZELEM4PmlwIR',
+                name: 'The Real Slim Shady',
+                type: 'track',
+                duration_ms: 284200,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "6t7956yu5zYf5A829XRiHC",
-                    "name": "The Marshall Mathers LP",
-                    "images": [
+                album: {
+                    id: '6t7956yu5zYf5A829XRiHC',
+                    name: 'The Marshall Mathers LP',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 86
+                popularity: 86,
             },
             {
-                "id": "1v7L65Lzy0j0vdpRjJewt1",
-                "name": "Lose Yourself",
-                "type": "track",
-                "duration_ms": 322226,
-                "images": [
+                id: '1v7L65Lzy0j0vdpRjJewt1',
+                name: 'Lose Yourself',
+                type: 'track',
+                duration_ms: 322226,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "1rfORa9iYmocEsnnZGMVC4",
-                    "name": "Just Lose It",
-                    "images": [
+                album: {
+                    id: '1rfORa9iYmocEsnnZGMVC4',
+                    name: 'Just Lose It',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 81
+                popularity: 81,
             },
             {
-                "id": "4woTEX1wYOTGDqNXuavlRC",
-                "name": "Superman",
-                "type": "track",
-                "duration_ms": 350320,
-                "images": [
+                id: '4woTEX1wYOTGDqNXuavlRC',
+                name: 'Superman',
+                type: 'track',
+                duration_ms: 350320,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "2cWBwpqMsDJC1ZUwz813lo",
-                    "name": "The Eminem Show",
-                    "images": [
+                album: {
+                    id: '2cWBwpqMsDJC1ZUwz813lo',
+                    name: 'The Eminem Show',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
                     },
                     {
-                        "id": "5jNmxPYz8QE5rYp4GDil8t",
-                        "name": "Dina Rae",
-                        "type": "artist"
-                    }
+                        id: '5jNmxPYz8QE5rYp4GDil8t',
+                        name: 'Dina Rae',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 84
+                popularity: 84,
             },
             {
-                "id": "561jH07mF1jHuk7KlaeF0s",
-                "name": "Mockingbird",
-                "type": "track",
-                "duration_ms": 250760,
-                "images": [
+                id: '561jH07mF1jHuk7KlaeF0s',
+                name: 'Mockingbird',
+                type: 'track',
+                duration_ms: 250760,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "1kTlYbs28MXw7hwO0NLYif",
-                    "name": "Encore (Deluxe Version)",
-                    "images": [
+                album: {
+                    id: '1kTlYbs28MXw7hwO0NLYif',
+                    name: 'Encore (Deluxe Version)',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 87
+                popularity: 87,
             },
             {
-                "id": "7lQ8MOhq6IN2w8EYcFNSUk",
-                "name": "Without Me",
-                "type": "track",
-                "duration_ms": 290320,
-                "images": [
+                id: '7lQ8MOhq6IN2w8EYcFNSUk',
+                name: 'Without Me',
+                type: 'track',
+                duration_ms: 290320,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "2cWBwpqMsDJC1ZUwz813lo",
-                    "name": "The Eminem Show",
-                    "images": [
+                album: {
+                    id: '2cWBwpqMsDJC1ZUwz813lo',
+                    name: 'The Eminem Show',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 88
+                popularity: 88,
             },
             {
-                "id": "3yfqSUWxFvZELEM4PmlwIR",
-                "name": "The Real Slim Shady",
-                "type": "track",
-                "duration_ms": 284200,
-                "images": [
+                id: '3yfqSUWxFvZELEM4PmlwIR',
+                name: 'The Real Slim Shady',
+                type: 'track',
+                duration_ms: 284200,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "6t7956yu5zYf5A829XRiHC",
-                    "name": "The Marshall Mathers LP",
-                    "images": [
+                album: {
+                    id: '6t7956yu5zYf5A829XRiHC',
+                    name: 'The Marshall Mathers LP',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 86
+                popularity: 86,
             },
             {
-                "id": "1v7L65Lzy0j0vdpRjJewt1",
-                "name": "Lose Yourself",
-                "type": "track",
-                "duration_ms": 322226,
-                "images": [
+                id: '1v7L65Lzy0j0vdpRjJewt1',
+                name: 'Lose Yourself',
+                type: 'track',
+                duration_ms: 322226,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "1rfORa9iYmocEsnnZGMVC4",
-                    "name": "Just Lose It",
-                    "images": [
+                album: {
+                    id: '1rfORa9iYmocEsnnZGMVC4',
+                    name: 'Just Lose It',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 81
+                popularity: 81,
             },
             {
-                "id": "561jH07mF1jHuk7KlaeF0s",
-                "name": "Mockingbird",
-                "type": "track",
-                "duration_ms": 250760,
-                "images": [
+                id: '561jH07mF1jHuk7KlaeF0s',
+                name: 'Mockingbird',
+                type: 'track',
+                duration_ms: 250760,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "1kTlYbs28MXw7hwO0NLYif",
-                    "name": "Encore (Deluxe Version)",
-                    "images": [
+                album: {
+                    id: '1kTlYbs28MXw7hwO0NLYif',
+                    name: 'Encore (Deluxe Version)',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 87
+                popularity: 87,
             },
             {
-                "id": "7lQ8MOhq6IN2w8EYcFNSUk",
-                "name": "Without Me",
-                "type": "track",
-                "duration_ms": 290320,
-                "images": [
+                id: '7lQ8MOhq6IN2w8EYcFNSUk',
+                name: 'Without Me',
+                type: 'track',
+                duration_ms: 290320,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "2cWBwpqMsDJC1ZUwz813lo",
-                    "name": "The Eminem Show",
-                    "images": [
+                album: {
+                    id: '2cWBwpqMsDJC1ZUwz813lo',
+                    name: 'The Eminem Show',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 88
+                popularity: 88,
             },
             {
-                "id": "3yfqSUWxFvZELEM4PmlwIR",
-                "name": "The Real Slim Shady",
-                "type": "track",
-                "duration_ms": 284200,
-                "images": [
+                id: '3yfqSUWxFvZELEM4PmlwIR',
+                name: 'The Real Slim Shady',
+                type: 'track',
+                duration_ms: 284200,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "6t7956yu5zYf5A829XRiHC",
-                    "name": "The Marshall Mathers LP",
-                    "images": [
+                album: {
+                    id: '6t7956yu5zYf5A829XRiHC',
+                    name: 'The Marshall Mathers LP',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 86
+                popularity: 86,
             },
             {
-                "id": "1v7L65Lzy0j0vdpRjJewt1",
-                "name": "Lose Yourself",
-                "type": "track",
-                "duration_ms": 322226,
-                "images": [
+                id: '1v7L65Lzy0j0vdpRjJewt1',
+                name: 'Lose Yourself',
+                type: 'track',
+                duration_ms: 322226,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "1rfORa9iYmocEsnnZGMVC4",
-                    "name": "Just Lose It",
-                    "images": [
+                album: {
+                    id: '1rfORa9iYmocEsnnZGMVC4',
+                    name: 'Just Lose It',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 81
+                popularity: 81,
             },
             {
-                "id": "4woTEX1wYOTGDqNXuavlRC",
-                "name": "Superman",
-                "type": "track",
-                "duration_ms": 350320,
-                "images": [
+                id: '4woTEX1wYOTGDqNXuavlRC',
+                name: 'Superman',
+                type: 'track',
+                duration_ms: 350320,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "2cWBwpqMsDJC1ZUwz813lo",
-                    "name": "The Eminem Show",
-                    "images": [
+                album: {
+                    id: '2cWBwpqMsDJC1ZUwz813lo',
+                    name: 'The Eminem Show',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
                     },
                     {
-                        "id": "5jNmxPYz8QE5rYp4GDil8t",
-                        "name": "Dina Rae",
-                        "type": "artist"
-                    }
+                        id: '5jNmxPYz8QE5rYp4GDil8t',
+                        name: 'Dina Rae',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 84
+                popularity: 84,
             },
             {
-                "id": "561jH07mF1jHuk7KlaeF0s",
-                "name": "Mockingbird",
-                "type": "track",
-                "duration_ms": 250760,
-                "images": [
+                id: '561jH07mF1jHuk7KlaeF0s',
+                name: 'Mockingbird',
+                type: 'track',
+                duration_ms: 250760,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "1kTlYbs28MXw7hwO0NLYif",
-                    "name": "Encore (Deluxe Version)",
-                    "images": [
+                album: {
+                    id: '1kTlYbs28MXw7hwO0NLYif',
+                    name: 'Encore (Deluxe Version)',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 87
+                popularity: 87,
             },
             {
-                "id": "7lQ8MOhq6IN2w8EYcFNSUk",
-                "name": "Without Me",
-                "type": "track",
-                "duration_ms": 290320,
-                "images": [
+                id: '7lQ8MOhq6IN2w8EYcFNSUk',
+                name: 'Without Me',
+                type: 'track',
+                duration_ms: 290320,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "2cWBwpqMsDJC1ZUwz813lo",
-                    "name": "The Eminem Show",
-                    "images": [
+                album: {
+                    id: '2cWBwpqMsDJC1ZUwz813lo',
+                    name: 'The Eminem Show',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 88
+                popularity: 88,
             },
             {
-                "id": "3yfqSUWxFvZELEM4PmlwIR",
-                "name": "The Real Slim Shady",
-                "type": "track",
-                "duration_ms": 284200,
-                "images": [
+                id: '3yfqSUWxFvZELEM4PmlwIR',
+                name: 'The Real Slim Shady',
+                type: 'track',
+                duration_ms: 284200,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "6t7956yu5zYf5A829XRiHC",
-                    "name": "The Marshall Mathers LP",
-                    "images": [
+                album: {
+                    id: '6t7956yu5zYf5A829XRiHC',
+                    name: 'The Marshall Mathers LP',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 86
+                popularity: 86,
             },
             {
-                "id": "1v7L65Lzy0j0vdpRjJewt1",
-                "name": "Lose Yourself",
-                "type": "track",
-                "duration_ms": 322226,
-                "images": [
+                id: '1v7L65Lzy0j0vdpRjJewt1',
+                name: 'Lose Yourself',
+                type: 'track',
+                duration_ms: 322226,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "1rfORa9iYmocEsnnZGMVC4",
-                    "name": "Just Lose It",
-                    "images": [
+                album: {
+                    id: '1rfORa9iYmocEsnnZGMVC4',
+                    name: 'Just Lose It',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 81
+                popularity: 81,
             },
             {
-                "id": "4woTEX1wYOTGDqNXuavlRC",
-                "name": "Superman",
-                "type": "track",
-                "duration_ms": 350320,
-                "images": [
+                id: '4woTEX1wYOTGDqNXuavlRC',
+                name: 'Superman',
+                type: 'track',
+                duration_ms: 350320,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "2cWBwpqMsDJC1ZUwz813lo",
-                    "name": "The Eminem Show",
-                    "images": [
+                album: {
+                    id: '2cWBwpqMsDJC1ZUwz813lo',
+                    name: 'The Eminem Show',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
                     },
                     {
-                        "id": "5jNmxPYz8QE5rYp4GDil8t",
-                        "name": "Dina Rae",
-                        "type": "artist"
-                    }
+                        id: '5jNmxPYz8QE5rYp4GDil8t',
+                        name: 'Dina Rae',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 84
+                popularity: 84,
             },
             {
-                "id": "561jH07mF1jHuk7KlaeF0s",
-                "name": "Mockingbird",
-                "type": "track",
-                "duration_ms": 250760,
-                "images": [
+                id: '561jH07mF1jHuk7KlaeF0s',
+                name: 'Mockingbird',
+                type: 'track',
+                duration_ms: 250760,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "1kTlYbs28MXw7hwO0NLYif",
-                    "name": "Encore (Deluxe Version)",
-                    "images": [
+                album: {
+                    id: '1kTlYbs28MXw7hwO0NLYif',
+                    name: 'Encore (Deluxe Version)',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 87
+                popularity: 87,
             },
             {
-                "id": "7lQ8MOhq6IN2w8EYcFNSUk",
-                "name": "Without Me",
-                "type": "track",
-                "duration_ms": 290320,
-                "images": [
+                id: '7lQ8MOhq6IN2w8EYcFNSUk',
+                name: 'Without Me',
+                type: 'track',
+                duration_ms: 290320,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "2cWBwpqMsDJC1ZUwz813lo",
-                    "name": "The Eminem Show",
-                    "images": [
+                album: {
+                    id: '2cWBwpqMsDJC1ZUwz813lo',
+                    name: 'The Eminem Show',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 88
+                popularity: 88,
             },
             {
-                "id": "3yfqSUWxFvZELEM4PmlwIR",
-                "name": "The Real Slim Shady",
-                "type": "track",
-                "duration_ms": 284200,
-                "images": [
+                id: '3yfqSUWxFvZELEM4PmlwIR',
+                name: 'The Real Slim Shady',
+                type: 'track',
+                duration_ms: 284200,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "6t7956yu5zYf5A829XRiHC",
-                    "name": "The Marshall Mathers LP",
-                    "images": [
+                album: {
+                    id: '6t7956yu5zYf5A829XRiHC',
+                    name: 'The Marshall Mathers LP',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 86
+                popularity: 86,
             },
             {
-                "id": "1v7L65Lzy0j0vdpRjJewt1",
-                "name": "Lose Yourself",
-                "type": "track",
-                "duration_ms": 322226,
-                "images": [
+                id: '1v7L65Lzy0j0vdpRjJewt1',
+                name: 'Lose Yourself',
+                type: 'track',
+                duration_ms: 322226,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "1rfORa9iYmocEsnnZGMVC4",
-                    "name": "Just Lose It",
-                    "images": [
+                album: {
+                    id: '1rfORa9iYmocEsnnZGMVC4',
+                    name: 'Just Lose It',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 81
+                popularity: 81,
             },
             {
-                "id": "4woTEX1wYOTGDqNXuavlRC",
-                "name": "Superman",
-                "type": "track",
-                "duration_ms": 350320,
-                "images": [
+                id: '4woTEX1wYOTGDqNXuavlRC',
+                name: 'Superman',
+                type: 'track',
+                duration_ms: 350320,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "2cWBwpqMsDJC1ZUwz813lo",
-                    "name": "The Eminem Show",
-                    "images": [
+                album: {
+                    id: '2cWBwpqMsDJC1ZUwz813lo',
+                    name: 'The Eminem Show',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
                     },
                     {
-                        "id": "5jNmxPYz8QE5rYp4GDil8t",
-                        "name": "Dina Rae",
-                        "type": "artist"
-                    }
+                        id: '5jNmxPYz8QE5rYp4GDil8t',
+                        name: 'Dina Rae',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 84
+                popularity: 84,
             },
             {
-                "id": "561jH07mF1jHuk7KlaeF0s",
-                "name": "Mockingbird",
-                "type": "track",
-                "duration_ms": 250760,
-                "images": [
+                id: '561jH07mF1jHuk7KlaeF0s',
+                name: 'Mockingbird',
+                type: 'track',
+                duration_ms: 250760,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "1kTlYbs28MXw7hwO0NLYif",
-                    "name": "Encore (Deluxe Version)",
-                    "images": [
+                album: {
+                    id: '1kTlYbs28MXw7hwO0NLYif',
+                    name: 'Encore (Deluxe Version)',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 87
+                popularity: 87,
             },
             {
-                "id": "7lQ8MOhq6IN2w8EYcFNSUk",
-                "name": "Without Me",
-                "type": "track",
-                "duration_ms": 290320,
-                "images": [
+                id: '7lQ8MOhq6IN2w8EYcFNSUk',
+                name: 'Without Me',
+                type: 'track',
+                duration_ms: 290320,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "2cWBwpqMsDJC1ZUwz813lo",
-                    "name": "The Eminem Show",
-                    "images": [
+                album: {
+                    id: '2cWBwpqMsDJC1ZUwz813lo',
+                    name: 'The Eminem Show',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 88
+                popularity: 88,
             },
             {
-                "id": "3yfqSUWxFvZELEM4PmlwIR",
-                "name": "The Real Slim Shady",
-                "type": "track",
-                "duration_ms": 284200,
-                "images": [
+                id: '3yfqSUWxFvZELEM4PmlwIR',
+                name: 'The Real Slim Shady',
+                type: 'track',
+                duration_ms: 284200,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "6t7956yu5zYf5A829XRiHC",
-                    "name": "The Marshall Mathers LP",
-                    "images": [
+                album: {
+                    id: '6t7956yu5zYf5A829XRiHC',
+                    name: 'The Marshall Mathers LP',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 86
+                popularity: 86,
             },
             {
-                "id": "1v7L65Lzy0j0vdpRjJewt1",
-                "name": "Lose Yourself",
-                "type": "track",
-                "duration_ms": 322226,
-                "images": [
+                id: '1v7L65Lzy0j0vdpRjJewt1',
+                name: 'Lose Yourself',
+                type: 'track',
+                duration_ms: 322226,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "1rfORa9iYmocEsnnZGMVC4",
-                    "name": "Just Lose It",
-                    "images": [
+                album: {
+                    id: '1rfORa9iYmocEsnnZGMVC4',
+                    name: 'Just Lose It',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 81
+                popularity: 81,
             },
             {
-                "id": "4woTEX1wYOTGDqNXuavlRC",
-                "name": "Superman",
-                "type": "track",
-                "duration_ms": 350320,
-                "images": [
+                id: '4woTEX1wYOTGDqNXuavlRC',
+                name: 'Superman',
+                type: 'track',
+                duration_ms: 350320,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "2cWBwpqMsDJC1ZUwz813lo",
-                    "name": "The Eminem Show",
-                    "images": [
+                album: {
+                    id: '2cWBwpqMsDJC1ZUwz813lo',
+                    name: 'The Eminem Show',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
                     },
                     {
-                        "id": "5jNmxPYz8QE5rYp4GDil8t",
-                        "name": "Dina Rae",
-                        "type": "artist"
-                    }
+                        id: '5jNmxPYz8QE5rYp4GDil8t',
+                        name: 'Dina Rae',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 84
+                popularity: 84,
             },
             {
-                "id": "561jH07mF1jHuk7KlaeF0s",
-                "name": "Mockingbird",
-                "type": "track",
-                "duration_ms": 250760,
-                "images": [
+                id: '561jH07mF1jHuk7KlaeF0s',
+                name: 'Mockingbird',
+                type: 'track',
+                duration_ms: 250760,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "1kTlYbs28MXw7hwO0NLYif",
-                    "name": "Encore (Deluxe Version)",
-                    "images": [
+                album: {
+                    id: '1kTlYbs28MXw7hwO0NLYif',
+                    name: 'Encore (Deluxe Version)',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 87
+                popularity: 87,
             },
             {
-                "id": "7lQ8MOhq6IN2w8EYcFNSUk",
-                "name": "Without Me",
-                "type": "track",
-                "duration_ms": 290320,
-                "images": [
+                id: '7lQ8MOhq6IN2w8EYcFNSUk',
+                name: 'Without Me',
+                type: 'track',
+                duration_ms: 290320,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "2cWBwpqMsDJC1ZUwz813lo",
-                    "name": "The Eminem Show",
-                    "images": [
+                album: {
+                    id: '2cWBwpqMsDJC1ZUwz813lo',
+                    name: 'The Eminem Show',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 88
+                popularity: 88,
             },
             {
-                "id": "3yfqSUWxFvZELEM4PmlwIR",
-                "name": "The Real Slim Shady",
-                "type": "track",
-                "duration_ms": 284200,
-                "images": [
+                id: '3yfqSUWxFvZELEM4PmlwIR',
+                name: 'The Real Slim Shady',
+                type: 'track',
+                duration_ms: 284200,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "6t7956yu5zYf5A829XRiHC",
-                    "name": "The Marshall Mathers LP",
-                    "images": [
+                album: {
+                    id: '6t7956yu5zYf5A829XRiHC',
+                    name: 'The Marshall Mathers LP',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 86
+                popularity: 86,
             },
             {
-                "id": "1v7L65Lzy0j0vdpRjJewt1",
-                "name": "Lose Yourself",
-                "type": "track",
-                "duration_ms": 322226,
-                "images": [
+                id: '1v7L65Lzy0j0vdpRjJewt1',
+                name: 'Lose Yourself',
+                type: 'track',
+                duration_ms: 322226,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "1rfORa9iYmocEsnnZGMVC4",
-                    "name": "Just Lose It",
-                    "images": [
+                album: {
+                    id: '1rfORa9iYmocEsnnZGMVC4',
+                    name: 'Just Lose It',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 81
+                popularity: 81,
             },
             {
-                "id": "4woTEX1wYOTGDqNXuavlRC",
-                "name": "Superman",
-                "type": "track",
-                "duration_ms": 350320,
-                "images": [
+                id: '4woTEX1wYOTGDqNXuavlRC',
+                name: 'Superman',
+                type: 'track',
+                duration_ms: 350320,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "2cWBwpqMsDJC1ZUwz813lo",
-                    "name": "The Eminem Show",
-                    "images": [
+                album: {
+                    id: '2cWBwpqMsDJC1ZUwz813lo',
+                    name: 'The Eminem Show',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
                     },
                     {
-                        "id": "5jNmxPYz8QE5rYp4GDil8t",
-                        "name": "Dina Rae",
-                        "type": "artist"
-                    }
+                        id: '5jNmxPYz8QE5rYp4GDil8t',
+                        name: 'Dina Rae',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 84
+                popularity: 84,
             },
             {
-                "id": "561jH07mF1jHuk7KlaeF0s",
-                "name": "Mockingbird",
-                "type": "track",
-                "duration_ms": 250760,
-                "images": [
+                id: '561jH07mF1jHuk7KlaeF0s',
+                name: 'Mockingbird',
+                type: 'track',
+                duration_ms: 250760,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "1kTlYbs28MXw7hwO0NLYif",
-                    "name": "Encore (Deluxe Version)",
-                    "images": [
+                album: {
+                    id: '1kTlYbs28MXw7hwO0NLYif',
+                    name: 'Encore (Deluxe Version)',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 87
+                popularity: 87,
             },
             {
-                "id": "7lQ8MOhq6IN2w8EYcFNSUk",
-                "name": "Without Me",
-                "type": "track",
-                "duration_ms": 290320,
-                "images": [
+                id: '7lQ8MOhq6IN2w8EYcFNSUk',
+                name: 'Without Me',
+                type: 'track',
+                duration_ms: 290320,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "2cWBwpqMsDJC1ZUwz813lo",
-                    "name": "The Eminem Show",
-                    "images": [
+                album: {
+                    id: '2cWBwpqMsDJC1ZUwz813lo',
+                    name: 'The Eminem Show',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 88
+                popularity: 88,
             },
             {
-                "id": "3yfqSUWxFvZELEM4PmlwIR",
-                "name": "The Real Slim Shady",
-                "type": "track",
-                "duration_ms": 284200,
-                "images": [
+                id: '3yfqSUWxFvZELEM4PmlwIR',
+                name: 'The Real Slim Shady',
+                type: 'track',
+                duration_ms: 284200,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "6t7956yu5zYf5A829XRiHC",
-                    "name": "The Marshall Mathers LP",
-                    "images": [
+                album: {
+                    id: '6t7956yu5zYf5A829XRiHC',
+                    name: 'The Marshall Mathers LP',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 86
+                popularity: 86,
             },
             {
-                "id": "1v7L65Lzy0j0vdpRjJewt1",
-                "name": "Lose Yourself",
-                "type": "track",
-                "duration_ms": 322226,
-                "images": [
+                id: '1v7L65Lzy0j0vdpRjJewt1',
+                name: 'Lose Yourself',
+                type: 'track',
+                duration_ms: 322226,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "1rfORa9iYmocEsnnZGMVC4",
-                    "name": "Just Lose It",
-                    "images": [
+                album: {
+                    id: '1rfORa9iYmocEsnnZGMVC4',
+                    name: 'Just Lose It',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 81
+                popularity: 81,
             },
             {
-                "id": "4woTEX1wYOTGDqNXuavlRC",
-                "name": "Superman",
-                "type": "track",
-                "duration_ms": 350320,
-                "images": [
+                id: '4woTEX1wYOTGDqNXuavlRC',
+                name: 'Superman',
+                type: 'track',
+                duration_ms: 350320,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "2cWBwpqMsDJC1ZUwz813lo",
-                    "name": "The Eminem Show",
-                    "images": [
+                album: {
+                    id: '2cWBwpqMsDJC1ZUwz813lo',
+                    name: 'The Eminem Show',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
                     },
                     {
-                        "id": "5jNmxPYz8QE5rYp4GDil8t",
-                        "name": "Dina Rae",
-                        "type": "artist"
-                    }
+                        id: '5jNmxPYz8QE5rYp4GDil8t',
+                        name: 'Dina Rae',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 84
+                popularity: 84,
             },
             {
-                "id": "561jH07mF1jHuk7KlaeF0s",
-                "name": "Mockingbird",
-                "type": "track",
-                "duration_ms": 250760,
-                "images": [
+                id: '561jH07mF1jHuk7KlaeF0s',
+                name: 'Mockingbird',
+                type: 'track',
+                duration_ms: 250760,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "1kTlYbs28MXw7hwO0NLYif",
-                    "name": "Encore (Deluxe Version)",
-                    "images": [
+                album: {
+                    id: '1kTlYbs28MXw7hwO0NLYif',
+                    name: 'Encore (Deluxe Version)',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 87
+                popularity: 87,
             },
             {
-                "id": "7lQ8MOhq6IN2w8EYcFNSUk",
-                "name": "Without Me",
-                "type": "track",
-                "duration_ms": 290320,
-                "images": [
+                id: '7lQ8MOhq6IN2w8EYcFNSUk',
+                name: 'Without Me',
+                type: 'track',
+                duration_ms: 290320,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "2cWBwpqMsDJC1ZUwz813lo",
-                    "name": "The Eminem Show",
-                    "images": [
+                album: {
+                    id: '2cWBwpqMsDJC1ZUwz813lo',
+                    name: 'The Eminem Show',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 88
+                popularity: 88,
             },
             {
-                "id": "3yfqSUWxFvZELEM4PmlwIR",
-                "name": "The Real Slim Shady",
-                "type": "track",
-                "duration_ms": 284200,
-                "images": [
+                id: '3yfqSUWxFvZELEM4PmlwIR',
+                name: 'The Real Slim Shady',
+                type: 'track',
+                duration_ms: 284200,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "6t7956yu5zYf5A829XRiHC",
-                    "name": "The Marshall Mathers LP",
-                    "images": [
+                album: {
+                    id: '6t7956yu5zYf5A829XRiHC',
+                    name: 'The Marshall Mathers LP',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 86
+                popularity: 86,
             },
             {
-                "id": "1v7L65Lzy0j0vdpRjJewt1",
-                "name": "Lose Yourself",
-                "type": "track",
-                "duration_ms": 322226,
-                "images": [
+                id: '1v7L65Lzy0j0vdpRjJewt1',
+                name: 'Lose Yourself',
+                type: 'track',
+                duration_ms: 322226,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "1rfORa9iYmocEsnnZGMVC4",
-                    "name": "Just Lose It",
-                    "images": [
+                album: {
+                    id: '1rfORa9iYmocEsnnZGMVC4',
+                    name: 'Just Lose It',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 81
+                popularity: 81,
             },
             {
-                "id": "4woTEX1wYOTGDqNXuavlRC",
-                "name": "Superman",
-                "type": "track",
-                "duration_ms": 350320,
-                "images": [
+                id: '4woTEX1wYOTGDqNXuavlRC',
+                name: 'Superman',
+                type: 'track',
+                duration_ms: 350320,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "2cWBwpqMsDJC1ZUwz813lo",
-                    "name": "The Eminem Show",
-                    "images": [
+                album: {
+                    id: '2cWBwpqMsDJC1ZUwz813lo',
+                    name: 'The Eminem Show',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
                     },
                     {
-                        "id": "5jNmxPYz8QE5rYp4GDil8t",
-                        "name": "Dina Rae",
-                        "type": "artist"
-                    }
+                        id: '5jNmxPYz8QE5rYp4GDil8t',
+                        name: 'Dina Rae',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 84
+                popularity: 84,
             },
             {
-                "id": "561jH07mF1jHuk7KlaeF0s",
-                "name": "Mockingbird",
-                "type": "track",
-                "duration_ms": 250760,
-                "images": [
+                id: '561jH07mF1jHuk7KlaeF0s',
+                name: 'Mockingbird',
+                type: 'track',
+                duration_ms: 250760,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "1kTlYbs28MXw7hwO0NLYif",
-                    "name": "Encore (Deluxe Version)",
-                    "images": [
+                album: {
+                    id: '1kTlYbs28MXw7hwO0NLYif',
+                    name: 'Encore (Deluxe Version)',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 87
+                popularity: 87,
             },
             {
-                "id": "7lQ8MOhq6IN2w8EYcFNSUk",
-                "name": "Without Me",
-                "type": "track",
-                "duration_ms": 290320,
-                "images": [
+                id: '7lQ8MOhq6IN2w8EYcFNSUk',
+                name: 'Without Me',
+                type: 'track',
+                duration_ms: 290320,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "2cWBwpqMsDJC1ZUwz813lo",
-                    "name": "The Eminem Show",
-                    "images": [
+                album: {
+                    id: '2cWBwpqMsDJC1ZUwz813lo',
+                    name: 'The Eminem Show',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 88
+                popularity: 88,
             },
             {
-                "id": "3yfqSUWxFvZELEM4PmlwIR",
-                "name": "The Real Slim Shady",
-                "type": "track",
-                "duration_ms": 284200,
-                "images": [
+                id: '3yfqSUWxFvZELEM4PmlwIR',
+                name: 'The Real Slim Shady',
+                type: 'track',
+                duration_ms: 284200,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "6t7956yu5zYf5A829XRiHC",
-                    "name": "The Marshall Mathers LP",
-                    "images": [
+                album: {
+                    id: '6t7956yu5zYf5A829XRiHC',
+                    name: 'The Marshall Mathers LP',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 86
+                popularity: 86,
             },
             {
-                "id": "1v7L65Lzy0j0vdpRjJewt1",
-                "name": "Lose Yourself",
-                "type": "track",
-                "duration_ms": 322226,
-                "images": [
+                id: '1v7L65Lzy0j0vdpRjJewt1',
+                name: 'Lose Yourself',
+                type: 'track',
+                duration_ms: 322226,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "1rfORa9iYmocEsnnZGMVC4",
-                    "name": "Just Lose It",
-                    "images": [
+                album: {
+                    id: '1rfORa9iYmocEsnnZGMVC4',
+                    name: 'Just Lose It',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 81
+                popularity: 81,
             },
             {
-                "id": "4woTEX1wYOTGDqNXuavlRC",
-                "name": "Superman",
-                "type": "track",
-                "duration_ms": 350320,
-                "images": [
+                id: '4woTEX1wYOTGDqNXuavlRC',
+                name: 'Superman',
+                type: 'track',
+                duration_ms: 350320,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "2cWBwpqMsDJC1ZUwz813lo",
-                    "name": "The Eminem Show",
-                    "images": [
+                album: {
+                    id: '2cWBwpqMsDJC1ZUwz813lo',
+                    name: 'The Eminem Show',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
                     },
                     {
-                        "id": "5jNmxPYz8QE5rYp4GDil8t",
-                        "name": "Dina Rae",
-                        "type": "artist"
-                    }
+                        id: '5jNmxPYz8QE5rYp4GDil8t',
+                        name: 'Dina Rae',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 84
+                popularity: 84,
             },
             {
-                "id": "561jH07mF1jHuk7KlaeF0s",
-                "name": "Mockingbird",
-                "type": "track",
-                "duration_ms": 250760,
-                "images": [
+                id: '561jH07mF1jHuk7KlaeF0s',
+                name: 'Mockingbird',
+                type: 'track',
+                duration_ms: 250760,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "1kTlYbs28MXw7hwO0NLYif",
-                    "name": "Encore (Deluxe Version)",
-                    "images": [
+                album: {
+                    id: '1kTlYbs28MXw7hwO0NLYif',
+                    name: 'Encore (Deluxe Version)',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 87
+                popularity: 87,
             },
             {
-                "id": "7lQ8MOhq6IN2w8EYcFNSUk",
-                "name": "Without Me",
-                "type": "track",
-                "duration_ms": 290320,
-                "images": [
+                id: '7lQ8MOhq6IN2w8EYcFNSUk',
+                name: 'Without Me',
+                type: 'track',
+                duration_ms: 290320,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "2cWBwpqMsDJC1ZUwz813lo",
-                    "name": "The Eminem Show",
-                    "images": [
+                album: {
+                    id: '2cWBwpqMsDJC1ZUwz813lo',
+                    name: 'The Eminem Show',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 88
+                popularity: 88,
             },
             {
-                "id": "1v7L65Lzy0j0vdpRjJewt1",
-                "name": "Lose Yourself",
-                "type": "track",
-                "duration_ms": 322226,
-                "images": [
+                id: '1v7L65Lzy0j0vdpRjJewt1',
+                name: 'Lose Yourself',
+                type: 'track',
+                duration_ms: 322226,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "1rfORa9iYmocEsnnZGMVC4",
-                    "name": "Just Lose It",
-                    "images": [
+                album: {
+                    id: '1rfORa9iYmocEsnnZGMVC4',
+                    name: 'Just Lose It',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 81
+                popularity: 81,
             },
             {
-                "id": "4woTEX1wYOTGDqNXuavlRC",
-                "name": "Superman",
-                "type": "track",
-                "duration_ms": 350320,
-                "images": [
+                id: '4woTEX1wYOTGDqNXuavlRC',
+                name: 'Superman',
+                type: 'track',
+                duration_ms: 350320,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "2cWBwpqMsDJC1ZUwz813lo",
-                    "name": "The Eminem Show",
-                    "images": [
+                album: {
+                    id: '2cWBwpqMsDJC1ZUwz813lo',
+                    name: 'The Eminem Show',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
                     },
                     {
-                        "id": "5jNmxPYz8QE5rYp4GDil8t",
-                        "name": "Dina Rae",
-                        "type": "artist"
-                    }
+                        id: '5jNmxPYz8QE5rYp4GDil8t',
+                        name: 'Dina Rae',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 84
+                popularity: 84,
             },
             {
-                "id": "561jH07mF1jHuk7KlaeF0s",
-                "name": "Mockingbird",
-                "type": "track",
-                "duration_ms": 250760,
-                "images": [
+                id: '561jH07mF1jHuk7KlaeF0s',
+                name: 'Mockingbird',
+                type: 'track',
+                duration_ms: 250760,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "1kTlYbs28MXw7hwO0NLYif",
-                    "name": "Encore (Deluxe Version)",
-                    "images": [
+                album: {
+                    id: '1kTlYbs28MXw7hwO0NLYif',
+                    name: 'Encore (Deluxe Version)',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 87
+                popularity: 87,
             },
             {
-                "id": "7lQ8MOhq6IN2w8EYcFNSUk",
-                "name": "Without Me",
-                "type": "track",
-                "duration_ms": 290320,
-                "images": [
+                id: '7lQ8MOhq6IN2w8EYcFNSUk',
+                name: 'Without Me',
+                type: 'track',
+                duration_ms: 290320,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "2cWBwpqMsDJC1ZUwz813lo",
-                    "name": "The Eminem Show",
-                    "images": [
+                album: {
+                    id: '2cWBwpqMsDJC1ZUwz813lo',
+                    name: 'The Eminem Show',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 88
+                popularity: 88,
             },
             {
-                "id": "3yfqSUWxFvZELEM4PmlwIR",
-                "name": "The Real Slim Shady",
-                "type": "track",
-                "duration_ms": 284200,
-                "images": [
+                id: '3yfqSUWxFvZELEM4PmlwIR',
+                name: 'The Real Slim Shady',
+                type: 'track',
+                duration_ms: 284200,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "6t7956yu5zYf5A829XRiHC",
-                    "name": "The Marshall Mathers LP",
-                    "images": [
+                album: {
+                    id: '6t7956yu5zYf5A829XRiHC',
+                    name: 'The Marshall Mathers LP',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 86
+                popularity: 86,
             },
             {
-                "id": "1v7L65Lzy0j0vdpRjJewt1",
-                "name": "Lose Yourself",
-                "type": "track",
-                "duration_ms": 322226,
-                "images": [
+                id: '1v7L65Lzy0j0vdpRjJewt1',
+                name: 'Lose Yourself',
+                type: 'track',
+                duration_ms: 322226,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "1rfORa9iYmocEsnnZGMVC4",
-                    "name": "Just Lose It",
-                    "images": [
+                album: {
+                    id: '1rfORa9iYmocEsnnZGMVC4',
+                    name: 'Just Lose It',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 81
+                popularity: 81,
             },
             {
-                "id": "4woTEX1wYOTGDqNXuavlRC",
-                "name": "Superman",
-                "type": "track",
-                "duration_ms": 350320,
-                "images": [
+                id: '4woTEX1wYOTGDqNXuavlRC',
+                name: 'Superman',
+                type: 'track',
+                duration_ms: 350320,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "2cWBwpqMsDJC1ZUwz813lo",
-                    "name": "The Eminem Show",
-                    "images": [
+                album: {
+                    id: '2cWBwpqMsDJC1ZUwz813lo',
+                    name: 'The Eminem Show',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
                     },
                     {
-                        "id": "5jNmxPYz8QE5rYp4GDil8t",
-                        "name": "Dina Rae",
-                        "type": "artist"
-                    }
+                        id: '5jNmxPYz8QE5rYp4GDil8t',
+                        name: 'Dina Rae',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 84
+                popularity: 84,
             },
             {
-                "id": "561jH07mF1jHuk7KlaeF0s",
-                "name": "Mockingbird",
-                "type": "track",
-                "duration_ms": 250760,
-                "images": [
+                id: '561jH07mF1jHuk7KlaeF0s',
+                name: 'Mockingbird',
+                type: 'track',
+                duration_ms: 250760,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "1kTlYbs28MXw7hwO0NLYif",
-                    "name": "Encore (Deluxe Version)",
-                    "images": [
+                album: {
+                    id: '1kTlYbs28MXw7hwO0NLYif',
+                    name: 'Encore (Deluxe Version)',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 87
+                popularity: 87,
             },
             {
-                "id": "7lQ8MOhq6IN2w8EYcFNSUk",
-                "name": "Without Me",
-                "type": "track",
-                "duration_ms": 290320,
-                "images": [
+                id: '7lQ8MOhq6IN2w8EYcFNSUk',
+                name: 'Without Me',
+                type: 'track',
+                duration_ms: 290320,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "2cWBwpqMsDJC1ZUwz813lo",
-                    "name": "The Eminem Show",
-                    "images": [
+                album: {
+                    id: '2cWBwpqMsDJC1ZUwz813lo',
+                    name: 'The Eminem Show',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 88
+                popularity: 88,
             },
             {
-                "id": "3yfqSUWxFvZELEM4PmlwIR",
-                "name": "The Real Slim Shady",
-                "type": "track",
-                "duration_ms": 284200,
-                "images": [
+                id: '3yfqSUWxFvZELEM4PmlwIR',
+                name: 'The Real Slim Shady',
+                type: 'track',
+                duration_ms: 284200,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "6t7956yu5zYf5A829XRiHC",
-                    "name": "The Marshall Mathers LP",
-                    "images": [
+                album: {
+                    id: '6t7956yu5zYf5A829XRiHC',
+                    name: 'The Marshall Mathers LP',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 86
+                popularity: 86,
             },
             {
-                "id": "1v7L65Lzy0j0vdpRjJewt1",
-                "name": "Lose Yourself",
-                "type": "track",
-                "duration_ms": 322226,
-                "images": [
+                id: '1v7L65Lzy0j0vdpRjJewt1',
+                name: 'Lose Yourself',
+                type: 'track',
+                duration_ms: 322226,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "1rfORa9iYmocEsnnZGMVC4",
-                    "name": "Just Lose It",
-                    "images": [
+                album: {
+                    id: '1rfORa9iYmocEsnnZGMVC4',
+                    name: 'Just Lose It',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 81
+                popularity: 81,
             },
             {
-                "id": "4woTEX1wYOTGDqNXuavlRC",
-                "name": "Superman",
-                "type": "track",
-                "duration_ms": 350320,
-                "images": [
+                id: '4woTEX1wYOTGDqNXuavlRC',
+                name: 'Superman',
+                type: 'track',
+                duration_ms: 350320,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "2cWBwpqMsDJC1ZUwz813lo",
-                    "name": "The Eminem Show",
-                    "images": [
+                album: {
+                    id: '2cWBwpqMsDJC1ZUwz813lo',
+                    name: 'The Eminem Show',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
                     },
                     {
-                        "id": "5jNmxPYz8QE5rYp4GDil8t",
-                        "name": "Dina Rae",
-                        "type": "artist"
-                    }
+                        id: '5jNmxPYz8QE5rYp4GDil8t',
+                        name: 'Dina Rae',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 84
+                popularity: 84,
             },
             {
-                "id": "561jH07mF1jHuk7KlaeF0s",
-                "name": "Mockingbird",
-                "type": "track",
-                "duration_ms": 250760,
-                "images": [
+                id: '561jH07mF1jHuk7KlaeF0s',
+                name: 'Mockingbird',
+                type: 'track',
+                duration_ms: 250760,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "1kTlYbs28MXw7hwO0NLYif",
-                    "name": "Encore (Deluxe Version)",
-                    "images": [
+                album: {
+                    id: '1kTlYbs28MXw7hwO0NLYif',
+                    name: 'Encore (Deluxe Version)',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 87
+                popularity: 87,
             },
             {
-                "id": "7lQ8MOhq6IN2w8EYcFNSUk",
-                "name": "Without Me",
-                "type": "track",
-                "duration_ms": 290320,
-                "images": [
+                id: '7lQ8MOhq6IN2w8EYcFNSUk',
+                name: 'Without Me',
+                type: 'track',
+                duration_ms: 290320,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "2cWBwpqMsDJC1ZUwz813lo",
-                    "name": "The Eminem Show",
-                    "images": [
+                album: {
+                    id: '2cWBwpqMsDJC1ZUwz813lo',
+                    name: 'The Eminem Show',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 88
+                popularity: 88,
             },
             {
-                "id": "3yfqSUWxFvZELEM4PmlwIR",
-                "name": "The Real Slim Shady",
-                "type": "track",
-                "duration_ms": 284200,
-                "images": [
+                id: '3yfqSUWxFvZELEM4PmlwIR',
+                name: 'The Real Slim Shady',
+                type: 'track',
+                duration_ms: 284200,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "6t7956yu5zYf5A829XRiHC",
-                    "name": "The Marshall Mathers LP",
-                    "images": [
+                album: {
+                    id: '6t7956yu5zYf5A829XRiHC',
+                    name: 'The Marshall Mathers LP',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 86
+                popularity: 86,
             },
             {
-                "id": "1v7L65Lzy0j0vdpRjJewt1",
-                "name": "Lose Yourself",
-                "type": "track",
-                "duration_ms": 322226,
-                "images": [
+                id: '1v7L65Lzy0j0vdpRjJewt1',
+                name: 'Lose Yourself',
+                type: 'track',
+                duration_ms: 322226,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "1rfORa9iYmocEsnnZGMVC4",
-                    "name": "Just Lose It",
-                    "images": [
+                album: {
+                    id: '1rfORa9iYmocEsnnZGMVC4',
+                    name: 'Just Lose It',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 81
+                popularity: 81,
             },
             {
-                "id": "4woTEX1wYOTGDqNXuavlRC",
-                "name": "Superman",
-                "type": "track",
-                "duration_ms": 350320,
-                "images": [
+                id: '4woTEX1wYOTGDqNXuavlRC',
+                name: 'Superman',
+                type: 'track',
+                duration_ms: 350320,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "2cWBwpqMsDJC1ZUwz813lo",
-                    "name": "The Eminem Show",
-                    "images": [
+                album: {
+                    id: '2cWBwpqMsDJC1ZUwz813lo',
+                    name: 'The Eminem Show',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
                     },
                     {
-                        "id": "5jNmxPYz8QE5rYp4GDil8t",
-                        "name": "Dina Rae",
-                        "type": "artist"
-                    }
+                        id: '5jNmxPYz8QE5rYp4GDil8t',
+                        name: 'Dina Rae',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 84
+                popularity: 84,
             },
             {
-                "id": "561jH07mF1jHuk7KlaeF0s",
-                "name": "Mockingbird",
-                "type": "track",
-                "duration_ms": 250760,
-                "images": [
+                id: '561jH07mF1jHuk7KlaeF0s',
+                name: 'Mockingbird',
+                type: 'track',
+                duration_ms: 250760,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "1kTlYbs28MXw7hwO0NLYif",
-                    "name": "Encore (Deluxe Version)",
-                    "images": [
+                album: {
+                    id: '1kTlYbs28MXw7hwO0NLYif',
+                    name: 'Encore (Deluxe Version)',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 87
+                popularity: 87,
             },
             {
-                "id": "7lQ8MOhq6IN2w8EYcFNSUk",
-                "name": "Without Me",
-                "type": "track",
-                "duration_ms": 290320,
-                "images": [
+                id: '7lQ8MOhq6IN2w8EYcFNSUk',
+                name: 'Without Me',
+                type: 'track',
+                duration_ms: 290320,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "2cWBwpqMsDJC1ZUwz813lo",
-                    "name": "The Eminem Show",
-                    "images": [
+                album: {
+                    id: '2cWBwpqMsDJC1ZUwz813lo',
+                    name: 'The Eminem Show',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 88
+                popularity: 88,
             },
             {
-                "id": "3yfqSUWxFvZELEM4PmlwIR",
-                "name": "The Real Slim Shady",
-                "type": "track",
-                "duration_ms": 284200,
-                "images": [
+                id: '3yfqSUWxFvZELEM4PmlwIR',
+                name: 'The Real Slim Shady',
+                type: 'track',
+                duration_ms: 284200,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "6t7956yu5zYf5A829XRiHC",
-                    "name": "The Marshall Mathers LP",
-                    "images": [
+                album: {
+                    id: '6t7956yu5zYf5A829XRiHC',
+                    name: 'The Marshall Mathers LP',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 86
+                popularity: 86,
             },
             {
-                "id": "1v7L65Lzy0j0vdpRjJewt1",
-                "name": "Lose Yourself",
-                "type": "track",
-                "duration_ms": 322226,
-                "images": [
+                id: '1v7L65Lzy0j0vdpRjJewt1',
+                name: 'Lose Yourself',
+                type: 'track',
+                duration_ms: 322226,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "1rfORa9iYmocEsnnZGMVC4",
-                    "name": "Just Lose It",
-                    "images": [
+                album: {
+                    id: '1rfORa9iYmocEsnnZGMVC4',
+                    name: 'Just Lose It',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 81
+                popularity: 81,
             },
             {
-                "id": "4woTEX1wYOTGDqNXuavlRC",
-                "name": "Superman",
-                "type": "track",
-                "duration_ms": 350320,
-                "images": [
+                id: '4woTEX1wYOTGDqNXuavlRC',
+                name: 'Superman',
+                type: 'track',
+                duration_ms: 350320,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "2cWBwpqMsDJC1ZUwz813lo",
-                    "name": "The Eminem Show",
-                    "images": [
+                album: {
+                    id: '2cWBwpqMsDJC1ZUwz813lo',
+                    name: 'The Eminem Show',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
                     },
                     {
-                        "id": "5jNmxPYz8QE5rYp4GDil8t",
-                        "name": "Dina Rae",
-                        "type": "artist"
-                    }
+                        id: '5jNmxPYz8QE5rYp4GDil8t',
+                        name: 'Dina Rae',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 84
+                popularity: 84,
             },
             {
-                "id": "561jH07mF1jHuk7KlaeF0s",
-                "name": "Mockingbird",
-                "type": "track",
-                "duration_ms": 250760,
-                "images": [
+                id: '561jH07mF1jHuk7KlaeF0s',
+                name: 'Mockingbird',
+                type: 'track',
+                duration_ms: 250760,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "1kTlYbs28MXw7hwO0NLYif",
-                    "name": "Encore (Deluxe Version)",
-                    "images": [
+                album: {
+                    id: '1kTlYbs28MXw7hwO0NLYif',
+                    name: 'Encore (Deluxe Version)',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 87
+                popularity: 87,
             },
             {
-                "id": "7lQ8MOhq6IN2w8EYcFNSUk",
-                "name": "Without Me",
-                "type": "track",
-                "duration_ms": 290320,
-                "images": [
+                id: '7lQ8MOhq6IN2w8EYcFNSUk',
+                name: 'Without Me',
+                type: 'track',
+                duration_ms: 290320,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "2cWBwpqMsDJC1ZUwz813lo",
-                    "name": "The Eminem Show",
-                    "images": [
+                album: {
+                    id: '2cWBwpqMsDJC1ZUwz813lo',
+                    name: 'The Eminem Show',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 88
+                popularity: 88,
             },
             {
-                "id": "3yfqSUWxFvZELEM4PmlwIR",
-                "name": "The Real Slim Shady",
-                "type": "track",
-                "duration_ms": 284200,
-                "images": [
+                id: '3yfqSUWxFvZELEM4PmlwIR',
+                name: 'The Real Slim Shady',
+                type: 'track',
+                duration_ms: 284200,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "6t7956yu5zYf5A829XRiHC",
-                    "name": "The Marshall Mathers LP",
-                    "images": [
+                album: {
+                    id: '6t7956yu5zYf5A829XRiHC',
+                    name: 'The Marshall Mathers LP',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 86
+                popularity: 86,
             },
             {
-                "id": "1v7L65Lzy0j0vdpRjJewt1",
-                "name": "Lose Yourself",
-                "type": "track",
-                "duration_ms": 322226,
-                "images": [
+                id: '1v7L65Lzy0j0vdpRjJewt1',
+                name: 'Lose Yourself',
+                type: 'track',
+                duration_ms: 322226,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "1rfORa9iYmocEsnnZGMVC4",
-                    "name": "Just Lose It",
-                    "images": [
+                album: {
+                    id: '1rfORa9iYmocEsnnZGMVC4',
+                    name: 'Just Lose It',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 81
+                popularity: 81,
             },
             {
-                "id": "4woTEX1wYOTGDqNXuavlRC",
-                "name": "Superman",
-                "type": "track",
-                "duration_ms": 350320,
-                "images": [
+                id: '4woTEX1wYOTGDqNXuavlRC',
+                name: 'Superman',
+                type: 'track',
+                duration_ms: 350320,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "2cWBwpqMsDJC1ZUwz813lo",
-                    "name": "The Eminem Show",
-                    "images": [
+                album: {
+                    id: '2cWBwpqMsDJC1ZUwz813lo',
+                    name: 'The Eminem Show',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
                     },
                     {
-                        "id": "5jNmxPYz8QE5rYp4GDil8t",
-                        "name": "Dina Rae",
-                        "type": "artist"
-                    }
+                        id: '5jNmxPYz8QE5rYp4GDil8t',
+                        name: 'Dina Rae',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 84
+                popularity: 84,
             },
             {
-                "id": "561jH07mF1jHuk7KlaeF0s",
-                "name": "Mockingbird",
-                "type": "track",
-                "duration_ms": 250760,
-                "images": [
+                id: '561jH07mF1jHuk7KlaeF0s',
+                name: 'Mockingbird',
+                type: 'track',
+                duration_ms: 250760,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "1kTlYbs28MXw7hwO0NLYif",
-                    "name": "Encore (Deluxe Version)",
-                    "images": [
+                album: {
+                    id: '1kTlYbs28MXw7hwO0NLYif',
+                    name: 'Encore (Deluxe Version)',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 87
+                popularity: 87,
             },
             {
-                "id": "7lQ8MOhq6IN2w8EYcFNSUk",
-                "name": "Without Me",
-                "type": "track",
-                "duration_ms": 290320,
-                "images": [
+                id: '7lQ8MOhq6IN2w8EYcFNSUk',
+                name: 'Without Me',
+                type: 'track',
+                duration_ms: 290320,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "2cWBwpqMsDJC1ZUwz813lo",
-                    "name": "The Eminem Show",
-                    "images": [
+                album: {
+                    id: '2cWBwpqMsDJC1ZUwz813lo',
+                    name: 'The Eminem Show',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 88
+                popularity: 88,
             },
             {
-                "id": "3yfqSUWxFvZELEM4PmlwIR",
-                "name": "The Real Slim Shady",
-                "type": "track",
-                "duration_ms": 284200,
-                "images": [
+                id: '3yfqSUWxFvZELEM4PmlwIR',
+                name: 'The Real Slim Shady',
+                type: 'track',
+                duration_ms: 284200,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "6t7956yu5zYf5A829XRiHC",
-                    "name": "The Marshall Mathers LP",
-                    "images": [
+                album: {
+                    id: '6t7956yu5zYf5A829XRiHC',
+                    name: 'The Marshall Mathers LP',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b273dbb3dd82da45b7d7f31b1b42',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e02dbb3dd82da45b7d7f31b1b42',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d00004851dbb3dd82da45b7d7f31b1b42',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 86
+                popularity: 86,
             },
             {
-                "id": "1v7L65Lzy0j0vdpRjJewt1",
-                "name": "Lose Yourself",
-                "type": "track",
-                "duration_ms": 322226,
-                "images": [
+                id: '1v7L65Lzy0j0vdpRjJewt1',
+                name: 'Lose Yourself',
+                type: 'track',
+                duration_ms: 322226,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "1rfORa9iYmocEsnnZGMVC4",
-                    "name": "Just Lose It",
-                    "images": [
+                album: {
+                    id: '1rfORa9iYmocEsnnZGMVC4',
+                    name: 'Just Lose It',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b273b6ef2ebd34efb08cb76f6eec',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e02b6ef2ebd34efb08cb76f6eec',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d00004851b6ef2ebd34efb08cb76f6eec',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 81
+                popularity: 81,
             },
             {
-                "id": "4woTEX1wYOTGDqNXuavlRC",
-                "name": "Superman",
-                "type": "track",
-                "duration_ms": 350320,
-                "images": [
+                id: '4woTEX1wYOTGDqNXuavlRC',
+                name: 'Superman',
+                type: 'track',
+                duration_ms: 350320,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "2cWBwpqMsDJC1ZUwz813lo",
-                    "name": "The Eminem Show",
-                    "images": [
+                album: {
+                    id: '2cWBwpqMsDJC1ZUwz813lo',
+                    name: 'The Eminem Show',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
                     },
                     {
-                        "id": "5jNmxPYz8QE5rYp4GDil8t",
-                        "name": "Dina Rae",
-                        "type": "artist"
-                    }
+                        id: '5jNmxPYz8QE5rYp4GDil8t',
+                        name: 'Dina Rae',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 84
+                popularity: 84,
             },
             {
-                "id": "561jH07mF1jHuk7KlaeF0s",
-                "name": "Mockingbird",
-                "type": "track",
-                "duration_ms": 250760,
-                "images": [
+                id: '561jH07mF1jHuk7KlaeF0s',
+                name: 'Mockingbird',
+                type: 'track',
+                duration_ms: 250760,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "1kTlYbs28MXw7hwO0NLYif",
-                    "name": "Encore (Deluxe Version)",
-                    "images": [
+                album: {
+                    id: '1kTlYbs28MXw7hwO0NLYif',
+                    name: 'Encore (Deluxe Version)',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2731bec21e57fff76db49e15a70',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e021bec21e57fff76db49e15a70',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048511bec21e57fff76db49e15a70',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 87
+                popularity: 87,
             },
             {
-                "id": "7lQ8MOhq6IN2w8EYcFNSUk",
-                "name": "Without Me",
-                "type": "track",
-                "duration_ms": 290320,
-                "images": [
+                id: '7lQ8MOhq6IN2w8EYcFNSUk',
+                name: 'Without Me',
+                type: 'track',
+                duration_ms: 290320,
+                images: [
                     {
-                        "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                        "width": 640,
-                        "height": 640
+                        url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                        width: 640,
+                        height: 640,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                        "width": 300,
-                        "height": 300
+                        url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                        width: 300,
+                        height: 300,
                     },
                     {
-                        "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                        "width": 64,
-                        "height": 64
-                    }
+                        url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                        width: 64,
+                        height: 64,
+                    },
                 ],
-                "album": {
-                    "id": "2cWBwpqMsDJC1ZUwz813lo",
-                    "name": "The Eminem Show",
-                    "images": [
+                album: {
+                    id: '2cWBwpqMsDJC1ZUwz813lo',
+                    name: 'The Eminem Show',
+                    images: [
                         {
-                            "url": "https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4",
-                            "width": 640,
-                            "height": 640
+                            url: 'https://i.scdn.co/image/ab67616d0000b2736ca5c90113b30c3c43ffb8f4',
+                            width: 640,
+                            height: 640,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4",
-                            "width": 300,
-                            "height": 300
+                            url: 'https://i.scdn.co/image/ab67616d00001e026ca5c90113b30c3c43ffb8f4',
+                            width: 300,
+                            height: 300,
                         },
                         {
-                            "url": "https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4",
-                            "width": 64,
-                            "height": 64
-                        }
+                            url: 'https://i.scdn.co/image/ab67616d000048516ca5c90113b30c3c43ffb8f4',
+                            width: 64,
+                            height: 64,
+                        },
                     ],
-                    "type": "album"
+                    type: 'album',
                 },
-                "artists": [
+                artists: [
                     {
-                        "id": "7dGJo4pcD2V6oG8kP0tJRR",
-                        "name": "Eminem",
-                        "type": "artist"
-                    }
+                        id: '7dGJo4pcD2V6oG8kP0tJRR',
+                        name: 'Eminem',
+                        type: 'artist',
+                    },
                 ],
-                "popularity": 88
-            }
-        ]
+                popularity: 88,
+            },
+        ],
     }
 }
