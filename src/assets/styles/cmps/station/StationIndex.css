@@ -201,6 +201,6 @@ img.recent-small-img {
     pointer-events: auto;
 }
 
-.carousel-btn:hover {
-    background: rgba(0, 0, 0, 0.8);
+.carousel-btn:hover .carousel-arrow {
+    color: white;
 }

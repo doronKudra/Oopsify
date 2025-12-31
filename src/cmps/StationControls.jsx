@@ -15,21 +15,21 @@ export function StationControls({
         (store) => store.stationModule.sidebarStations
     )
     const isLiked = sidebarStations.some(({ _id }) => _id === station._id)
-    // console.log('isLiked:', isLiked)
 
-    const playingStationId = useSelector((store) => store.playerModule.stationId)
-    const isPlaying = useSelector(state => state.playerModule.isPlaying)
+    const playingStationId = useSelector(
+        (store) => store.playerModule.stationId
+    )
+    const isPlaying = useSelector((state) => state.playerModule.isPlaying)
 
     const [isThisStationPlaying, setIsThisStationPlaying] = useState(false)
 
-    useEffect(()=>{
-        console.log('2:',2)
-        if (isPlaying && playingStationId === station?._id){
+    useEffect(() => {
+        if (isPlaying && playingStationId === station?._id) {
             setIsThisStationPlaying(true)
         } else {
             setIsThisStationPlaying(false)
         }
-    },[isPlaying, playingStationId])
+    }, [isPlaying, playingStationId])
 
     function onStationRightClick(ev, station) {
         openContextMenu({
@@ -40,15 +40,28 @@ export function StationControls({
     }
 
     function onPlayPauseBtn() {
-        if (isThisStationPlaying) { //pause
-            playerActions.onPlaying(true)
-            // playerActions.setStationPlaying(false)
-            // playerActions.pauseTrack() // 
-        } else if(playingStationId !== station._id){
+        if (isThisStationPlaying) {
+            playerActions.onPlaying(false)
+        } else if (playingStationId !== station._id) {
             playerActions.onPlayStation(station)
         } else {
-            playerActions.onPlaying(false)            
+            playerActions.onPlaying(true)
         }
+    }
+
+    function onPlay(station) {
+        store.dispatch({ type: SET_TRACK_LIST, trackList: station.tracks })
+        store.dispatch({ type: SET_STATION_ID, stationId: station._id })
+        store.dispatch({ type: UPDATE_CURRENT_TRACK, track: station.tracks[0] })
+        store.dispatch({ type: SET_PLAYING, isPlaying: true })
+    }
+
+    function onPause() {
+        store.dispatch({ type: SET_PLAYING, isPlaying: false })
+    }
+
+    function onShuffle() {
+        playerActions.onShuffle()
     }
 
     const hasImg = station?.images?.[0]?.url
@@ -62,12 +75,11 @@ export function StationControls({
                 onClick={onPlayPauseBtn}
             >
                 <div className="green-circle">
-                    {' '}
                     {isThisStationPlaying ? (
                         <PauseIcon width={24} height={24} />
                     ) : (
                         <PlayIcon width={24} height={24} />
-                    )}{' '}
+                    )}
                 </div>
             </button>
 
