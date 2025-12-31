@@ -14,6 +14,7 @@ export function SearchPage() {
 
     useEffect(() => {
         const filterBy = { txt: searchParams.get('txt'), type: searchParams.get('type') }
+        console.log('filterBy:',filterBy)
         if (filterBy.txt && filterBy.type) {
             setIsLoading(true)
             onSearch(filterBy)

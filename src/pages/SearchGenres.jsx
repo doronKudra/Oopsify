@@ -18,6 +18,8 @@ export function SearchGenres() {
         { name: 'Podcast Charts', bgc: '#0d73ec', url: 'https://t.scdn.co/images/7262179db37c498480ef06bfacb60310.jpeg' },
         { name: 'Educational', bgc: '#477d95', url: 'https://i.scdn.co/image/ab67656300005f1fd464f18a416c86ede3a235a7' },
         { name: 'Documentary', bgc: '#503750', url: 'https://i.scdn.co/image/ab6765630000ba8a2f514cde3ee9501e7ada4cf4' },
+
+
         { name: 'Music', bgc: '#dc148c', url: 'https://i.scdn.co/image/ab67fb8200005caf474a477debc822a3a45c5acb' },
         { name: 'Podcasts', bgc: '#006450', url: 'https://i.scdn.co/image/ab6765630000ba8a81f07e1ead0317ee3c285bfa' },
         { name: 'Live Events', bgc: '#8400e7', url: 'https://concerts.spotifycdn.com/images/live-events_category-image.jpg' },
@@ -47,9 +49,8 @@ export function SearchGenres() {
         { name: 'Educational', bgc: '#477d95', url: 'https://i.scdn.co/image/ab67656300005f1fd464f18a416c86ede3a235a7' },
         { name: 'Documentary', bgc: '#503750', url: 'https://i.scdn.co/image/ab6765630000ba8a2f514cde3ee9501e7ada4cf4' },
     ]
-
     function onGenre(genre) {
-       navigate(`/search?txt=genre:${genre.name}&type=track`)
+       navigate(`/search?txt=genre:${genre.name.toLowerCase()}&type=track`)
     }
 
     return (

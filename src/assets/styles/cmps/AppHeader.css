@@ -115,12 +115,13 @@
         border-radius: 50%;
         background-color: var(--header1);
         align-items: center;
-
+        transition: 0.1s;
         .home-icon {
             fill: var(--header3);
         }
 
         &:hover {
+            scale: 1.04;
             .home-icon {
                 fill: white;
             }
